@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('exchange_rates', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('currency_id')->constrained()->cascadeOnDelete();
+            $table->decimal('rate', 18, 6); // units of base currency per 1 unit of this currency
+            $table->date('effective_date');
+            $table->timestamps();
+
+            $table->unique(['currency_id', 'effective_date']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('exchange_rates');
+    }
+};
