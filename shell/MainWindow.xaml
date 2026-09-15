@@ -1,0 +1,31 @@
+<Window x:Class="UnicAccountingShell.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:local="clr-namespace:UnicAccountingShell"
+        mc:Ignorable="d"
+        Title="سیستم حسابداری یونیک" Height="800" Width="1300"
+        WindowStartupLocation="CenterScreen">
+    <!--
+        FlowDirection stays LeftToRight at the Window level on purpose: the
+        WebView2 control renders the page's own dir="rtl" HTML correctly on
+        its own, and mirroring the WPF container on top of that double-flips
+        every glyph (text renders back-to-front). Only the native loading
+        overlay below opts into RightToLeft for its own Persian text.
+    -->
+    <Grid>
+        <wv2:WebView2 x:Name="Browser" />
+
+        <Grid x:Name="LoadingOverlay" Background="#FFF3F4F6" FlowDirection="RightToLeft">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="سیستم حسابداری یونیک" FontSize="22" FontWeight="Bold"
+                           HorizontalAlignment="Center" Margin="0,0,0,12" Foreground="#0C4A6E" />
+                <TextBlock x:Name="StatusText" Text="در حال آماده‌سازی..." FontSize="14"
+                           HorizontalAlignment="Center" Foreground="#475569" />
+                <ProgressBar IsIndeterminate="True" Width="220" Height="6" Margin="0,16,0,0" FlowDirection="LeftToRight" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

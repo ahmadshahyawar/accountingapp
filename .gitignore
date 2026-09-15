@@ -23,3 +23,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# WPF desktop shell build output
+/shell/bin
+/shell/obj
