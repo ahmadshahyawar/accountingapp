@@ -3,7 +3,7 @@
 
     <div class="bg-white rounded-lg shadow p-6 mb-4">
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm mb-4">
-            <div><div class="text-gray-500">تاریخ</div><div class="font-semibold">{{ $invoice->date->format('Y-m-d') }}</div></div>
+            <div><div class="text-gray-500">تاریخ</div><div class="font-semibold">{{ shamsi($invoice->date) }}</div></div>
             <div><div class="text-gray-500">تامین‌کننده</div><div class="font-semibold">{{ $invoice->supplier->name }}</div></div>
             <div><div class="text-gray-500">گدام</div><div class="font-semibold">{{ $invoice->warehouse->name }}</div></div>
             <div><div class="text-gray-500">واحد پول</div><div class="font-semibold">{{ $invoice->currency->code }}</div></div>

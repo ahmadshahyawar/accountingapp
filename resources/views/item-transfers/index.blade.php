@@ -19,7 +19,7 @@
                 @foreach($transfers as $t)
                     <tr>
                         <td class="px-4 py-2">{{ $t->number }}</td>
-                        <td class="px-4 py-2">{{ $t->date->format('Y-m-d') }}</td>
+                        <td class="px-4 py-2">{{ shamsi($t->date) }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $t->fromWarehouse->name }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $t->toWarehouse->name }}</td>
                         <td class="px-4 py-2">{{ $t->lines()->count() }}</td>

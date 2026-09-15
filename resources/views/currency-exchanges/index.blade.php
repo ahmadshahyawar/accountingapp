@@ -20,7 +20,7 @@
                 @foreach($exchanges as $e)
                     <tr>
                         <td class="px-4 py-2">{{ $e->number }}</td>
-                        <td class="px-4 py-2">{{ $e->date->format('Y-m-d') }}</td>
+                        <td class="px-4 py-2">{{ shamsi($e->date) }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $e->holderLabel() }}</td>
                         <td class="px-4 py-2">{{ number_format($e->paid_amount, 2) }} {{ $e->paidCurrency->code }}</td>
                         <td class="px-4 py-2">{{ number_format($e->received_amount, 2) }} {{ $e->receivedCurrency->code }}</td>

@@ -12,8 +12,8 @@
                     @foreach($fiscalYears as $fy)
                         <tr>
                             <td class="py-1">{{ $fy->name }}</td>
-                            <td>{{ $fy->start_date->format('Y-m-d') }}</td>
-                            <td>{{ $fy->end_date->format('Y-m-d') }}</td>
+                            <td>{{ shamsi($fy->start_date) }}</td>
+                            <td>{{ shamsi($fy->end_date) }}</td>
                             <td>@if($fy->is_current)<span class="text-emerald-700 font-semibold">جاری</span>@endif</td>
                             <td>
                                 @unless($fy->is_current)

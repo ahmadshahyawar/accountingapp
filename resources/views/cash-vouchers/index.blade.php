@@ -29,7 +29,7 @@
                 @foreach($vouchers as $voucher)
                     <tr>
                         <td class="px-4 py-2">{{ $voucher->number }}</td>
-                        <td class="px-4 py-2">{{ $voucher->date->format('Y-m-d') }}</td>
+                        <td class="px-4 py-2">{{ shamsi($voucher->date) }}</td>
                         <td class="px-4 py-2">
                             <span class="{{ $voucher->type === 'receipt' ? 'text-green-700' : 'text-pink-700' }}">
                                 {{ $voucher->type === 'receipt' ? 'دریافت' : 'پرداخت' }}

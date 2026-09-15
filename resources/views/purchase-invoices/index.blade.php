@@ -18,7 +18,7 @@
                 @foreach($invoices as $invoice)
                     <tr>
                         <td class="px-4 py-2">{{ $invoice->number }}</td>
-                        <td class="px-4 py-2">{{ $invoice->date->format('Y-m-d') }}</td>
+                        <td class="px-4 py-2">{{ shamsi($invoice->date) }}</td>
                         <td class="px-4 py-2">{{ $invoice->supplier->name }}</td>
                         <td class="px-4 py-2">{{ number_format($invoice->total_amount, 2) }} {{ $invoice->currency->code }}</td>
                         <td class="px-4 py-2 flex gap-2">

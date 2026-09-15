@@ -36,7 +36,7 @@
                             $running += $delta;
                         @endphp
                         <tr>
-                            <td class="px-4 py-2">{{ $line->journalEntry->date->format('Y-m-d') }}</td>
+                            <td class="px-4 py-2">{{ shamsi($line->journalEntry->date) }}</td>
                             <td class="px-4 py-2 text-gray-500">{{ $line->description ?? $line->journalEntry->description }}</td>
                             <td class="px-4 py-2 text-gray-500">{{ $line->person?->name }}</td>
                             <td class="px-4 py-2">{{ number_format($line->base_debit, 2) }}</td>

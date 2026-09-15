@@ -13,7 +13,7 @@
         @foreach($entries as $entry)
             <div class="bg-white rounded-lg shadow p-4">
                 <div class="flex justify-between text-sm text-gray-500 mb-2">
-                    <span>{{ $entry->date->format('Y-m-d') }} — {{ $entry->description }}</span>
+                    <span>{{ shamsi($entry->date) }} — {{ $entry->description }}</span>
                     <span class="text-xs">سند #{{ $entry->id }}</span>
                 </div>
                 <table class="w-full text-sm text-right">

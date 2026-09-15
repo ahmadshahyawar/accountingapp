@@ -18,7 +18,7 @@
                 @foreach($returns as $r)
                     <tr>
                         <td class="px-4 py-2">{{ $r->number }}</td>
-                        <td class="px-4 py-2">{{ $r->date->format('Y-m-d') }}</td>
+                        <td class="px-4 py-2">{{ shamsi($r->date) }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $r->supplier->name }}</td>
                         <td class="px-4 py-2">{{ number_format($r->total_amount, 2) }} {{ $r->currency->code }}</td>
                         <td class="px-4 py-2">

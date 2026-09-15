@@ -19,7 +19,7 @@
                 @foreach($invoices as $inv)
                     <tr>
                         <td class="px-4 py-2">{{ $inv->number }}</td>
-                        <td class="px-4 py-2">{{ $inv->date->format('Y-m-d') }}</td>
+                        <td class="px-4 py-2">{{ shamsi($inv->date) }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $inv->customer_name }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $inv->customer_phone ?? $inv->customer_mobile }}</td>
                         <td class="px-4 py-2">{{ number_format($inv->total_amount, 2) }}</td>
