@@ -7,8 +7,10 @@ use App\Models\Cashbox;
 use App\Models\Currency;
 use App\Models\FiscalYear;
 use App\Models\Unit;
+use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Morilog\Jalali\Jalalian;
 
 class DatabaseSeeder extends Seeder
@@ -19,6 +21,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Default admin — the app requires sign-in, so a fresh install needs
+        // at least one account able to log in and manage other users.
+        User::firstOrCreate(
+            ['email' => 'admin@example.com'],
+            ['name' => 'مدیر سیستم', 'password' => Hash::make('password'), 'role' => 'admin', 'is_active' => true]
+        );
+
         $afn = Currency::firstOrCreate(
             ['code' => 'AFN'],
             ['name' => 'افغانی', 'symbol' => '؋', 'is_base' => true]

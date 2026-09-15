@@ -10,6 +10,7 @@ use App\Models\Item;
 use App\Models\Person;
 use App\Models\PurchaseInvoice;
 use App\Models\Unit;
+use App\Models\User;
 use App\Models\Warehouse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -27,6 +28,7 @@ class NewModulesTest extends TestCase
     {
         parent::setUp();
         $this->seed();
+        $this->actingAs(User::where('email', 'admin@example.com')->firstOrFail());
     }
 
     public function test_money_transfer_moves_balance_between_cashbox_and_bank_and_stays_balanced(): void

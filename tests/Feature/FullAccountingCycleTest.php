@@ -25,6 +25,7 @@ class FullAccountingCycleTest extends TestCase
     {
         parent::setUp();
         $this->seed();
+        $this->actingAs(\App\Models\User::where('email', 'admin@example.com')->firstOrFail());
     }
 
     public function test_purchase_then_sale_then_receipt_keeps_the_ledger_balanced(): void

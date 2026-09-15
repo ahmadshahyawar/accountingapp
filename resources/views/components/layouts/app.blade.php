@@ -27,8 +27,18 @@
                 <a href="{{ route('accounts.index') }}" class="hover:underline">حساب ها</a>
                 <a href="{{ route('opening-balances.index') }}" class="hover:underline">اول دوره</a>
                 <a href="{{ route('reports.trial-balance') }}" class="hover:underline">گزارشات</a>
+                @if(auth()->user()?->isAdmin())
+                    <a href="{{ route('users.index') }}" class="hover:underline">مدیریت کاربر ها</a>
+                @endif
                 <a href="{{ route('settings.index') }}" class="hover:underline">تنظیمات</a>
             </nav>
+            <div class="flex items-center gap-3 text-sm">
+                <span>کاربر: {{ auth()->user()?->name }}</span>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="hover:underline">خروج</button>
+                </form>
+            </div>
         </header>
 
         <main class="flex-1 p-6">

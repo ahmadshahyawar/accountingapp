@@ -17,6 +17,7 @@ class NewModulePagesRenderTest extends TestCase
     {
         parent::setUp();
         $this->seed();
+        $this->actingAs(\App\Models\User::where('email', 'admin@example.com')->firstOrFail());
     }
 
     public function test_every_new_module_index_and_create_page_renders(): void
