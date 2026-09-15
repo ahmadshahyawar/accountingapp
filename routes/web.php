@@ -1,14 +1,21 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AccountTransferController;
 use App\Http\Controllers\CashVoucherController;
+use App\Http\Controllers\CurrencyExchangeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemTransferController;
+use App\Http\Controllers\MoneyTransferController;
 use App\Http\Controllers\OpeningBalanceController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\ProformaInvoiceController;
 use App\Http\Controllers\PurchaseInvoiceController;
+use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SalesInvoiceController;
+use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,9 +26,16 @@ Route::resource('persons', PersonController::class)->except(['show']);
 Route::resource('items', ItemController::class)->except(['show']);
 
 Route::resource('cash-vouchers', CashVoucherController::class)->only(['index', 'create', 'store', 'destroy']);
+Route::resource('money-transfers', MoneyTransferController::class)->only(['index', 'create', 'store', 'destroy']);
+Route::resource('account-transfers', AccountTransferController::class)->only(['index', 'create', 'store', 'destroy']);
+Route::resource('currency-exchanges', CurrencyExchangeController::class)->only(['index', 'create', 'store', 'destroy']);
+Route::resource('item-transfers', ItemTransferController::class)->only(['index', 'create', 'store', 'destroy']);
+Route::resource('proforma-invoices', ProformaInvoiceController::class)->only(['index', 'create', 'store', 'destroy']);
 
 Route::resource('sales-invoices', SalesInvoiceController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
 Route::resource('purchase-invoices', PurchaseInvoiceController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
+Route::resource('sales-returns', SalesReturnController::class)->only(['index', 'create', 'store', 'destroy']);
+Route::resource('purchase-returns', PurchaseReturnController::class)->only(['index', 'create', 'store', 'destroy']);
 
 Route::prefix('opening-balances')->name('opening-balances.')->group(function () {
     Route::get('/', [OpeningBalanceController::class, 'index'])->name('index');

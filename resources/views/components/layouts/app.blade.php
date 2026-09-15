@@ -14,10 +14,18 @@
                 <a href="{{ route('dashboard') }}" class="hover:underline">داشبورد</a>
                 <a href="{{ route('sales-invoices.index') }}" class="hover:underline">فروش</a>
                 <a href="{{ route('purchase-invoices.index') }}" class="hover:underline">خرید</a>
+                <a href="{{ route('sales-returns.index') }}" class="hover:underline">برگشت فروش</a>
+                <a href="{{ route('purchase-returns.index') }}" class="hover:underline">برگشت خرید</a>
+                <a href="{{ route('proforma-invoices.index') }}" class="hover:underline">پیش فاکتور</a>
                 <a href="{{ route('cash-vouchers.index') }}" class="hover:underline">صندوق</a>
+                <a href="{{ route('money-transfers.index') }}" class="hover:underline">انتقال پول</a>
+                <a href="{{ route('account-transfers.index') }}" class="hover:underline">انتقال حساب</a>
+                <a href="{{ route('currency-exchanges.index') }}" class="hover:underline">تبادله ارز</a>
+                <a href="{{ route('item-transfers.index') }}" class="hover:underline">انتقال اجناس</a>
                 <a href="{{ route('persons.index') }}" class="hover:underline">اشخاص</a>
                 <a href="{{ route('items.index') }}" class="hover:underline">اجناس</a>
                 <a href="{{ route('accounts.index') }}" class="hover:underline">حساب ها</a>
+                <a href="{{ route('opening-balances.index') }}" class="hover:underline">اول دوره</a>
                 <a href="{{ route('reports.trial-balance') }}" class="hover:underline">گزارشات</a>
                 <a href="{{ route('settings.index') }}" class="hover:underline">تنظیمات</a>
             </nav>
