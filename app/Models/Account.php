@@ -33,6 +33,18 @@ class Account extends Model
         return $this->hasMany(JournalLine::class);
     }
 
+    public function typeLabel(): string
+    {
+        return match ($this->type) {
+            'asset' => 'دارایی',
+            'liability' => 'تعهدات',
+            'equity' => 'سرمایه',
+            'revenue' => 'عواید',
+            'expense' => 'مصارف',
+            default => $this->type,
+        };
+    }
+
     /**
      * Current balance in base currency, signed to the account's normal balance
      * (positive = normal balance side, e.g. a positive asset balance is a debit balance).

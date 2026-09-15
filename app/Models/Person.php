@@ -36,4 +36,9 @@ class Person extends Model
     {
         return $query->where('is_employee', true);
     }
+
+    public function journalLines()
+    {
+        return $this->hasMany(JournalLine::class);
+    }
 }

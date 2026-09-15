@@ -31,24 +31,25 @@
         </div>
     </div>
 
-    {{-- Quick-access tiles — mirrors the original dashboard's module grid.
-         Most link to '#' for now; each is wired up as its module is built (see project plan milestones). --}}
+    {{-- Quick-access tiles — mirrors the original dashboard's module grid. --}}
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         @foreach ([
-            ['label' => 'فروش', 'color' => 'bg-sky-600'],
-            ['label' => 'خرید', 'color' => 'bg-orange-600'],
-            ['label' => 'دریافت نقدی', 'color' => 'bg-green-600'],
-            ['label' => 'پرداخت نقدی', 'color' => 'bg-pink-700'],
-            ['label' => 'لیست طلبکار ها', 'color' => 'bg-purple-700'],
-            ['label' => 'لیست قرضدار ها', 'color' => 'bg-green-700'],
-            ['label' => 'موجودی اجناس', 'color' => 'bg-orange-500'],
-            ['label' => 'گراف اجناس فروش', 'color' => 'bg-purple-500'],
-            ['label' => 'گزارش حساب', 'color' => 'bg-blue-500'],
-            ['label' => 'دفتر روزنامچه', 'color' => 'bg-blue-700'],
-            ['label' => 'تعریف حساب ها', 'color' => 'bg-teal-600'],
-            ['label' => 'تعریف اجناس', 'color' => 'bg-red-600'],
+            ['label' => 'فروش', 'color' => 'bg-sky-600', 'route' => 'sales-invoices.index'],
+            ['label' => 'خرید', 'color' => 'bg-orange-600', 'route' => 'purchase-invoices.index'],
+            ['label' => 'دریافت نقدی', 'color' => 'bg-green-600', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'receipt']],
+            ['label' => 'پرداخت نقدی', 'color' => 'bg-pink-700', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment']],
+            ['label' => 'لیست طلبکار ها', 'color' => 'bg-purple-700', 'route' => 'reports.debtors'],
+            ['label' => 'لیست قرضدار ها', 'color' => 'bg-green-700', 'route' => 'reports.creditors'],
+            ['label' => 'موجودی اجناس', 'color' => 'bg-orange-500', 'route' => 'items.index'],
+            ['label' => 'گراف اجناس فروش', 'color' => 'bg-purple-500', 'route' => 'reports.sales-graph'],
+            ['label' => 'گزارش حساب', 'color' => 'bg-blue-500', 'route' => 'reports.account-statement'],
+            ['label' => 'دفتر روزنامچه', 'color' => 'bg-blue-700', 'route' => 'reports.day-book'],
+            ['label' => 'تعریف حساب ها', 'color' => 'bg-teal-600', 'route' => 'accounts.index'],
+            ['label' => 'تعریف اجناس', 'color' => 'bg-red-600', 'route' => 'items.create'],
+            ['label' => 'مانده های ابتدایی دوره', 'color' => 'bg-gray-700', 'route' => 'opening-balances.index'],
+            ['label' => 'تنظیمات', 'color' => 'bg-slate-500', 'route' => 'settings.index'],
         ] as $tile)
-            <a href="#" class="{{ $tile['color'] }} text-white rounded-lg shadow p-6 flex items-center justify-center text-center font-semibold hover:opacity-90 transition">
+            <a href="{{ route($tile['route'], $tile['params'] ?? []) }}" class="{{ $tile['color'] }} text-white rounded-lg shadow p-6 flex items-center justify-center text-center font-semibold hover:opacity-90 transition">
                 {{ $tile['label'] }}
             </a>
         @endforeach
