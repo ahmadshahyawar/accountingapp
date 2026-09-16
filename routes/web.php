@@ -42,6 +42,7 @@ Route::middleware('admin')->prefix('users')->name('users.')->group(function () {
 });
 
 Route::resource('accounts', AccountController::class)->except(['show']);
+Route::get('/persons-phonebook', [PersonController::class, 'phonebook'])->name('persons.phonebook');
 Route::resource('persons', PersonController::class)->except(['show']);
 Route::resource('items', ItemController::class)->except(['show']);
 

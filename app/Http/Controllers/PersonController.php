@@ -26,6 +26,20 @@ class PersonController extends Controller
         return view('persons.form', ['person' => new Person]);
     }
 
+    /** دفتر تلفن — every person with a phone or mobile number on file, old-app screen this app never had. */
+    public function phonebook()
+    {
+        $persons = Person::query()
+            ->where(function ($q) {
+                $q->where(fn ($p) => $p->whereNotNull('phone')->where('phone', '!=', ''))
+                    ->orWhere(fn ($m) => $m->whereNotNull('mobile')->where('mobile', '!=', ''));
+            })
+            ->orderBy('name')
+            ->get();
+
+        return view('persons.phonebook', compact('persons'));
+    }
+
     public function store(Request $request)
     {
         Person::create($this->validated($request));
