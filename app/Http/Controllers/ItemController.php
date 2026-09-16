@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Unit;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
@@ -23,7 +24,10 @@ class ItemController extends Controller
 
     public function store(Request $request)
     {
-        Item::create($this->validated($request));
+        $data = $this->validated($request);
+        $data['photo_path'] = $this->storePhoto($request);
+
+        Item::create($data);
 
         return redirect()->route('items.index')->with('success', 'جنس جدید ثبت شد.');
     }
@@ -35,9 +39,33 @@ class ItemController extends Controller
 
     public function update(Request $request, Item $item)
     {
-        $item->update($this->validated($request, $item->id));
+        $data = $this->validated($request, $item->id);
+
+        if ($request->boolean('remove_photo')) {
+            if ($item->photo_path) {
+                Storage::disk('public')->delete($item->photo_path);
+            }
+            $data['photo_path'] = null;
+        } elseif ($newPhoto = $this->storePhoto($request)) {
+            if ($item->photo_path) {
+                Storage::disk('public')->delete($item->photo_path);
+            }
+            $data['photo_path'] = $newPhoto;
+        }
+
+        $item->update($data);
 
         return redirect()->route('items.index')->with('success', 'معلومات جنس بروزرسانی شد.');
+    }
+
+    /** Stores the uploaded عکس (photo), matching the old app's تعریف جنس form. */
+    private function storePhoto(Request $request): ?string
+    {
+        if (! $request->hasFile('photo')) {
+            return null;
+        }
+
+        return $request->file('photo')->store('items', 'public');
     }
 
     public function destroy(Item $item)
@@ -70,6 +98,7 @@ class ItemController extends Controller
             'cost_price' => 'required|numeric|min:0',
             'sale_price' => 'required|numeric|min:0',
             'reorder_level' => 'nullable|numeric|min:0',
+            'photo' => 'nullable|image|max:4096',
         ]);
     }
 }

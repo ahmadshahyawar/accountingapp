@@ -201,5 +201,6 @@
             <span>سال مالی: {{ \App\Models\FiscalYear::current()?->name ?? '—' }}</span>
         </footer>
     </div>
+    @stack('scripts')
 </body>
 </html>

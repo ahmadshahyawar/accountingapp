@@ -10,7 +10,7 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code', 'name', 'unit_id', 'warehouse_id', 'cost_price', 'sale_price', 'reorder_level', 'is_active',
+        'code', 'name', 'unit_id', 'warehouse_id', 'cost_price', 'sale_price', 'reorder_level', 'photo_path', 'is_active',
     ];
 
     protected $casts = [
@@ -30,6 +30,11 @@ class Item extends Model
     public function stockMoves()
     {
         return $this->hasMany(StockMove::class);
+    }
+
+    public function photoUrl(): ?string
+    {
+        return $this->photo_path ? \Illuminate\Support\Facades\Storage::url($this->photo_path) : null;
     }
 
     public function quantityOnHand(?int $warehouseId = null): float
