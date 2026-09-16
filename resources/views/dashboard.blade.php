@@ -66,9 +66,4 @@
             <span class="text-lg font-bold">1 {{ $topExchangeRate?->currency->code ?? '—' }} = {{ $topExchangeRate ? number_format($topExchangeRate->rate, 2) : '—' }} {{ $baseCurrency->code ?? '' }}</span>
         </a>
     </div>
-
-    <div class="flex gap-4 md:gap-14 mt-3">
-        <a href="{{ route('settings.company') }}" class="tile flex-1" style="background:#64748B">تنظیمات</a>
-        <a href="{{ route('opening-balances.index') }}" class="tile flex-1" style="background:#4B5563">مانده های ابتدایی دوره</a>
-    </div>
 </x-layouts.app>
