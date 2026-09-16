@@ -1,7 +1,5 @@
 <x-layouts.app title="رسید نقدی">
-    <x-ui.page-header :title="$type === 'receipt' ? 'دریافت نقدی' : 'پرداخت نقدی'" :back-route="route('cash-vouchers.index')" />
-
-    <form action="{{ route('cash-vouchers.store') }}" method="POST" class="bg-white rounded border border-gray-300 p-6 max-w-2xl"
+    <form action="{{ route('cash-vouchers.store') }}" method="POST"
         x-data="{
             source: 'cashbox', contraType: 'person',
             balances: @js($balances), personId: '{{ old('person_id') }}',
@@ -12,89 +10,90 @@
         @csrf
         <input type="hidden" name="type" value="{{ $type }}">
 
-        <div class="flex justify-between items-start mb-4">
-            <div class="w-40">
-                <label class="block text-sm font-medium text-gray-700 mb-1">تاریخ<span class="text-red-600">*</span></label>
-                <input type="date" name="date" value="{{ old('date', now()->toDateString()) }}" required
-                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
-            </div>
-            <div class="w-48">
-                <label class="block text-sm font-medium text-gray-700 mb-1">شماره رسید</label>
-                <input type="text" value="{{ $nextNumber }}" readonly
-                    class="w-full rounded-md border-gray-200 bg-gray-50 shadow-sm text-sm py-2 px-3 border text-gray-500 text-left">
-            </div>
-        </div>
+        <x-ui.legacy-form :title="$type === 'receipt' ? 'دریافت نقدی' : 'پرداخت نقدی'" :back-route="route('cash-vouchers.index')" save-label="ذخیره">
+            <x-slot:extraButtons>
+                <button type="button" class="btn3d" onclick="window.print()">
+                    <svg class="ic ic-gray" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 8V3h10v5M5 14h10v3H5v-3zM3 8h14v5h-3M3 8v4h2"/></svg>
+                    چاپ رسید
+                </button>
+            </x-slot:extraButtons>
 
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">صندوق / بانک</label>
-            <div class="flex gap-4 text-sm mb-2">
-                <label class="flex items-center gap-1"><input type="radio" x-model="source" value="cashbox" checked> صندوق نقدی</label>
-                <label class="flex items-center gap-1"><input type="radio" x-model="source" value="bank"> بانک</label>
-            </div>
-            <div x-show="source === 'cashbox'">
-                <x-ui.field label="صندوق" name="cashbox_id" type="select"
-                    :options="['' => '— انتخاب —'] + $cashboxes->pluck('name', 'id')->all()" />
-            </div>
-            <div x-show="source === 'bank'" x-cloak>
-                <x-ui.field label="حساب بانکی" name="bank_account_id" type="select"
-                    :options="['' => '— انتخاب —'] + $bankAccounts->pluck('name', 'id')->all()" />
-            </div>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-1">حساب</label>
-            <div class="flex gap-4 text-sm mb-2">
-                <label class="flex items-center gap-1"><input type="radio" x-model="contraType" value="person" checked> شخص (مشتری/تامین‌کننده)</label>
-                <label class="flex items-center gap-1"><input type="radio" x-model="contraType" value="account"> حساب {{ $type === 'receipt' ? 'عواید' : 'مصرف' }}</label>
+            <div class="legacy-field">
+                <label>حساب (جستجوی حساب ها)</label>
+                <div x-show="contraType === 'person'">
+                    <select name="person_id" x-model="personId" data-searchable>
+                        <option value="">— جستجوی حساب ها —</option>
+                        @foreach($persons as $person)
+                            <option value="{{ $person->id }}" @selected(old('person_id') == $person->id)>{{ $person->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div x-show="contraType === 'account'" x-cloak>
+                    <select name="contra_account_id" data-searchable>
+                        <option value="">— انتخاب —</option>
+                        @foreach(($type === 'receipt' ? $revenueAccounts : $expenseAccounts) as $acc)
+                            <option value="{{ $acc->id }}">{{ $acc->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex gap-4 text-sm mt-2">
+                    <label class="flex items-center gap-1"><input type="radio" x-model="contraType" value="person" checked> شخص (مشتری/تامین‌کننده)</label>
+                    <label class="flex items-center gap-1"><input type="radio" x-model="contraType" value="account"> حساب {{ $type === 'receipt' ? 'عواید' : 'مصرف' }}</label>
+                </div>
             </div>
 
-            <div x-show="contraType === 'person'">
-                <select name="person_id" x-model="personId" class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
-                    <option value="">— جستجوی حساب ها —</option>
-                    @foreach($persons as $person)
-                        <option value="{{ $person->id }}" @selected(old('person_id') == $person->id)>{{ $person->name }}</option>
-                    @endforeach
-                </select>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="legacy-field">
+                    <label>صندوق / بانک</label>
+                    <div x-show="source === 'cashbox'">
+                        <select name="cashbox_id" data-searchable>
+                            <option value="">— انتخاب —</option>
+                            @foreach($cashboxes as $cashbox)
+                                <option value="{{ $cashbox->id }}">{{ $cashbox->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div x-show="source === 'bank'" x-cloak>
+                        <select name="bank_account_id" data-searchable>
+                            <option value="">— انتخاب —</option>
+                            @foreach($bankAccounts as $bank)
+                                <option value="{{ $bank->id }}">{{ $bank->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex gap-4 text-sm mt-2">
+                        <label class="flex items-center gap-1"><input type="radio" x-model="source" value="cashbox" checked> صندوق نقدی</label>
+                        <label class="flex items-center gap-1"><input type="radio" x-model="source" value="bank"> بانک</label>
+                    </div>
+                </div>
+                <div class="legacy-field">
+                    <label>تاریخ<span class="text-red-600">*</span></label>
+                    <input type="date" name="date" value="{{ old('date', now()->toDateString()) }}" required>
+                </div>
             </div>
-            <div x-show="contraType === 'account'" x-cloak>
-                <x-ui.field label="حساب" name="contra_account_id" type="select"
-                    :options="['' => '— انتخاب —'] + ($type === 'receipt' ? $revenueAccounts : $expenseAccounts)->pluck('name', 'id')->all()" />
-            </div>
-        </div>
 
-        <div class="grid grid-cols-3 gap-4 mb-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">مبلغ<span class="text-red-600">*</span></label>
-                <input type="number" step="0.01" name="amount" x-model.number="amount" required
-                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">ارز<span class="text-red-600">*</span></label>
-                <select name="currency_id" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
-                    @foreach($currencies as $currency)
-                        <option value="{{ $currency->id }}" @selected(old('currency_id') == $currency->id)>{{ $currency->code }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">نرخ ارز<span class="text-red-600">*</span></label>
-                <input type="number" step="0.0001" name="fx_rate" value="{{ old('fx_rate', 1) }}" required
-                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
-            </div>
-        </div>
+            <hr style="border-color:#d7dce1;margin:14px 0">
 
-        <x-ui.field label="توضیحات" name="description" type="textarea" />
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <x-ui.field label="مبلغ" name="amount" type="number" step="0.01" />
+                <x-ui.field label="ارز" name="currency_id" type="select" :options="$currencies->pluck('code', 'id')->all()" required />
+                <x-ui.field label="نرخ ارز" name="fx_rate" type="number" step="0.0001" :value="old('fx_rate', 1)" required />
+            </div>
 
-        <div class="grid grid-cols-2 gap-6 mb-6 pt-2 border-t" x-show="contraType === 'person'">
-            <div class="flex justify-between text-sm pt-3"><span class="text-gray-600">حساب گذشته:</span><span x-text="previousBalance.toFixed(2)"></span></div>
-            <div class="flex justify-between text-sm font-bold pt-3"><span>الباقی حساب:</span><span x-text="remainingBalance.toFixed(2)"></span></div>
-        </div>
+            <x-ui.field label="توضیحات" name="description" type="textarea" />
 
-        <div class="flex items-center justify-between border-t pt-4">
-            <a href="{{ route('cash-vouchers.index') }}" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300">انصراف</a>
-            <button type="submit" class="px-8 py-2 {{ $type === 'receipt' ? 'bg-green-700 hover:bg-green-800' : 'bg-pink-700 hover:bg-pink-800' }} text-white rounded-md text-sm">
-                ذخیره
-            </button>
-        </div>
+            <hr style="border-color:#d7dce1;margin:14px 0">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="contraType === 'person'">
+                <div class="legacy-field" style="margin-bottom:0">
+                    <label>حساب گذشته</label>
+                    <input type="text" readonly :value="previousBalance.toFixed(2)" style="background:#f2f4f6;color:#586470;text-align:left">
+                </div>
+                <div class="legacy-field" style="margin-bottom:0">
+                    <label>الباقی حساب</label>
+                    <input type="text" readonly :value="remainingBalance.toFixed(2)" style="background:#f2f4f6;color:#586470;text-align:left;font-weight:700">
+                </div>
+            </div>
+        </x-ui.legacy-form>
     </form>
 </x-layouts.app>

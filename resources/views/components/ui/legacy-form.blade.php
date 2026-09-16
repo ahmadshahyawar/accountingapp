@@ -11,6 +11,7 @@
             <svg class="ic ic-blue" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h10l2 2v10H4V4z"/><path d="M6 4v4h6V4M6 12h8"/></svg>
             {{ $saveLabel }}
         </button>
+        {{ $extraButtons ?? '' }}
     </div>
     <div class="grp">
         <a href="{{ $backRoute }}" class="btn3d">
