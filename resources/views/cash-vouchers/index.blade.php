@@ -11,7 +11,7 @@
         @endforeach
     </div>
 
-    <div class="bg-white rounded-lg shadow overflow-x-auto">
+    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
         <table class="w-full text-sm text-right">
             <thead class="bg-gray-50 text-gray-600">
                 <tr>

@@ -1,7 +1,7 @@
 <x-layouts.app title="تبادله ارز">
     <x-ui.page-header title="تبادله ارز جدید" :back-route="route('currency-exchanges.index')" />
 
-    <form action="{{ route('currency-exchanges.store') }}" method="POST" class="bg-white rounded-lg shadow p-6 max-w-2xl" x-data="{ holderType: 'cashbox' }">
+    <form action="{{ route('currency-exchanges.store') }}" method="POST" class="bg-white rounded border border-gray-300 p-6 max-w-2xl" x-data="{ holderType: 'cashbox' }">
         @csrf
 
         <x-ui.field label="تاریخ" name="date" type="date" :value="now()->toDateString()" required />

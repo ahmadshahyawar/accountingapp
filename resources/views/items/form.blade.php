@@ -2,7 +2,7 @@
     <x-ui.page-header :title="$item->exists ? 'ویرایش جنس' : 'جنس جدید'" :back-route="route('items.index')" />
 
     <form action="{{ $item->exists ? route('items.update', $item) : route('items.store') }}" method="POST"
-        enctype="multipart/form-data" class="bg-white rounded-lg shadow p-6 max-w-3xl grid grid-cols-1 md:grid-cols-3 gap-6"
+        enctype="multipart/form-data" class="bg-white rounded border border-gray-300 p-6 max-w-3xl grid grid-cols-1 md:grid-cols-3 gap-6"
         x-data="{ removePhoto: false, previewUrl: @js($item->photoUrl()) }">
         @csrf
         @if($item->exists) @method('PUT') @endif

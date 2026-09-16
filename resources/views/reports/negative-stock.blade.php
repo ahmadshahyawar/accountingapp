@@ -6,7 +6,7 @@
         این معمولاً نشانه یک اشتباه در ثبت اطلاعات (مثلاً موجودی اول دوره ثبت نشده) است.
     </p>
 
-    <div class="bg-white rounded-lg shadow overflow-x-auto">
+    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
         <table class="w-full text-sm text-right">
             <thead class="bg-gray-50 text-gray-600">
                 <tr><th class="px-4 py-2">کد جنس</th><th>نام جنس</th><th>واحد</th><th>موجودی</th></tr>

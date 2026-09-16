@@ -19,7 +19,7 @@
             get linesTotal() { return this.lines.reduce((s, l) => s + this.lineTotal(l), 0) },
             get grandTotal() { return this.linesTotal - (parseFloat(this.discount) || 0) }
         }"
-        class="bg-white rounded-lg shadow p-6">
+        class="bg-white rounded border border-gray-300 p-6">
         @csrf
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6">

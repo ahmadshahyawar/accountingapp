@@ -1,7 +1,7 @@
 <x-layouts.app title="انتقال حساب">
     <x-ui.page-header title="انتقال حساب جدید" :back-route="route('account-transfers.index')" />
 
-    <form action="{{ route('account-transfers.store') }}" method="POST" class="bg-white rounded-lg shadow p-6 max-w-2xl">
+    <form action="{{ route('account-transfers.store') }}" method="POST" class="bg-white rounded border border-gray-300 p-6 max-w-2xl">
         @csrf
 
         <x-ui.field label="تاریخ" name="date" type="date" :value="now()->toDateString()" required />

@@ -14,7 +14,7 @@
             },
             removeLine(i) { this.lines.splice(i, 1) }
         }"
-        class="bg-white rounded-lg shadow p-6">
+        class="bg-white rounded border border-gray-300 p-6">
         @csrf
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-6">

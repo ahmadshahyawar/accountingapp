@@ -3,7 +3,7 @@
 
     @include('reports._nav')
 
-    <div class="bg-white rounded-lg shadow overflow-x-auto">
+    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
         <table class="w-full text-sm text-right">
             <thead class="bg-gray-50 text-gray-600">
                 <tr><th class="px-4 py-2">کد</th><th>حساب</th><th>مدین</th><th>داین</th><th>مانده</th></tr>

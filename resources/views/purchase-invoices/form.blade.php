@@ -27,7 +27,7 @@
             get grandTotal() { return this.linesTotal - (parseFloat(this.discount) || 0) + (parseFloat(this.expense) || 0) },
             get remainingBalance() { return this.previousBalance + this.grandTotal - (parseFloat(this.paidAmount) || 0) },
         }"
-        class="bg-white rounded-lg shadow p-6">
+        class="bg-white rounded border border-gray-300 p-6">
         @csrf
 
         <div class="flex justify-between items-start mb-4">

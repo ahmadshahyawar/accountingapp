@@ -3,7 +3,7 @@
         <a href="{{ route('currency-exchanges.create') }}" class="px-4 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800">+ تبادله جدید</a>
     </x-ui.page-header>
 
-    <div class="bg-white rounded-lg shadow overflow-x-auto">
+    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
         <table class="w-full text-sm text-right">
             <thead class="bg-gray-50 text-gray-600">
                 <tr>

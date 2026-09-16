@@ -1,7 +1,7 @@
 <x-layouts.app title="شخص">
     <x-ui.page-header :title="$person->exists ? 'ویرایش شخص' : 'شخص جدید'" :back-route="route('persons.index')" />
 
-    <form action="{{ $person->exists ? route('persons.update', $person) : route('persons.store') }}" method="POST" class="bg-white rounded-lg shadow p-6 max-w-xl">
+    <form action="{{ $person->exists ? route('persons.update', $person) : route('persons.store') }}" method="POST" class="bg-white rounded border border-gray-300 p-6 max-w-xl">
         @csrf
         @if($person->exists) @method('PUT') @endif
 

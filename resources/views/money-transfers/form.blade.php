@@ -1,7 +1,7 @@
 <x-layouts.app title="انتقال پول">
     <x-ui.page-header title="انتقال پول جدید" :back-route="route('money-transfers.index')" />
 
-    <form action="{{ route('money-transfers.store') }}" method="POST" class="bg-white rounded-lg shadow p-6 max-w-2xl"
+    <form action="{{ route('money-transfers.store') }}" method="POST" class="bg-white rounded border border-gray-300 p-6 max-w-2xl"
         x-data="{ fromType: 'cashbox', toType: 'cashbox' }">
         @csrf
 

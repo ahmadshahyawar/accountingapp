@@ -1,7 +1,7 @@
 <x-layouts.app title="تغییر رمز عبور">
     <x-ui.page-header title="تغییر رمز عبور" />
 
-    <form action="{{ route('profile.password.update') }}" method="POST" class="bg-white rounded-lg shadow p-6 max-w-md">
+    <form action="{{ route('profile.password.update') }}" method="POST" class="bg-white rounded border border-gray-300 p-6 max-w-md">
         @csrf
         @method('PUT')
 

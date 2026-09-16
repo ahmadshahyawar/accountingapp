@@ -1,7 +1,7 @@
 <x-layouts.app title="حساب">
     <x-ui.page-header :title="$account->exists ? 'ویرایش حساب' : 'حساب جدید'" :back-route="route('accounts.index')" />
 
-    <form action="{{ $account->exists ? route('accounts.update', $account) : route('accounts.store') }}" method="POST" class="bg-white rounded-lg shadow p-6 max-w-xl">
+    <form action="{{ $account->exists ? route('accounts.update', $account) : route('accounts.store') }}" method="POST" class="bg-white rounded border border-gray-300 p-6 max-w-xl">
         @csrf
         @if($account->exists) @method('PUT') @endif
 

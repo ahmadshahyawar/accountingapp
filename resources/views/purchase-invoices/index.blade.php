@@ -3,7 +3,7 @@
         <a href="{{ route('purchase-invoices.create') }}" class="px-4 py-2 bg-orange-700 text-white rounded-md text-sm hover:bg-orange-800">+ فاکتور خرید جدید</a>
     </x-ui.page-header>
 
-    <div class="bg-white rounded-lg shadow overflow-x-auto">
+    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
         <table class="w-full text-sm text-right">
             <thead class="bg-gray-50 text-gray-600">
                 <tr>

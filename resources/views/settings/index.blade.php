@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {{-- Company info (مشخصات شرکت) — printed on invoice letterheads in the old app. --}}
-        <div id="company" class="bg-white rounded-lg shadow p-4 scroll-mt-4 lg:col-span-2">
+        <div id="company" class="bg-white rounded border border-gray-300 p-4 scroll-mt-4 lg:col-span-2">
             <h3 class="font-bold mb-3">مشخصات شرکت</h3>
             <form action="{{ route('settings.company.update') }}" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 @csrf @method('PUT')
@@ -39,7 +39,7 @@
         </div>
 
         {{-- Fiscal years --}}
-        <div id="fiscal-years" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
+        <div id="fiscal-years" class="bg-white rounded border border-gray-300 p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">سال های مالی</h3>
             <table class="w-full text-sm text-right mb-3">
                 <thead class="text-gray-500"><tr><th class="py-1">نام</th><th>شروع</th><th>ختم</th><th>وضعیت</th><th></th></tr></thead>
@@ -72,7 +72,7 @@
         </div>
 
         {{-- Currencies --}}
-        <div id="currencies" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
+        <div id="currencies" class="bg-white rounded border border-gray-300 p-4 scroll-mt-4">
             <h3 class="font-bold mb-3" id="exchange-rates">واحد های پول و نرخ ارز</h3>
             <table class="w-full text-sm text-right mb-3">
                 <thead class="text-gray-500"><tr><th class="py-1">کد</th><th>نام</th><th>پایه</th><th>آخرین نرخ</th></tr></thead>
@@ -111,7 +111,7 @@
         </div>
 
         {{-- Units --}}
-        <div id="units" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
+        <div id="units" class="bg-white rounded border border-gray-300 p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">واحد های اندازه‌گیری</h3>
             <ul class="text-sm mb-3 divide-y">
                 @foreach($units as $unit)
@@ -133,7 +133,7 @@
         </div>
 
         {{-- Warehouses --}}
-        <div id="warehouses" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
+        <div id="warehouses" class="bg-white rounded border border-gray-300 p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">گدام ها</h3>
             <ul class="text-sm mb-3 divide-y">
                 @foreach($warehouses as $warehouse)
@@ -155,7 +155,7 @@
         </div>
 
         {{-- Cashboxes --}}
-        <div id="cashboxes" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
+        <div id="cashboxes" class="bg-white rounded border border-gray-300 p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">صندوق های نقدی</h3>
             <ul class="text-sm mb-3 divide-y">
                 @foreach($cashboxes as $cashbox)
@@ -182,7 +182,7 @@
         </div>
 
         {{-- Bank accounts --}}
-        <div id="bank-accounts" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
+        <div id="bank-accounts" class="bg-white rounded border border-gray-300 p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">حساب های بانکی</h3>
             <ul class="text-sm mb-3 divide-y">
                 @foreach($bankAccounts as $bank)
@@ -212,7 +212,7 @@
 
         {{-- Backup / restore — admin only, since restoring replaces the live database file. --}}
         @if(auth()->user()?->isAdmin())
-            <div id="backup" class="bg-white rounded-lg shadow p-4 scroll-mt-4 lg:col-span-2">
+            <div id="backup" class="bg-white rounded border border-gray-300 p-4 scroll-mt-4 lg:col-span-2">
                 <h3 class="font-bold mb-3">پشتیبان‌گیری و بازیابی اطلاعات</h3>
                 <div class="flex flex-wrap gap-6 items-start">
                     <div>

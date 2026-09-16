@@ -1,7 +1,7 @@
 <x-layouts.app title="یادداشت و یادآور">
     <x-ui.page-header title="یادداشت و یادآور" />
 
-    <div class="bg-white rounded-lg shadow p-4 mb-6">
+    <div class="bg-white rounded border border-gray-300 p-4 mb-6">
         <form action="{{ route('notes.store') }}" method="POST" class="flex flex-wrap gap-3 items-end text-sm">
             @csrf
             <div class="flex-1 min-w-[160px]">
@@ -20,7 +20,7 @@
         </form>
     </div>
 
-    <div class="bg-white rounded-lg shadow divide-y">
+    <div class="bg-white rounded border border-gray-300 divide-y">
         @forelse($notes as $note)
             <div class="p-4 flex items-start gap-3 {{ $note->is_done ? 'opacity-50' : '' }}">
                 <form action="{{ route('notes.toggle', $note) }}" method="POST" class="pt-0.5">

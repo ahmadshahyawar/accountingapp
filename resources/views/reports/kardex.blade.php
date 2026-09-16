@@ -3,7 +3,7 @@
 
     @include('reports._nav')
 
-    <form method="GET" class="bg-white rounded-lg shadow p-4 mb-4 flex flex-wrap gap-3 items-end text-sm">
+    <form method="GET" class="bg-white rounded border border-gray-300 p-4 mb-4 flex flex-wrap gap-3 items-end text-sm">
         <div>
             <label class="block text-xs text-gray-500 mb-1">جنس</label>
             <select name="item_id" class="border rounded-md px-3 py-2" required onchange="this.form.submit()">
@@ -26,7 +26,7 @@
     </form>
 
     @if($item)
-        <div class="bg-white rounded-lg shadow overflow-x-auto">
+        <div class="bg-white rounded border border-gray-300 overflow-x-auto">
             <div class="px-4 py-3 border-b text-sm">
                 <span class="font-bold">{{ $item->name }}</span>
                 <span class="text-gray-400">({{ $item->code }})</span>
@@ -72,6 +72,6 @@
             </table>
         </div>
     @else
-        <div class="bg-white rounded-lg shadow p-6 text-center text-gray-400 text-sm">یک جنس را برای نمایش کاردکس انتخاب کنید.</div>
+        <div class="bg-white rounded border border-gray-300 p-6 text-center text-gray-400 text-sm">یک جنس را برای نمایش کاردکس انتخاب کنید.</div>
     @endif
 </x-layouts.app>

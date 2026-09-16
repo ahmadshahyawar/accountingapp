@@ -4,7 +4,7 @@
     @include('reports._nav')
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="bg-white rounded border border-gray-300 overflow-hidden">
             <div class="bg-sky-50 text-sky-800 font-bold px-4 py-2">صندوق های نقدی</div>
             <table class="w-full text-sm text-right">
                 <thead class="bg-gray-50 text-gray-600"><tr><th class="px-4 py-2">صندوق</th><th>ارز</th><th>موجودی</th></tr></thead>
@@ -26,7 +26,7 @@
             </table>
         </div>
 
-        <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="bg-white rounded border border-gray-300 overflow-hidden">
             <div class="bg-sky-50 text-sky-800 font-bold px-4 py-2">حساب های بانکی</div>
             <table class="w-full text-sm text-right">
                 <thead class="bg-gray-50 text-gray-600"><tr><th class="px-4 py-2">حساب</th><th>بانک</th><th>ارز</th><th>موجودی</th></tr></thead>

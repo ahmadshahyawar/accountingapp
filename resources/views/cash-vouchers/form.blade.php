@@ -1,7 +1,7 @@
 <x-layouts.app title="رسید نقدی">
     <x-ui.page-header :title="$type === 'receipt' ? 'دریافت نقدی' : 'پرداخت نقدی'" :back-route="route('cash-vouchers.index')" />
 
-    <form action="{{ route('cash-vouchers.store') }}" method="POST" class="bg-white rounded-lg shadow p-6 max-w-2xl"
+    <form action="{{ route('cash-vouchers.store') }}" method="POST" class="bg-white rounded border border-gray-300 p-6 max-w-2xl"
         x-data="{
             source: 'cashbox', contraType: 'person',
             balances: @js($balances), personId: '{{ old('person_id') }}',

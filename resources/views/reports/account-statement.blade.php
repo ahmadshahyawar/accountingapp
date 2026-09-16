@@ -3,7 +3,7 @@
 
     @include('reports._nav')
 
-    <form method="GET" class="bg-white rounded-lg shadow p-4 mb-4 flex flex-wrap gap-3 items-end text-sm">
+    <form method="GET" class="bg-white rounded border border-gray-300 p-4 mb-4 flex flex-wrap gap-3 items-end text-sm">
         <div>
             <label class="block text-xs text-gray-500 mb-1">حساب</label>
             <select name="account_id" class="border rounded px-2 py-1" required onchange="this.form.submit()">
@@ -19,7 +19,7 @@
     </form>
 
     @if($account)
-        <div class="bg-white rounded-lg shadow overflow-x-auto">
+        <div class="bg-white rounded border border-gray-300 overflow-x-auto">
             <table class="w-full text-sm text-right">
                 <thead class="bg-gray-50 text-gray-600">
                     <tr><th class="px-4 py-2">تاریخ</th><th>شرح</th><th>شخص</th><th>مدین</th><th>داین</th><th>مانده</th></tr>

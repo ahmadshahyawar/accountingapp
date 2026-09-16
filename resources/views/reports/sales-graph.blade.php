@@ -3,7 +3,7 @@
 
     @include('reports._nav')
 
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded border border-gray-300 p-6">
         @php $max = $monthly->max('total') ?: 1; @endphp
         <div class="flex items-end gap-4 h-64">
             @forelse($monthly as $row)

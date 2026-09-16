@@ -20,7 +20,7 @@
 
     <div class="space-y-6">
         {{-- Accounts --}}
-        <div class="bg-white rounded-lg shadow p-4">
+        <div class="bg-white rounded border border-gray-300 p-4">
             <h3 class="font-bold mb-3">مانده ابتدایی حساب ها</h3>
             <form action="{{ route('opening-balances.accounts') }}" method="POST">
                 @csrf
@@ -48,7 +48,7 @@
         </div>
 
         {{-- Customers --}}
-        <div class="bg-white rounded-lg shadow p-4">
+        <div class="bg-white rounded border border-gray-300 p-4">
             <h3 class="font-bold mb-3">مانده ابتدایی مشتریان (طلب از مشتری → حساب {{ $arAccount->name }})</h3>
             <form action="{{ route('opening-balances.persons') }}" method="POST">
                 @csrf
@@ -91,7 +91,7 @@
         </div>
 
         {{-- Items --}}
-        <div class="bg-white rounded-lg shadow p-4">
+        <div class="bg-white rounded border border-gray-300 p-4">
             <h3 class="font-bold mb-3">موجودی ابتدایی اجناس</h3>
             <form action="{{ route('opening-balances.items') }}" method="POST">
                 @csrf
