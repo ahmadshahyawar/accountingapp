@@ -48,6 +48,10 @@
             </form>
         </div>
         <div class="grp">
+            <a href="{{ route('sales-invoices.warehouse-receipt', $invoice) }}" class="btn3d">
+                <svg class="ic ic-gray" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 8V3h10v5M5 14h10v3H5v-3zM3 8h14v5h-3M3 8v4h2"/></svg>
+                چاپ حواله انبار
+            </a>
             <button type="button" class="btn3d" onclick="window.print()">
                 <svg class="ic ic-gray" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 8V3h10v5M5 14h10v3H5v-3zM3 8h14v5h-3M3 8v4h2"/></svg>
                 چاپ

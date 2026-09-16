@@ -72,6 +72,7 @@ Route::resource('item-transfers', ItemTransferController::class)->only(['index',
 Route::resource('proforma-invoices', ProformaInvoiceController::class)->only(['index', 'create', 'store', 'destroy']);
 
 Route::resource('sales-invoices', SalesInvoiceController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
+Route::get('/sales-invoices/{sales_invoice}/warehouse-receipt', [SalesInvoiceController::class, 'warehouseReceipt'])->name('sales-invoices.warehouse-receipt');
 Route::resource('purchase-invoices', PurchaseInvoiceController::class)->only(['index', 'create', 'store', 'show', 'destroy']);
 Route::resource('sales-returns', SalesReturnController::class)->only(['index', 'create', 'store', 'destroy']);
 Route::resource('purchase-returns', PurchaseReturnController::class)->only(['index', 'create', 'store', 'destroy']);

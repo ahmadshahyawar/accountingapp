@@ -203,6 +203,14 @@ class SalesInvoiceController extends Controller
         return view('sales-invoices.show', ['invoice' => $salesInvoice]);
     }
 
+    /** چاپ حواله انبار — a delivery/packing slip for the warehouse: items and quantities only, no prices. */
+    public function warehouseReceipt(SalesInvoice $salesInvoice)
+    {
+        $salesInvoice->load(['customer', 'warehouse', 'lines.item.unit']);
+
+        return view('sales-invoices.warehouse-receipt', ['invoice' => $salesInvoice]);
+    }
+
     public function destroy(SalesInvoice $salesInvoice)
     {
         DB::transaction(function () use ($salesInvoice) {
