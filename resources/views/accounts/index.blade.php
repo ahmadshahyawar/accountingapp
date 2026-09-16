@@ -1,45 +1,31 @@
 <x-layouts.app title="حساب ها">
-    <x-ui.page-header title="تعریف حساب ها">
-        <a href="{{ route('accounts.create') }}" class="px-4 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800">+ حساب جدید</a>
-    </x-ui.page-header>
+    <x-ui.legacy-list title="تعریف حساب ها" :create-route="route('accounts.create', ['type' => $type])" create-label="حساب جدید" table-id="accounts-grid">
+        <x-slot:subtabs>
+            <x-ui.account-def-tabs :active="$type === 'revenue' ? 'revenue' : 'expense'" />
+        </x-slot:subtabs>
 
-    @if($type)
-        <div class="mb-4 text-sm flex items-center gap-2">
-            <span class="text-gray-500">فیلتر: {{ ['revenue' => 'عواید', 'expense' => 'مصارف'][$type] ?? $type }}</span>
-            <a href="{{ route('accounts.index') }}" class="text-sky-700 hover:underline">(نمایش همه)</a>
-        </div>
-    @endif
-
-    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
-        <table class="w-full text-sm text-right">
-            <thead class="bg-gray-50 text-gray-600">
+        <table class="legacy-grid" id="accounts-grid">
+            <thead>
                 <tr>
-                    <th class="px-4 py-2">کد</th>
-                    <th class="px-4 py-2">نام حساب</th>
-                    <th class="px-4 py-2">حساب مادر</th>
-                    <th class="px-4 py-2">نوعیت</th>
-                    <th class="px-4 py-2">مانده جاری</th>
-                    <th class="px-4 py-2">عملیات</th>
+                    <th>کد حساب</th>
+                    <th>نام حساب</th>
+                    <th>مانده جاری</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
+            <tbody>
                 @foreach($accounts as $account)
-                    <tr class="{{ $account->is_group ? 'bg-gray-50 font-semibold' : '' }}">
-                        <td class="px-4 py-2">{{ $account->code }}</td>
-                        <td class="px-4 py-2">{{ $account->name }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $account->parent?->name }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $account->typeLabel() }}</td>
-                        <td class="px-4 py-2">{{ $account->is_group ? '—' : number_format($account->balance(), 2) }}</td>
-                        <td class="px-4 py-2 flex gap-2">
-                            <a href="{{ route('accounts.edit', $account) }}" class="text-sky-700 hover:underline">ویرایش</a>
-                            <form action="{{ route('accounts.destroy', $account) }}" method="POST" onsubmit="return confirm('حذف شود؟')">
+                    <tr data-row data-edit-url="{{ route('accounts.edit', $account) }}" data-delete-form="delete-account-{{ $account->id }}">
+                        <td>{{ $account->code }}</td>
+                        <td>{{ $account->name }}</td>
+                        <td>{{ $account->is_group ? '—' : number_format($account->balance(), 2) }}</td>
+                        <td class="hidden">
+                            <form id="delete-account-{{ $account->id }}" action="{{ route('accounts.destroy', $account) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">حذف</button>
                             </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+    </x-ui.legacy-list>
 </x-layouts.app>

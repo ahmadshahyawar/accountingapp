@@ -1,26 +1,37 @@
 <x-layouts.app title="واحد ها">
-    <x-ui.page-header title="واحد های اندازه‌گیری" />
+    <div x-data="{ adding: false }">
+        <x-ui.legacy-list title="تعریف واحد ها" create-inline table-id="units-grid">
+            <table class="legacy-grid" id="units-grid">
+                <thead>
+                    <tr>
+                        <th>نام واحد</th>
+                        <th>علامت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($units as $unit)
+                        <tr data-row data-delete-form="delete-unit-{{ $unit->id }}">
+                            <td>{{ $unit->name }}</td>
+                            <td>{{ $unit->symbol }}</td>
+                            <td class="hidden">
+                                <form id="delete-unit-{{ $unit->id }}" action="{{ route('settings.units.destroy', $unit) }}" method="POST">
+                                    @csrf @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    @if($units->isEmpty())
+                        <tr><td colspan="2" style="text-align:center;color:#9aa3ab;padding:20px">واحدی تعریف نشده است.</td></tr>
+                    @endif
+                </tbody>
+            </table>
 
-    <div class="bg-white rounded border border-gray-300 p-4 max-w-lg">
-        <ul class="text-sm mb-4 divide-y">
-            @foreach($units as $unit)
-                <li class="py-1.5 flex justify-between items-center">
-                    <span>{{ $unit->name }} @if($unit->symbol)<span class="text-gray-400">({{ $unit->symbol }})</span>@endif</span>
-                    <form action="{{ route('settings.units.destroy', $unit) }}" method="POST" onsubmit="return confirm('حذف شود؟')">
-                        @csrf @method('DELETE')
-                        <button class="text-red-600 hover:underline text-xs">حذف</button>
-                    </form>
-                </li>
-            @endforeach
-            @if($units->isEmpty())
-                <li class="py-6 text-center text-gray-400">واحدی تعریف نشده است.</li>
-            @endif
-        </ul>
-        <form action="{{ route('settings.units.store') }}" method="POST" class="flex gap-2 text-sm border-t pt-4">
-            @csrf
-            <input name="name" placeholder="نام واحد" class="border rounded px-2 py-1 flex-1" required>
-            <input name="symbol" placeholder="علامت" class="border rounded px-2 py-1 w-20">
-            <button class="px-3 py-1.5 bg-sky-700 text-white rounded">افزودن</button>
-        </form>
+            <form action="{{ route('settings.units.store') }}" method="POST" x-show="adding" x-cloak class="legacy-searchrow" style="margin-top:10px">
+                @csrf
+                <input name="name" placeholder="نام واحد" required style="flex:1;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <input name="symbol" placeholder="علامت" style="width:100px;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <button class="btn3d" type="submit" style="min-height:30px">افزودن</button>
+            </form>
+        </x-ui.legacy-list>
     </div>
 </x-layouts.app>

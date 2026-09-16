@@ -17,6 +17,7 @@
     "dependencies": {
         "@fontsource/vazirmatn": "^5.3.0",
         "alpinejs": "^3.17.3",
+        "choices.js": "^11.2.4",
         "jsbarcode": "^3.12.3"
     }
 }

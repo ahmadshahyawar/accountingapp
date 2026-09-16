@@ -1,26 +1,37 @@
 <x-layouts.app title="انبار ها">
-    <x-ui.page-header title="گدام ها" />
+    <div x-data="{ adding: false }">
+        <x-ui.legacy-list title="تعریف انبار ها" create-inline table-id="warehouses-grid">
+            <table class="legacy-grid" id="warehouses-grid">
+                <thead>
+                    <tr>
+                        <th>نام گدام</th>
+                        <th>آدرس</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($warehouses as $warehouse)
+                        <tr data-row data-delete-form="delete-warehouse-{{ $warehouse->id }}">
+                            <td>{{ $warehouse->name }}</td>
+                            <td>{{ $warehouse->address }}</td>
+                            <td class="hidden">
+                                <form id="delete-warehouse-{{ $warehouse->id }}" action="{{ route('settings.warehouses.destroy', $warehouse) }}" method="POST">
+                                    @csrf @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    @if($warehouses->isEmpty())
+                        <tr><td colspan="2" style="text-align:center;color:#9aa3ab;padding:20px">گدامی تعریف نشده است.</td></tr>
+                    @endif
+                </tbody>
+            </table>
 
-    <div class="bg-white rounded border border-gray-300 p-4 max-w-2xl">
-        <ul class="text-sm mb-4 divide-y">
-            @foreach($warehouses as $warehouse)
-                <li class="py-1.5 flex justify-between items-center">
-                    <span>{{ $warehouse->name }} @if($warehouse->address)<span class="text-gray-400">— {{ $warehouse->address }}</span>@endif</span>
-                    <form action="{{ route('settings.warehouses.destroy', $warehouse) }}" method="POST" onsubmit="return confirm('حذف شود؟')">
-                        @csrf @method('DELETE')
-                        <button class="text-red-600 hover:underline text-xs">حذف</button>
-                    </form>
-                </li>
-            @endforeach
-            @if($warehouses->isEmpty())
-                <li class="py-6 text-center text-gray-400">گدامی تعریف نشده است.</li>
-            @endif
-        </ul>
-        <form action="{{ route('settings.warehouses.store') }}" method="POST" class="flex gap-2 text-sm border-t pt-4">
-            @csrf
-            <input name="name" placeholder="نام گدام" class="border rounded px-2 py-1 flex-1" required>
-            <input name="address" placeholder="آدرس" class="border rounded px-2 py-1 flex-1">
-            <button class="px-3 py-1.5 bg-sky-700 text-white rounded">افزودن</button>
-        </form>
+            <form action="{{ route('settings.warehouses.store') }}" method="POST" x-show="adding" x-cloak class="legacy-searchrow" style="margin-top:10px">
+                @csrf
+                <input name="name" placeholder="نام گدام" required style="flex:1;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <input name="address" placeholder="آدرس" style="flex:1;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <button class="btn3d" type="submit" style="min-height:30px">افزودن</button>
+            </form>
+        </x-ui.legacy-list>
     </div>
 </x-layouts.app>

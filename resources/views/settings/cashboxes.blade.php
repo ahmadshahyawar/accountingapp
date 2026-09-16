@@ -1,31 +1,39 @@
 <x-layouts.app title="صندوق">
-    <x-ui.page-header title="صندوق های نقدی" />
+    <div x-data="{ adding: false }">
+        <x-ui.legacy-list title="تعریف صندوق ها" create-inline table-id="cashboxes-grid">
+            <table class="legacy-grid" id="cashboxes-grid">
+                <thead>
+                    <tr>
+                        <th>نام صندوق</th>
+                        <th>واحد پول</th>
+                        <th>حساب لجر</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($cashboxes as $cashbox)
+                        <tr data-row>
+                            <td>{{ $cashbox->name }}</td>
+                            <td>{{ $cashbox->currency->code }}</td>
+                            <td>{{ $cashbox->account->name }}</td>
+                        </tr>
+                    @endforeach
+                    @if($cashboxes->isEmpty())
+                        <tr><td colspan="3" style="text-align:center;color:#9aa3ab;padding:20px">صندوقی تعریف نشده است.</td></tr>
+                    @endif
+                </tbody>
+            </table>
 
-    <div class="bg-white rounded border border-gray-300 p-4 max-w-2xl">
-        <ul class="text-sm mb-4 divide-y">
-            @foreach($cashboxes as $cashbox)
-                <li class="py-1.5">{{ $cashbox->name }} — {{ $cashbox->currency->code }} — <span class="text-gray-400">{{ $cashbox->account->name }}</span></li>
-            @endforeach
-            @if($cashboxes->isEmpty())
-                <li class="py-6 text-center text-gray-400">صندوقی تعریف نشده است.</li>
-            @endif
-        </ul>
-        <form action="{{ route('settings.cashboxes.store') }}" method="POST" class="flex flex-wrap gap-2 items-end text-sm border-t pt-4">
-            @csrf
-            <div><label class="block text-xs text-gray-500 mb-1">نام</label><input name="name" class="border rounded px-2 py-1" required></div>
-            <div>
-                <label class="block text-xs text-gray-500 mb-1">واحد پول</label>
-                <select name="currency_id" class="border rounded px-2 py-1" required>
+            <form action="{{ route('settings.cashboxes.store') }}" method="POST" x-show="adding" x-cloak class="legacy-searchrow" style="margin-top:10px;gap:8px">
+                @csrf
+                <input name="name" placeholder="نام صندوق" required style="flex:1;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <select name="currency_id" required data-searchable style="width:120px">
                     @foreach($currencies as $currency)<option value="{{ $currency->id }}">{{ $currency->code }}</option>@endforeach
                 </select>
-            </div>
-            <div>
-                <label class="block text-xs text-gray-500 mb-1">حساب لجر</label>
-                <select name="account_id" class="border rounded px-2 py-1" required>
+                <select name="account_id" required data-searchable style="width:220px">
                     @foreach($moneyAccounts as $account)<option value="{{ $account->id }}">{{ $account->code }} - {{ $account->name }}</option>@endforeach
                 </select>
-            </div>
-            <button class="px-3 py-1.5 bg-sky-700 text-white rounded">افزودن</button>
-        </form>
+                <button class="btn3d" type="submit" style="min-height:30px">افزودن</button>
+            </form>
+        </x-ui.legacy-list>
     </div>
 </x-layouts.app>

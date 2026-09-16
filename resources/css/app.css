@@ -49,3 +49,224 @@ body {
     opacity: 0.92;
     transform: translateY(-1px);
 }
+
+/* Old-app-style grid action toolbar (خروج/چاپ .. حذف/ویرایش/جدید): raised
+   Windows-XP-ish 3D buttons, not flat modern ones — matches the real app's
+   bottom action bar exactly, including per-action icon colors (red for
+   destructive, blue for edit/add, plain gray for print/back). */
+.btn3d {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    min-height: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    color: #1c2733;
+    background: linear-gradient(180deg, #fbfcfd, #e7e8ea);
+    border: 1px solid #a9aeb5;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn3d:hover:not(:disabled) {
+    background: #eaf3fb;
+    border-color: #8db8d8;
+}
+
+.btn3d:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.btn3d .ic {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.btn3d .ic-red {
+    color: #d13438;
+}
+
+.btn3d .ic-blue {
+    color: #2f8fd0;
+}
+
+.btn3d .ic-gray {
+    color: #555b62;
+}
+
+/* Bottom toolbar layout: right-hand destructive/edit group, left-hand
+   print/exit group — mirrors the reference screenshot's split exactly. */
+.grid-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 10px 2px 0;
+    margin-top: 8px;
+    border-top: 1px solid #d7dce1;
+}
+
+.grid-toolbar .grp {
+    display: flex;
+    gap: 6px;
+}
+
+/* Old-app-style single-row selection inside a grid-toolbar table. */
+table.grid-selectable tbody tr {
+    cursor: pointer;
+}
+
+table.grid-selectable tbody tr.is-selected {
+    background: #cde5fb !important;
+}
+
+/* Choices.js (searchable dropdown) restyled to match the app's plain
+   bordered-square field look instead of the library's default rounded one. */
+.choices {
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.choices__inner {
+    min-height: 38px;
+    padding: 7px 30px 7px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+}
+
+.choices.is-open .choices__inner {
+    border-color: #7fb3e0;
+}
+
+.choices__list--single {
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.choices__list--single .choices__item {
+    color: #1c2733;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.choices__placeholder {
+    opacity: 0.65;
+}
+
+.choices__list--dropdown {
+    font-size: 14px;
+    border: 1px solid #7fb3e0;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 8px 22px rgb(20 40 60 / 0.2);
+}
+
+.choices__list--dropdown .choices__input {
+    background: #fbfdff;
+    font-size: 13px;
+    padding: 8px 10px;
+    border-bottom: 1px solid #dfe6ec;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.choices__list--dropdown .choices__item {
+    padding: 8px 10px;
+    line-height: 1.4;
+    font-size: 13px;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+    background: #eaf4fd;
+}
+
+/* Old-app-style list screen (تعریف اجناس/انبار‌ها/اشخاص/... pattern): centered
+   title, thin rule, a search row, a fully-gridlined table, and the 3D
+   toolbar at the bottom — replaces the modern card+header look on these
+   screens specifically. */
+.legacy-list-title {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1c2733;
+    padding: 10px 0 8px;
+}
+
+.legacy-searchrow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid #d7dce1;
+    border-radius: 4px;
+    background: #fafbfc;
+    padding: 4px 6px;
+    margin-bottom: 10px;
+}
+
+.legacy-searchrow select {
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    color: #586470;
+    padding: 4px 4px;
+}
+
+.legacy-searchrow input[type='text'] {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 4px 8px;
+    font-size: 13px;
+    text-align: right;
+}
+
+.legacy-searchrow input[type='text']:focus {
+    outline: none;
+}
+
+table.legacy-grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    border: 1px solid #c7d1db;
+}
+
+table.legacy-grid thead th {
+    background: #f2f4f6;
+    color: #384451;
+    font-weight: 700;
+    padding: 6px 10px;
+    border: 1px solid #d7dce1;
+    text-align: right;
+    white-space: nowrap;
+}
+
+table.legacy-grid tbody td {
+    padding: 5px 10px;
+    border: 1px solid #e3e7eb;
+    white-space: nowrap;
+}
+
+table.legacy-grid tbody tr:nth-child(even) {
+    background: #f8f9fb;
+}
+
+table.legacy-grid tbody tr.is-selected {
+    background: #cde5fb !important;
+}
+
+table.legacy-grid tbody tr[data-edit-url],
+table.legacy-grid tbody tr[data-delete-form] {
+    cursor: pointer;
+}
