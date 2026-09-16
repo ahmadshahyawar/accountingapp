@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemTransferController;
 use App\Http\Controllers\MoneyTransferController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\OpeningBalanceController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\ProformaInvoiceController;
@@ -45,6 +46,17 @@ Route::middleware('admin')->prefix('users')->name('users.')->group(function () {
 Route::middleware('admin')->prefix('backup')->name('backup.')->group(function () {
     Route::get('/download', [BackupController::class, 'download'])->name('download');
     Route::post('/restore', [BackupController::class, 'restore'])->name('restore');
+});
+
+// Personal notes — every user manages only their own, so the delete route is
+// deliberately named ".remove" rather than ".destroy": the app-wide
+// RestrictDestroyToAdmin middleware gates every "*.destroy" route to admins,
+// which would wrongly stop a regular user from deleting their own note.
+Route::prefix('notes')->name('notes.')->group(function () {
+    Route::get('/', [NoteController::class, 'index'])->name('index');
+    Route::post('/', [NoteController::class, 'store'])->name('store');
+    Route::post('/{note}/toggle', [NoteController::class, 'toggle'])->name('toggle');
+    Route::delete('/{note}', [NoteController::class, 'destroy'])->name('remove');
 });
 
 Route::resource('accounts', AccountController::class)->except(['show']);
