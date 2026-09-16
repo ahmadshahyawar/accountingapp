@@ -98,7 +98,18 @@ Route::prefix('reports')->name('reports.')->group(function () {
 });
 
 Route::prefix('settings')->name('settings.')->group(function () {
-    Route::get('/', [SettingsController::class, 'index'])->name('index');
+    // Each of these is its own dedicated screen — matching the old app's
+    // one-dialog-per-button structure, not a single merged settings page.
+    Route::get('/fiscal-years', [SettingsController::class, 'fiscalYears'])->name('fiscal-years');
+    Route::get('/exchange-rates', [SettingsController::class, 'exchangeRates'])->name('exchange-rates');
+    Route::get('/currencies', [SettingsController::class, 'currencies'])->name('currencies');
+    Route::get('/units', [SettingsController::class, 'units'])->name('units');
+    Route::get('/warehouses', [SettingsController::class, 'warehouses'])->name('warehouses');
+    Route::get('/cashboxes', [SettingsController::class, 'cashboxes'])->name('cashboxes');
+    Route::get('/bank-accounts', [SettingsController::class, 'bankAccounts'])->name('bank-accounts');
+    Route::get('/company', [SettingsController::class, 'company'])->name('company');
+    Route::get('/backup', [SettingsController::class, 'backup'])->name('backup');
+
     Route::post('/units', [SettingsController::class, 'storeUnit'])->name('units.store');
     Route::delete('/units/{unit}', [SettingsController::class, 'destroyUnit'])->name('units.destroy');
     Route::post('/warehouses', [SettingsController::class, 'storeWarehouse'])->name('warehouses.store');

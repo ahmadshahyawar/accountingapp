@@ -33,7 +33,7 @@ class CompanySettingTest extends TestCase
             'address' => 'هرات، افغانستان',
         ])->assertRedirect();
 
-        $response = $this->get(route('settings.index'));
+        $response = $this->get(route('settings.company'));
         $response->assertOk();
         $response->assertSee('شرکت تجارتی یونیک');
         $response->assertSee('info@unic.example');

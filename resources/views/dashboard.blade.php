@@ -54,14 +54,14 @@
         <a href="{{ route('reports.day-book') }}" class="tile" style="background:#00889E">دفتر روزنامچه</a>
         <a href="{{ route('purchase-invoices.index') }}" class="tile sm:col-span-2 text-2xl" style="background:#D2691E">خرید</a>
 
-        <a href="{{ route('settings.index') }}" class="tile sm:col-span-2 flex-col gap-1" style="background:#00889E">
+        <a href="{{ route('settings.exchange-rates') }}" class="tile sm:col-span-2 flex-col gap-1" style="background:#00889E">
             <span class="text-sm opacity-90">نرخ ارز</span>
             <span class="text-lg font-bold">1 {{ $topExchangeRate?->currency->code ?? '—' }} = {{ $topExchangeRate ? number_format($topExchangeRate->rate, 2) : '—' }} {{ $baseCurrency->code ?? '' }}</span>
         </a>
         <div class="tile flex-col gap-0.5" style="background:#00A500" x-data x-init="setInterval(() => { $el.querySelector('span').textContent = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) }, 1000 * 30)">
             <span class="text-2xl font-bold">{{ now()->format('H:i') }}</span>
         </div>
-        <div class="tile flex-col gap-0.5" style="background:#00889E">
+        <div class="tile flex-col gap-0.5" style="background:#00A500">
             <span class="text-2xl font-bold">{{ $today->format('d') }}</span>
             <span class="text-xs">{{ $today->format('l') }} {{ $today->format('F') }} {{ $today->format('Y') }}</span>
         </div>
@@ -71,6 +71,6 @@
 
     <div class="grid grid-cols-2 sm:grid-cols-6 gap-3 mt-3">
         <a href="{{ route('opening-balances.index') }}" class="tile sm:col-span-3" style="background:#4B5563">مانده های ابتدایی دوره</a>
-        <a href="{{ route('settings.index') }}" class="tile sm:col-span-3" style="background:#64748B">تنظیمات</a>
+        <a href="{{ route('settings.company') }}" class="tile sm:col-span-3" style="background:#64748B">تنظیمات</a>
     </div>
 </x-layouts.app>

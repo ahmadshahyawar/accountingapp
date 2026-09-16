@@ -16,19 +16,74 @@ use Morilog\Jalali\Jalalian;
 
 class SettingsController extends Controller
 {
-    public function index()
+    // Each ribbon button (سال مالی، نرخ ارز، ارز ها، بانک ها، صندوق، واحد ها،
+    // انبار ها، مشخصات شرکت) is its own dedicated screen showing only its own
+    // data — matching the old app's one-dialog-per-function structure, not a
+    // single page with every unrelated table visible at once.
+
+    public function fiscalYears()
     {
-        return view('settings.index', [
-            'units' => Unit::orderBy('name')->get(),
-            'warehouses' => Warehouse::orderBy('name')->get(),
-            'currencies' => Currency::with(['exchangeRates' => fn ($q) => $q->latest('effective_date')->limit(1)])->orderBy('code')->get(),
+        return view('settings.fiscal-years', [
             'fiscalYears' => FiscalYear::orderByDesc('start_date')->get(),
+        ]);
+    }
+
+    public function exchangeRates()
+    {
+        return view('settings.exchange-rates', [
+            'currencies' => Currency::with(['exchangeRates' => fn ($q) => $q->latest('effective_date')->limit(5)])->orderBy('code')->get(),
+        ]);
+    }
+
+    public function currencies()
+    {
+        return view('settings.currencies', [
+            'currencies' => Currency::with(['exchangeRates' => fn ($q) => $q->latest('effective_date')->limit(1)])->orderBy('code')->get(),
+        ]);
+    }
+
+    public function units()
+    {
+        return view('settings.units', [
+            'units' => Unit::orderBy('name')->get(),
+        ]);
+    }
+
+    public function warehouses()
+    {
+        return view('settings.warehouses', [
+            'warehouses' => Warehouse::orderBy('name')->get(),
+        ]);
+    }
+
+    public function cashboxes()
+    {
+        return view('settings.cashboxes', [
             'cashboxes' => Cashbox::with(['currency', 'account'])->orderBy('name')->get(),
-            'bankAccounts' => BankAccount::with(['currency', 'account'])->orderBy('name')->get(),
+            'currencies' => Currency::orderBy('code')->get(),
             'moneyAccounts' => Account::where('is_group', false)->orderBy('code')->get(),
-            'todayShamsi' => Jalalian::now()->format('Y-m-d'),
+        ]);
+    }
+
+    public function bankAccounts()
+    {
+        return view('settings.bank-accounts', [
+            'bankAccounts' => BankAccount::with(['currency', 'account'])->orderBy('name')->get(),
+            'currencies' => Currency::orderBy('code')->get(),
+            'moneyAccounts' => Account::where('is_group', false)->orderBy('code')->get(),
+        ]);
+    }
+
+    public function company()
+    {
+        return view('settings.company', [
             'company' => CompanySetting::current(),
         ]);
+    }
+
+    public function backup()
+    {
+        return view('settings.backup');
     }
 
     // --- Company info (مشخصات شرکت) ---

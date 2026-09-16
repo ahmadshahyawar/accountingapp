@@ -17,15 +17,15 @@
                     ['label' => 'اول دوره اجناس', 'route' => 'opening-balances.index', 'icon' => 'cube'],
                 ],
                 'سال مالی' => [
-                    ['label' => 'سال مالی', 'route' => 'settings.index', 'hash' => 'fiscal-years', 'icon' => 'calendar'],
+                    ['label' => 'سال مالی', 'route' => 'settings.fiscal-years', 'icon' => 'calendar'],
                 ],
                 'ارز' => [
-                    ['label' => 'نرخ ارز', 'route' => 'settings.index', 'hash' => 'exchange-rates', 'icon' => 'exchange'],
-                    ['label' => 'ارز ها', 'route' => 'settings.index', 'hash' => 'currencies', 'icon' => 'currency'],
+                    ['label' => 'نرخ ارز', 'route' => 'settings.exchange-rates', 'icon' => 'exchange'],
+                    ['label' => 'ارز ها', 'route' => 'settings.currencies', 'icon' => 'currency'],
                 ],
                 'تعریف حساب ها' => [
-                    ['label' => 'بانک ها', 'route' => 'settings.index', 'hash' => 'bank-accounts', 'icon' => 'bank'],
-                    ['label' => 'صندوق', 'route' => 'settings.index', 'hash' => 'cashboxes', 'icon' => 'archive'],
+                    ['label' => 'بانک ها', 'route' => 'settings.bank-accounts', 'icon' => 'bank'],
+                    ['label' => 'صندوق', 'route' => 'settings.cashboxes', 'icon' => 'archive'],
                     ['label' => 'عواید', 'route' => 'accounts.index', 'params' => ['type' => 'revenue'], 'icon' => 'currency'],
                     ['label' => 'مصارف', 'route' => 'accounts.index', 'params' => ['type' => 'expense'], 'icon' => 'cash-out'],
                     ['label' => 'کارمندان', 'route' => 'persons.index', 'params' => ['type' => 'employee'], 'icon' => 'user-group'],
@@ -33,8 +33,8 @@
                     ['label' => 'حساب ها', 'route' => 'accounts.index', 'icon' => 'clipboard'],
                 ],
                 'تعریف انبار ها و اجناس' => [
-                    ['label' => 'واحد ها', 'route' => 'settings.index', 'hash' => 'units', 'icon' => 'scale'],
-                    ['label' => 'انبار ها', 'route' => 'settings.index', 'hash' => 'warehouses', 'icon' => 'warehouse'],
+                    ['label' => 'واحد ها', 'route' => 'settings.units', 'icon' => 'scale'],
+                    ['label' => 'انبار ها', 'route' => 'settings.warehouses', 'icon' => 'warehouse'],
                     ['label' => 'اجناس', 'route' => 'items.index', 'icon' => 'cube'],
                 ],
             ],
@@ -115,7 +115,7 @@
                 ],
                 'بک آپ اطلاعات' => [
                     ['label' => 'تهیه بک آپ از اطلاعات', 'route' => 'backup.download', 'admin' => true, 'icon' => 'cloud-down'],
-                    ['label' => 'بازیابی اطلاعات', 'route' => 'settings.index', 'hash' => 'backup', 'admin' => true, 'icon' => 'cloud-up'],
+                    ['label' => 'بازیابی اطلاعات', 'route' => 'settings.backup', 'admin' => true, 'icon' => 'cloud-up'],
                 ],
                 'ابزار' => [
                     ['label' => 'یادداشت', 'route' => 'notes.index', 'icon' => 'pencil'],
@@ -128,17 +128,11 @@
             'label' => 'تنظیمات',
             'groups' => [
                 'تنظیمات' => [
-                    ['label' => 'تنظیمات عمومی', 'route' => 'settings.index', 'icon' => 'cog'],
-                    ['label' => 'مشخصات شرکت', 'route' => 'settings.index', 'hash' => 'company', 'icon' => 'building'],
+                    ['label' => 'مشخصات شرکت', 'route' => 'settings.company', 'icon' => 'building'],
                 ],
             ],
         ],
     ];
-
-    // Sampled from the real dashboard tiles (tab_emkanat.png) — rotates one
-    // accent per ribbon group so buttons read as colorful icon tiles like the
-    // old app, without needing its exact per-feature icon art.
-    $ribbonPalette = ['#7C3AED', '#DB2763', '#16A34A', '#0E9AAE', '#2563EB', '#EA580C', '#0F766E', '#9333EA'];
 
     // Auto-select the tab whose group contains a route matching the current
     // one, so landing on e.g. /sales-invoices from a bookmark or a redirect
@@ -197,17 +191,14 @@
                     @foreach($tab['groups'] as $groupLabel => $items)
                         @php
                             $visibleItems = array_filter($items, fn($i) => empty($i['admin']) || auth()->user()?->isAdmin());
-                            $groupColor = $ribbonPalette[$loop->index % count($ribbonPalette)];
                         @endphp
                         @if(count($visibleItems))
                             <div class="flex flex-col items-center shrink-0 {{ !$loop->first ? 'border-r border-gray-200 pr-5' : '' }}">
                                 <div class="flex gap-1">
                                     @foreach($visibleItems as $item)
-                                        <a href="{{ route($item['route'], $item['params'] ?? []) }}{{ isset($item['hash']) ? '#'.$item['hash'] : '' }}"
+                                        <a href="{{ route($item['route'], $item['params'] ?? []) }}"
                                             class="flex flex-col items-center justify-start text-center text-gray-700 text-[11px] leading-tight hover:bg-gray-50 rounded px-1.5 py-1 w-[72px] transition">
-                                            <span class="w-8 h-8 rounded flex items-center justify-center mb-1 text-white shrink-0" style="background:{{ $groupColor }}">
-                                                <x-ribbon-icon :name="$item['icon'] ?? 'grid'" class="w-5 h-5" />
-                                            </span>
+                                            <x-ribbon-icon :name="$item['icon'] ?? 'grid'" class="text-3xl leading-none mb-1" />
                                             <span class="line-clamp-2">{{ $item['label'] }}</span>
                                         </a>
                                     @endforeach
