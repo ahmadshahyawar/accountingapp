@@ -30,8 +30,8 @@
             loadProforma(id) {
                 const p = this.proformas.find(x => x.id == id);
                 if (!p) return;
-                if (p.warehouse_id) this.$refs.warehouse.value = p.warehouse_id;
-                if (p.currency_id) this.$refs.currency.value = p.currency_id;
+                if (p.warehouse_id) window.setNativeSelectValue(this.$refs.warehouse, p.warehouse_id);
+                if (p.currency_id) window.setNativeSelectValue(this.$refs.currency, p.currency_id);
                 if (p.fx_rate) this.$refs.fxRate.value = p.fx_rate;
                 if (p.notes) this.$refs.notes.value = p.notes;
                 this.lines = p.lines.map(l => {
