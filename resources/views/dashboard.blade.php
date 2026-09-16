@@ -22,47 +22,50 @@
         the tile it was cropped from, not just the label.
     --}}
     <div class="flex gap-4 md:gap-14">
-        <div class="grid grid-cols-2 gap-2 flex-1">
-            <a href="{{ route('reports.sales-graph') }}" class="tile flex-col gap-1" style="background:#800080"><x-dashboard-icon name="graph" />گراف اجناس پرفروش</a>
-            <a href="{{ route('items.index') }}" class="tile flex-col gap-1" style="background:#D2691E"><x-dashboard-icon name="stock" />موجودی اجناس</a>
-        </div>
-        <div class="grid grid-cols-2 gap-2 flex-1">
-            <a href="{{ route('cash-vouchers.create', ['type' => 'payment']) }}" class="tile flex-col gap-1" style="background:#AE1942"><x-dashboard-icon name="pay-out" />پرداخت نقدی</a>
-            <a href="{{ route('cash-vouchers.create', ['type' => 'receipt']) }}" class="tile flex-col gap-1" style="background:#00A500"><x-dashboard-icon name="pay-in" />دریافت نقدی</a>
-        </div>
         <a href="{{ route('sales-invoices.index') }}" class="tile flex-1 text-2xl" style="background:#00889E">فروش</a>
+        <div class="grid grid-cols-2 gap-2 flex-1">
+            <a href="{{ route('cash-vouchers.create', ['type' => 'receipt']) }}" class="tile flex-col gap-1" style="background:#00A500"><x-dashboard-icon name="pay-in" />دریافت نقدی</a>
+            <a href="{{ route('cash-vouchers.create', ['type' => 'payment']) }}" class="tile flex-col gap-1" style="background:#AE1942"><x-dashboard-icon name="pay-out" />پرداخت نقدی</a>
+        </div>
+        <div class="grid grid-cols-2 gap-2 flex-1">
+            <a href="{{ route('items.index') }}" class="tile flex-col gap-1" style="background:#D2691E"><x-dashboard-icon name="stock" />موجودی اجناس</a>
+            <a href="{{ route('reports.sales-graph') }}" class="tile flex-col gap-1" style="background:#800080"><x-dashboard-icon name="graph" />گراف اجناس پرفروش</a>
+        </div>
     </div>
 
     <div class="flex gap-4 md:gap-14 mt-3">
-        <div class="grid grid-cols-2 gap-2 flex-1">
-            <a href="{{ route('reports.debtors') }}" class="tile flex-col gap-1" style="background:#800080"><x-dashboard-icon name="person-money-purple" />لیست طلبکار ها</a>
-            <a href="{{ route('reports.creditors') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="person-money-green" />لیست قرضدار ها</a>
-        </div>
-        <div class="grid grid-cols-2 gap-2 flex-1">
-            <a href="{{ route('reports.account-statement') }}" class="tile flex-col gap-1" style="background:#2875EC"><x-dashboard-icon name="statement" />گزارش حساب</a>
-            <a href="{{ route('reports.day-book') }}" class="tile flex-col gap-1" style="background:#00889E"><x-dashboard-icon name="ledger" />دفتر روزنامچه</a>
-        </div>
         <a href="{{ route('purchase-invoices.index') }}" class="tile flex-1 text-2xl" style="background:#D2691E">خرید</a>
+        <div class="grid grid-cols-2 gap-2 flex-1">
+            <a href="{{ route('reports.day-book') }}" class="tile flex-col gap-1" style="background:#00889E"><x-dashboard-icon name="ledger" />دفتر روزنامچه</a>
+            <a href="{{ route('reports.account-statement') }}" class="tile flex-col gap-1" style="background:#2875EC"><x-dashboard-icon name="statement" />گزارش حساب</a>
+        </div>
+        <div class="grid grid-cols-2 gap-2 flex-1">
+            <a href="{{ route('reports.creditors') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="person-money-green" />لیست قرضدار ها</a>
+            <a href="{{ route('reports.debtors') }}" class="tile flex-col gap-1" style="background:#800080"><x-dashboard-icon name="person-money-purple" />لیست طلبکار ها</a>
+        </div>
     </div>
 
+    {{-- Row 3 breaks the "wide tile on the right" pattern rows 1-2 use — confirmed by
+         pixel scan, the wide نرخ ارز tile sits on the screen-LEFT here instead, so it's
+         last in this row's RTL source order rather than first. --}}
     <div class="flex gap-4 md:gap-14 mt-3">
+        <div class="grid grid-cols-2 gap-2 flex-1">
+            <a href="{{ route('items.create') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="define-item" />تعریف اجناس</a>
+            <a href="{{ route('accounts.index') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="define-acct" />تعریف حساب ها</a>
+        </div>
+        <div class="grid grid-cols-2 gap-2 flex-1">
+            <div class="tile flex-col gap-0.5" style="background:#00A500">
+                <span class="text-2xl font-bold">{{ $today->format('d') }}</span>
+                <span class="text-xs">{{ $today->format('l') }} {{ $today->format('F') }} {{ $today->format('Y') }}</span>
+            </div>
+            <div class="tile flex-col gap-0.5" style="background:#00A500" x-data x-init="setInterval(() => { $el.querySelector('span').textContent = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) }, 1000 * 30)">
+                <span class="text-2xl font-bold">{{ now()->format('H:i') }}</span>
+            </div>
+        </div>
         <a href="{{ route('settings.exchange-rates') }}" class="tile flex-1 flex-col gap-1" style="background:#00889E">
             <x-dashboard-icon name="trend" />
             <span class="text-sm opacity-90">نرخ ارز</span>
             <span class="text-lg font-bold">1 {{ $topExchangeRate?->currency->code ?? '—' }} = {{ $topExchangeRate ? number_format($topExchangeRate->rate, 2) : '—' }} {{ $baseCurrency->code ?? '' }}</span>
         </a>
-        <div class="grid grid-cols-2 gap-2 flex-1">
-            <div class="tile flex-col gap-0.5" style="background:#00A500" x-data x-init="setInterval(() => { $el.querySelector('span').textContent = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) }, 1000 * 30)">
-                <span class="text-2xl font-bold">{{ now()->format('H:i') }}</span>
-            </div>
-            <div class="tile flex-col gap-0.5" style="background:#00A500">
-                <span class="text-2xl font-bold">{{ $today->format('d') }}</span>
-                <span class="text-xs">{{ $today->format('l') }} {{ $today->format('F') }} {{ $today->format('Y') }}</span>
-            </div>
-        </div>
-        <div class="grid grid-cols-2 gap-2 flex-1">
-            <a href="{{ route('accounts.index') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="define-acct" />تعریف حساب ها</a>
-            <a href="{{ route('items.create') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="define-item" />تعریف اجناس</a>
-        </div>
     </div>
 </x-layouts.app>
