@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\BankAccount;
+use App\Models\Cashbox;
 use App\Models\Item;
 use App\Models\ItemTransfer;
 use App\Models\JournalEntry;
@@ -109,6 +111,59 @@ class ReportController extends Controller
         $rows = $this->personBalances($apAccount, 'credit');
 
         return view('reports.creditors', ['rows' => $rows, 'baseCurrency' => \App\Models\Currency::where('is_base', true)->first()]);
+    }
+
+    /** مفاد و ضرر — a profit & loss statement, one of the old app's core financial reports this app never had at all. */
+    public function profitAndLoss(Request $request)
+    {
+        $from = $request->get('from');
+        $to = $request->get('to');
+
+        $revenueAccounts = $this->accountsWithPeriodBalance('revenue', $from, $to);
+        $expenseAccounts = $this->accountsWithPeriodBalance('expense', $from, $to);
+
+        $totalRevenue = $revenueAccounts->sum('balance');
+        $totalExpense = $expenseAccounts->sum('balance');
+
+        return view('reports.profit-and-loss', [
+            'revenueAccounts' => $revenueAccounts,
+            'expenseAccounts' => $expenseAccounts,
+            'totalRevenue' => $totalRevenue,
+            'totalExpense' => $totalExpense,
+            'netProfit' => $totalRevenue - $totalExpense,
+            'from' => $from,
+            'to' => $to,
+        ]);
+    }
+
+    private function accountsWithPeriodBalance(string $type, ?string $from, ?string $to)
+    {
+        return Account::where('type', $type)->where('is_group', false)->orderBy('code')->get()
+            ->map(function (Account $account) use ($from, $to) {
+                $lines = $account->journalLines()
+                    ->whereHas('journalEntry', function ($q) use ($from, $to) {
+                        $q->when($from, fn ($q2) => $q2->where('date', '>=', $from))
+                            ->when($to, fn ($q2) => $q2->where('date', '<=', $to));
+                    })
+                    ->get();
+
+                $debit = (float) $lines->sum('base_debit');
+                $credit = (float) $lines->sum('base_credit');
+                $balance = $account->normal_balance === 'debit' ? $debit - $credit : $credit - $debit;
+
+                return ['account' => $account, 'balance' => $balance];
+            })
+            ->filter(fn ($row) => abs($row['balance']) > 0.005)
+            ->values();
+    }
+
+    /** گزارش صندوق و بانک — every cashbox's and bank account's current balance at a glance, another old-app report this app never had. */
+    public function cashAndBank()
+    {
+        return view('reports.cash-and-bank', [
+            'cashboxes' => Cashbox::with(['currency', 'account'])->orderBy('name')->get(),
+            'bankAccounts' => BankAccount::with(['currency', 'account'])->orderBy('name')->get(),
+        ]);
     }
 
     public function salesGraph()

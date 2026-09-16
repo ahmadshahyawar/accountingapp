@@ -24,6 +24,9 @@
                 'تعریف حساب ها' => [
                     ['label' => 'بانک ها', 'route' => 'settings.index', 'hash' => 'bank-accounts'],
                     ['label' => 'صندوق', 'route' => 'settings.index', 'hash' => 'cashboxes'],
+                    ['label' => 'عواید', 'route' => 'accounts.index', 'params' => ['type' => 'revenue']],
+                    ['label' => 'مصارف', 'route' => 'accounts.index', 'params' => ['type' => 'expense']],
+                    ['label' => 'کارمندان', 'route' => 'persons.index', 'params' => ['type' => 'employee']],
                     ['label' => 'اشخاص', 'route' => 'persons.index'],
                     ['label' => 'حساب ها', 'route' => 'accounts.index'],
                 ],
@@ -45,7 +48,8 @@
                     ['label' => 'پیش فاکتور', 'route' => 'proforma-invoices.index'],
                 ],
                 'متفرقه' => [
-                    ['label' => 'انتقال اجناس', 'route' => 'item-transfers.index'],
+                    ['label' => 'انتقال اجناس', 'route' => 'item-transfers.create'],
+                    ['label' => 'جستجوی فاکتورهای انتقال اجناس', 'route' => 'item-transfers.index'],
                 ],
             ],
         ],
@@ -72,12 +76,16 @@
         'finreports' => [
             'label' => 'گزارشات مالی',
             'groups' => [
-                'گزارشات' => [
-                    ['label' => 'گزارش حساب', 'route' => 'reports.account-statement'],
-                    ['label' => 'میزان آزمایشی', 'route' => 'reports.trial-balance'],
-                    ['label' => 'دفتر روزنامچه', 'route' => 'reports.day-book'],
-                    ['label' => 'لیست طلبکار ها', 'route' => 'reports.debtors'],
+                'گزارشات مالی' => [
                     ['label' => 'لیست قرضدار ها', 'route' => 'reports.creditors'],
+                    ['label' => 'لیست طلبکار ها', 'route' => 'reports.debtors'],
+                    ['label' => 'گزارش صندوق و بانک', 'route' => 'reports.cash-and-bank'],
+                    ['label' => 'دفتر روزنامچه', 'route' => 'reports.day-book'],
+                    ['label' => 'بالانس مالی', 'route' => 'reports.trial-balance'],
+                    ['label' => 'گزارش حساب', 'route' => 'reports.account-statement'],
+                ],
+                'گراف' => [
+                    ['label' => 'مفاد و ضرر', 'route' => 'reports.profit-and-loss'],
                 ],
             ],
         ],

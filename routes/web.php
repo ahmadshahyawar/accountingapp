@@ -92,6 +92,8 @@ Route::prefix('reports')->name('reports.')->group(function () {
     Route::get('/creditors', [ReportController::class, 'creditors'])->name('creditors');
     Route::get('/sales-graph', [ReportController::class, 'salesGraph'])->name('sales-graph');
     Route::get('/kardex', [ReportController::class, 'kardex'])->name('kardex');
+    Route::get('/profit-and-loss', [ReportController::class, 'profitAndLoss'])->name('profit-and-loss');
+    Route::get('/cash-and-bank', [ReportController::class, 'cashAndBank'])->name('cash-and-bank');
 });
 
 Route::prefix('settings')->name('settings.')->group(function () {

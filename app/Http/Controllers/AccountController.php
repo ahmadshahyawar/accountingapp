@@ -7,11 +7,16 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $accounts = Account::with('parent')->orderBy('code')->get();
+        $type = $request->get('type');
 
-        return view('accounts.index', compact('accounts'));
+        $accounts = Account::with('parent')
+            ->when($type, fn ($q) => $q->where('type', $type))
+            ->orderBy('code')
+            ->get();
+
+        return view('accounts.index', compact('accounts', 'type'));
     }
 
     public function create()

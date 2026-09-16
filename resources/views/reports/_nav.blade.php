@@ -4,6 +4,8 @@
         'reports.trial-balance' => 'تراز آزمایشی',
         'reports.account-statement' => 'گزارش حساب',
         'reports.day-book' => 'دفتر روزنامچه',
+        'reports.profit-and-loss' => 'مفاد و ضرر',
+        'reports.cash-and-bank' => 'گزارش صندوق و بانک',
         'reports.debtors' => 'لیست طلبکار ها',
         'reports.creditors' => 'لیست قرضدار ها',
         'reports.sales-graph' => 'گراف فروش',

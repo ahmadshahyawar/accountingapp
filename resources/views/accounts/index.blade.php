@@ -3,6 +3,13 @@
         <a href="{{ route('accounts.create') }}" class="px-4 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800">+ حساب جدید</a>
     </x-ui.page-header>
 
+    @if($type)
+        <div class="mb-4 text-sm flex items-center gap-2">
+            <span class="text-gray-500">فیلتر: {{ ['revenue' => 'عواید', 'expense' => 'مصارف'][$type] ?? $type }}</span>
+            <a href="{{ route('accounts.index') }}" class="text-sky-700 hover:underline">(نمایش همه)</a>
+        </div>
+    @endif
+
     <div class="bg-white rounded-lg shadow overflow-x-auto">
         <table class="w-full text-sm text-right">
             <thead class="bg-gray-50 text-gray-600">
