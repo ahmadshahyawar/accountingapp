@@ -62,13 +62,17 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-4 items-start">
             <div class="md:col-span-2">
                 <div class="legacy-field" style="margin-bottom:8px">
-                    <label>مشتری (جستجوی حساب ها)</label>
-                    <select name="person_id" x-model="personId" required data-searchable>
-                        <option value="">— جستجوی حساب ها —</option>
-                        <template x-for="c in customers" :key="c.id">
-                            <option :value="c.id" x-text="c.name"></option>
-                        </template>
-                    </select>
+                    <label>مشتری</label>
+                    <div style="display:flex;gap:8px">
+                        <select name="person_id" x-ref="personSelect" @change="personId = $event.target.value" data-searchable style="flex:1"
+                            x-effect="personId; $nextTick(() => window.setNativeSelectValue($refs.personSelect, personId))">
+                            <option value="">— انتخاب —</option>
+                            <template x-for="c in customers" :key="c.id">
+                                <option :value="c.id" :selected="c.id == personId" x-text="c.name"></option>
+                            </template>
+                        </select>
+                        <x-ui.person-search-modal list="customers" selected="personId" :create-route="route('persons.store')" :create-extra="['is_customer' => 1]" />
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="legacy-field" style="margin-bottom:0">

@@ -44,7 +44,14 @@ class PersonController extends Controller
 
     public function store(Request $request)
     {
-        Person::create($this->validated($request));
+        $person = Person::create($this->validated($request));
+
+        // The جستجوی حساب ها modal's "شخص جدید" button creates a person inline
+        // (matching the real app's dialog) and expects the new record back as
+        // JSON so it can select it immediately without leaving the invoice.
+        if ($request->wantsJson()) {
+            return response()->json(['id' => $person->id, 'name' => $person->name, 'phone' => $person->phone, 'mobile' => $person->mobile]);
+        }
 
         return redirect()->route('persons.index')->with('success', 'شخص جدید ثبت شد.');
     }
