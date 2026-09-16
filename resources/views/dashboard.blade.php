@@ -14,10 +14,12 @@
         pixel positions), not left-to-right visual order.
         Colors sampled directly from the same screenshot: purple #800080,
         crimson #AE1942, green #00A500, teal #00889E, blue #2875EC, orange
-        #D2691E. Icons are hand-built multi-color SVGs (see
-        <x-dashboard-icon>) instead of a flat monochrome glyph, since at
-        this tile size a single-color icon reads as noticeably cheaper than
-        the old app's actual colorful icon art.
+        #D2691E. Icons are the OLD APP'S ACTUAL artwork — cropped directly
+        out of a live screenshot of UnicAccounting.exe (see
+        <x-dashboard-icon>) after resource extraction turned out to be a
+        dead end (its embedded resources are encrypted). Each crop bakes in
+        its tile's own background color, so the icon name below must match
+        the tile it was cropped from, not just the label.
     --}}
     <div class="flex gap-4 md:gap-14">
         <a href="{{ route('sales-invoices.index') }}" class="tile flex-1 text-2xl" style="background:#00889E">فروش</a>
@@ -35,11 +37,11 @@
         <a href="{{ route('purchase-invoices.index') }}" class="tile flex-1 text-2xl" style="background:#D2691E">خرید</a>
         <div class="grid grid-cols-2 gap-2 flex-1">
             <a href="{{ route('reports.day-book') }}" class="tile flex-col gap-1" style="background:#00889E"><x-dashboard-icon name="ledger" />دفتر روزنامچه</a>
-            <a href="{{ route('reports.account-statement') }}" class="tile flex-col gap-1" style="background:#2875EC"><x-dashboard-icon name="documents" />گزارش حساب</a>
+            <a href="{{ route('reports.account-statement') }}" class="tile flex-col gap-1" style="background:#2875EC"><x-dashboard-icon name="statement" />گزارش حساب</a>
         </div>
         <div class="grid grid-cols-2 gap-2 flex-1">
-            <a href="{{ route('reports.creditors') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="person-money" />لیست قرضدار ها</a>
-            <a href="{{ route('reports.debtors') }}" class="tile flex-col gap-1" style="background:#800080"><x-dashboard-icon name="person-money" />لیست طلبکار ها</a>
+            <a href="{{ route('reports.creditors') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="person-money-green" />لیست قرضدار ها</a>
+            <a href="{{ route('reports.debtors') }}" class="tile flex-col gap-1" style="background:#800080"><x-dashboard-icon name="person-money-purple" />لیست طلبکار ها</a>
         </div>
     </div>
 
@@ -48,8 +50,8 @@
          last in this row's RTL source order rather than first. --}}
     <div class="flex gap-4 md:gap-14 mt-3">
         <div class="grid grid-cols-2 gap-2 flex-1">
-            <a href="{{ route('items.create') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="box" />تعریف اجناس</a>
-            <a href="{{ route('accounts.index') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="id-card" />تعریف حساب ها</a>
+            <a href="{{ route('items.create') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="define-item" />تعریف اجناس</a>
+            <a href="{{ route('accounts.index') }}" class="tile flex-col gap-1" style="background:#1D9D51"><x-dashboard-icon name="define-acct" />تعریف حساب ها</a>
         </div>
         <div class="grid grid-cols-2 gap-2 flex-1">
             <div class="tile flex-col gap-0.5" style="background:#00A500">
