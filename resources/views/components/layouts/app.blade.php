@@ -58,6 +58,7 @@
                     ['label' => 'جستجوی دریافت و پرداخت', 'route' => 'cash-vouchers.index'],
                 ],
                 'معاش، مصارف و عواید' => [
+                    ['label' => 'ثبت معاش', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment']],
                     ['label' => 'ثبت مصارف', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment']],
                     ['label' => 'ثبت عواید', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'receipt']],
                 ],
@@ -95,12 +96,16 @@
             'groups' => [
                 'کاربر' => [
                     ['label' => 'مدیریت کاربر ها', 'route' => 'users.index', 'admin' => true],
-                    ['label' => 'تغییر رمز عبور', 'route' => 'profile.password'],
+                    ['label' => 'تغییر رمز ورود', 'route' => 'profile.password'],
                 ],
-                'متفرقه' => [
-                    ['label' => 'یادداشت و یادآور', 'route' => 'notes.index'],
+                'بک آپ اطلاعات' => [
+                    ['label' => 'تهیه بک آپ از اطلاعات', 'route' => 'backup.download', 'admin' => true],
+                    ['label' => 'بازیابی اطلاعات', 'route' => 'settings.index', 'hash' => 'backup', 'admin' => true],
+                ],
+                'ابزار' => [
+                    ['label' => 'یادداشت', 'route' => 'notes.index'],
+                    ['label' => 'یادآور', 'route' => 'notes.index'],
                     ['label' => 'دفتر تلفن', 'route' => 'persons.phonebook'],
-                    ['label' => 'بک آپ اطلاعات', 'route' => 'settings.index', 'hash' => 'backup', 'admin' => true],
                 ],
             ],
         ],
