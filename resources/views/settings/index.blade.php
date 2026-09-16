@@ -174,6 +174,35 @@
                 <button class="px-3 py-1.5 bg-sky-700 text-white rounded">افزودن</button>
             </form>
         </div>
+
+        {{-- Backup / restore — admin only, since restoring replaces the live database file. --}}
+        @if(auth()->user()?->isAdmin())
+            <div id="backup" class="bg-white rounded-lg shadow p-4 scroll-mt-4 lg:col-span-2">
+                <h3 class="font-bold mb-3">پشتیبان‌گیری و بازیابی اطلاعات</h3>
+                <div class="flex flex-wrap gap-6 items-start">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">یک نسخه از فایل بانک اطلاعاتی جاری را دانلود کنید.</p>
+                        <a href="{{ route('backup.download') }}" class="inline-block px-4 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800">
+                            دانلود پشتیبان
+                        </a>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">
+                            بازیابی اطلاعات، بانک اطلاعاتی جاری را با فایل انتخابی جایگزین می‌کند
+                            (قبل از جایگزینی یک نسخه پشتیبان خودکار نگهداری می‌شود).
+                        </p>
+                        <form action="{{ route('backup.restore') }}" method="POST" enctype="multipart/form-data"
+                            onsubmit="return confirm('اطلاعات فعلی با فایل انتخابی جایگزین می‌شود. ادامه می‌دهید؟')"
+                            class="flex flex-wrap gap-2 items-center text-sm">
+                            @csrf
+                            <input type="file" name="backup" accept=".sqlite,.db" required class="border rounded px-2 py-1.5">
+                            <button class="px-4 py-2 bg-rose-700 text-white rounded-md text-sm hover:bg-rose-800">بازیابی</button>
+                        </form>
+                        @error('backup')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
     @push('scripts')

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountTransferController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\CashVoucherController;
 use App\Http\Controllers\CurrencyExchangeController;
 use App\Http\Controllers\DashboardController;
@@ -39,6 +40,11 @@ Route::middleware('admin')->prefix('users')->name('users.')->group(function () {
     Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
     Route::put('/{user}', [UserController::class, 'update'])->name('update');
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+});
+
+Route::middleware('admin')->prefix('backup')->name('backup.')->group(function () {
+    Route::get('/download', [BackupController::class, 'download'])->name('download');
+    Route::post('/restore', [BackupController::class, 'restore'])->name('restore');
 });
 
 Route::resource('accounts', AccountController::class)->except(['show']);

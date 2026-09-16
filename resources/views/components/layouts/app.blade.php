@@ -2,9 +2,9 @@
     // Mirrors the old app's real ribbon: 7 tabs, each holding a few labeled
     // groups of buttons — compared directly against screenshots of every
     // tab, not guessed. Only links to screens that actually exist in this
-    // app; a few old-app buttons (دفتر تفصیل/معین, بک آپ اطلاعات,
-    // یادداشت/یادآور) don't have a home yet so aren't listed rather
-    // than pointing at a 404.
+    // app; a few old-app buttons (دفتر تفصیل/معین, یادداشت/یادآور)
+    // don't have a home yet so aren't listed rather than pointing at
+    // a 404.
     $ribbonTabs = [
         'home' => [
             'label' => 'اطلاعات اولیه',
@@ -99,6 +99,7 @@
                 ],
                 'متفرقه' => [
                     ['label' => 'دفتر تلفن', 'route' => 'persons.phonebook'],
+                    ['label' => 'بک آپ اطلاعات', 'route' => 'settings.index', 'hash' => 'backup', 'admin' => true],
                 ],
             ],
         ],
