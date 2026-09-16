@@ -92,9 +92,14 @@
         'itemreports' => [
             'label' => 'گزارشات اجناس',
             'groups' => [
-                'گزارشات' => [
+                'گزارشات اجناس' => [
                     ['label' => 'موجودی اجناس', 'route' => 'items.index'],
                     ['label' => 'کاردکس', 'route' => 'reports.kardex'],
+                    ['label' => 'اجناس منفی', 'route' => 'reports.negative-stock'],
+                    ['label' => 'فاکتور های فروش', 'route' => 'sales-invoices.index'],
+                    ['label' => 'فاکتور های خرید', 'route' => 'purchase-invoices.index'],
+                ],
+                'گراف' => [
                     ['label' => 'گراف اجناس پرفروش', 'route' => 'reports.sales-graph'],
                 ],
             ],

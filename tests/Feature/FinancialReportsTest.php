@@ -65,4 +65,26 @@ class FinancialReportsTest extends TestCase
         $response->assertOk();
         $response->assertSee($cashbox->name);
     }
+
+    public function test_negative_stock_report_only_lists_items_sold_below_zero(): void
+    {
+        $unit = Unit::first();
+        $warehouse = Warehouse::first();
+        $currency = Currency::where('is_base', true)->first();
+        $customer = Person::create(['name' => 'Negative Stock Customer', 'is_customer' => true]);
+        $negativeItem = Item::create(['code' => 'ITM-NEG', 'name' => 'Oversold Widget', 'unit_id' => $unit->id, 'cost_price' => 10, 'sale_price' => 20]);
+        $healthyItem = Item::create(['code' => 'ITM-OK', 'name' => 'Never Sold Widget', 'unit_id' => $unit->id, 'cost_price' => 10, 'sale_price' => 20]);
+
+        // Sell 5 units of an item that was never purchased/received -> goes negative.
+        $this->post(route('sales-invoices.store'), [
+            'date' => now()->toDateString(), 'person_id' => $customer->id, 'warehouse_id' => $warehouse->id,
+            'currency_id' => $currency->id, 'fx_rate' => 1,
+            'lines' => [['item_id' => $negativeItem->id, 'quantity' => 5, 'unit_price' => 20, 'discount' => 0]],
+        ])->assertRedirect();
+
+        $response = $this->get(route('reports.negative-stock'));
+        $response->assertOk();
+        $response->assertSee('Oversold Widget');
+        $response->assertDontSee('Never Sold Widget');
+    }
 }

@@ -174,6 +174,17 @@ class ReportController extends Controller
         return view('reports.sales-graph', compact('monthly'));
     }
 
+    /** اجناس منفی — items whose on-hand quantity has gone negative (sold or transferred out more than was ever received), a data-integrity report the old app has and this app never did. */
+    public function negativeStock()
+    {
+        $items = Item::with('unit')->orderBy('name')->get()
+            ->map(fn (Item $item) => ['item' => $item, 'quantity' => $item->quantityOnHand()])
+            ->filter(fn ($row) => $row['quantity'] < 0)
+            ->values();
+
+        return view('reports.negative-stock', compact('items'));
+    }
+
     /** کاردکس — an item's full stock movement history with a running on-hand balance, the old app screen this app never had. */
     public function kardex(Request $request)
     {
