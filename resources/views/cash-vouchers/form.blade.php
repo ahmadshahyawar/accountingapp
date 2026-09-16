@@ -2,6 +2,7 @@
     <form action="{{ route('cash-vouchers.store') }}" method="POST"
         x-data="{
             source: 'cashbox', contraType: 'person',
+            persons: @js($persons->map(fn($p) => ['id' => $p->id, 'name' => $p->name])),
             balances: @js($balances), personId: '{{ old('person_id') }}',
             amount: {{ old('amount', 0) }},
             get previousBalance() { return this.personId && this.balances[this.personId] ? this.balances[this.personId] : 0 },
@@ -19,14 +20,16 @@
             </x-slot:extraButtons>
 
             <div class="legacy-field">
-                <label>حساب (جستجوی حساب ها)</label>
-                <div x-show="contraType === 'person'">
-                    <select name="person_id" x-model="personId" data-searchable>
-                        <option value="">— جستجوی حساب ها —</option>
-                        @foreach($persons as $person)
-                            <option value="{{ $person->id }}" @selected(old('person_id') == $person->id)>{{ $person->name }}</option>
-                        @endforeach
+                <label>حساب</label>
+                <div x-show="contraType === 'person'" style="display:flex;gap:8px">
+                    <select name="person_id" x-ref="personSelect" @change="personId = $event.target.value" data-searchable style="flex:1"
+                        x-effect="personId; $nextTick(() => window.setNativeSelectValue($refs.personSelect, personId))">
+                        <option value="">— انتخاب —</option>
+                        <template x-for="p in persons" :key="p.id">
+                            <option :value="p.id" :selected="p.id == personId" x-text="p.name"></option>
+                        </template>
                     </select>
+                    <x-ui.person-search-modal list="persons" selected="personId" :create-route="route('persons.store')" />
                 </div>
                 <div x-show="contraType === 'account'" x-cloak>
                     <select name="contra_account_id" data-searchable>
