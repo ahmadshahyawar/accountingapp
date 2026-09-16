@@ -199,7 +199,7 @@
                                 <div class="flex gap-1">
                                     @foreach($visibleItems as $item)
                                         <a href="{{ route($item['route'], $item['params'] ?? []) }}"
-                                            class="flex flex-col items-center justify-start text-center text-gray-700 text-[11px] leading-tight hover:bg-gray-50 rounded px-1.5 py-1 w-[72px] transition">
+                                            class="flex flex-col items-center justify-start text-center text-gray-700 text-xs leading-tight hover:bg-gray-50 rounded px-1.5 py-1 w-[80px] transition">
                                             <x-ribbon-icon :name="$item['icon'] ?? 'grid'" class="mb-1" />
                                             <span class="line-clamp-2">{{ $item['label'] }}</span>
                                         </a>

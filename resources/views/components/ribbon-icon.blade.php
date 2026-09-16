@@ -45,7 +45,7 @@
     ];
 @endphp
 @if($hasRealIcon)
-    <img src="{{ asset("images/ribbon/{$name}.png") }}" alt="" {{ $attributes->merge(['class' => 'block mx-auto w-9 h-9 object-contain']) }}>
+    <img src="{{ asset("images/ribbon/{$name}.png") }}" alt="" {{ $attributes->merge(['class' => 'block mx-auto w-11 h-11 object-contain']) }}>
 @else
     <span {{ $attributes->merge(['class' => 'block text-3xl leading-none']) }}>{{ $emoji[$name] ?? $emoji['grid'] }}</span>
 @endif

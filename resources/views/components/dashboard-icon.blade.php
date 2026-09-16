@@ -9,4 +9,4 @@
      background color baked in, and that color exactly matches this app's
      .tile background (sampled earlier), so there's no visible seam. --}}
 <img src="{{ asset('images/dashboard/'.$name.'.png') }}" alt=""
-    {{ $attributes->merge(['class' => 'block max-w-full h-auto']) }}>
+    {{ $attributes->merge(['class' => 'block mx-auto h-24 sm:h-28 w-auto max-w-full object-contain']) }}>
