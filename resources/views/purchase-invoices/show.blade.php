@@ -24,10 +24,14 @@
                     </tr>
                 @endforeach
             </tbody>
-            <tfoot>
-                <tr class="font-bold"><td colspan="4" class="px-3 py-2 text-left">مجموع کل</td><td>{{ number_format($invoice->total_amount, 2) }} {{ $invoice->currency->code }}</td></tr>
-            </tfoot>
         </table>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm mt-4 pt-4 border-t">
+            <div><div class="text-gray-500">تخفیف</div><div class="font-semibold">{{ number_format($invoice->discount, 2) }}</div></div>
+            <div><div class="text-gray-500">مصارف</div><div class="font-semibold">{{ number_format($invoice->expense, 2) }}</div></div>
+            <div><div class="text-gray-500">مبلغ کل</div><div class="font-semibold">{{ number_format($invoice->total_amount, 2) }} {{ $invoice->currency->code }}</div></div>
+            <div><div class="text-gray-500">پرداخت نقدی</div><div class="font-semibold">{{ number_format($invoice->paid_amount, 2) }}</div></div>
+        </div>
 
         @if($invoice->notes)
             <p class="text-sm text-gray-500 mt-4">یادداشت: {{ $invoice->notes }}</p>

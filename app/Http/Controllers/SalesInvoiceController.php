@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Cashbox;
 use App\Models\Currency;
 use App\Models\FiscalYear;
 use App\Models\Item;
+use App\Models\JournalLine;
 use App\Models\Person;
 use App\Models\SalesInvoice;
 use App\Models\StockMove;
@@ -25,12 +27,31 @@ class SalesInvoiceController extends Controller
 
     public function create()
     {
+        $arAccount = Account::where('code', '1200')->first();
+
         return view('sales-invoices.form', [
             'customers' => Person::customers()->orderBy('name')->get(),
             'warehouses' => Warehouse::orderBy('name')->get(),
             'items' => Item::with('unit')->orderBy('name')->get(),
             'currencies' => Currency::orderBy('code')->get(),
+            'nextNumber' => 'INV-'.now()->format('Ymd').'-'.str_pad((string) (SalesInvoice::count() + 1), 4, '0', STR_PAD_LEFT),
+            'balances' => $this->arBalances($arAccount),
         ]);
+    }
+
+    /** Matches the old app's "حساب قبلی" (previous balance) box — every customer's running AR balance, keyed by person_id. */
+    private function arBalances(?Account $account): array
+    {
+        if (! $account) {
+            return [];
+        }
+
+        return JournalLine::where('account_id', $account->id)
+            ->whereNotNull('person_id')
+            ->get()
+            ->groupBy('person_id')
+            ->map(fn ($lines) => (float) $lines->sum('base_debit') - (float) $lines->sum('base_credit'))
+            ->all();
     }
 
     public function store(Request $request, LedgerService $ledger)
@@ -42,6 +63,9 @@ class SalesInvoiceController extends Controller
             'currency_id' => 'required|exists:currencies,id',
             'fx_rate' => 'required|numeric|min:0.000001',
             'notes' => 'nullable|string',
+            'discount' => 'nullable|numeric|min:0',
+            'expense' => 'nullable|numeric|min:0',
+            'paid_amount' => 'nullable|numeric|min:0',
             'lines' => 'required|array|min:1',
             'lines.*.item_id' => 'required|exists:items,id',
             'lines.*.quantity' => 'required|numeric|min:0.0001',
@@ -56,18 +80,19 @@ class SalesInvoiceController extends Controller
         $revenueAccount = Account::where('code', '4100')->firstOrFail();
         $cogsAccount = Account::where('code', '5100')->firstOrFail();
         $inventoryAccount = Account::where('code', '1300')->firstOrFail();
+        $cashbox = Cashbox::first();
 
-        $invoice = DB::transaction(function () use ($data, $fiscalYear, $arAccount, $revenueAccount, $cogsAccount, $inventoryAccount, $ledger) {
+        $invoice = DB::transaction(function () use ($data, $fiscalYear, $arAccount, $revenueAccount, $cogsAccount, $inventoryAccount, $cashbox, $ledger) {
             $number = 'INV-'.now()->format('Ymd').'-'.str_pad((string) (SalesInvoice::count() + 1), 4, '0', STR_PAD_LEFT);
 
-            $totalAmount = 0;
+            $lineTotalSum = 0;
             $totalCost = 0;
             $lineData = [];
 
             foreach ($data['lines'] as $line) {
                 $item = Item::findOrFail($line['item_id']);
                 $lineTotal = ($line['quantity'] * $line['unit_price']) - ($line['discount'] ?? 0);
-                $totalAmount += $lineTotal;
+                $lineTotalSum += $lineTotal;
                 $totalCost += $item->cost_price * $line['quantity'];
 
                 $lineData[] = [
@@ -79,6 +104,11 @@ class SalesInvoiceController extends Controller
                 ];
             }
 
+            $discount = $data['discount'] ?? 0;
+            $expense = $data['expense'] ?? 0;
+            $paidAmount = $data['paid_amount'] ?? 0;
+            $totalAmount = $lineTotalSum - $discount + $expense;
+
             $invoice = SalesInvoice::create([
                 'number' => $number,
                 'date' => $data['date'],
@@ -87,6 +117,9 @@ class SalesInvoiceController extends Controller
                 'currency_id' => $data['currency_id'],
                 'fx_rate' => $data['fx_rate'],
                 'total_amount' => $totalAmount,
+                'discount' => $discount,
+                'expense' => $expense,
+                'paid_amount' => $paidAmount,
                 'notes' => $data['notes'] ?? null,
             ]);
 
@@ -119,6 +152,24 @@ class SalesInvoiceController extends Controller
                     // COGS is always posted in base currency (fx_rate 1) since it's derived from item cost, not the invoice currency.
                 ],
             ]);
+
+            // Matches the old form's "دریافت نقدی" button — an amount the customer pays on the spot,
+            // posted as its own entry against the default cashbox rather than folded into the sale itself.
+            if ($paidAmount > 0 && $cashbox) {
+                $ledger->postEntry([
+                    'fiscal_year_id' => $fiscalYear->id,
+                    'date' => $data['date'],
+                    'reference_type' => 'sales_invoice',
+                    'reference_id' => $invoice->id,
+                    'description' => "دریافت نقدی بابت فاکتور {$number}",
+                    'currency_id' => $data['currency_id'],
+                    'fx_rate' => $data['fx_rate'],
+                    'lines' => [
+                        ['account_id' => $cashbox->account_id, 'debit' => $paidAmount, 'credit' => 0],
+                        ['account_id' => $arAccount->id, 'person_id' => $data['person_id'], 'debit' => 0, 'credit' => $paidAmount],
+                    ],
+                ]);
+            }
 
             if ($totalCost > 0) {
                 $ledger->postEntry([
