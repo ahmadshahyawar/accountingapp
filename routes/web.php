@@ -29,6 +29,9 @@ Route::middleware(['auth', 'restrict.destroy'])->group(function () {
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+Route::get('/profile/password', [AuthController::class, 'showChangePassword'])->name('profile.password');
+Route::put('/profile/password', [AuthController::class, 'updatePassword'])->name('profile.password.update');
+
 Route::middleware('admin')->prefix('users')->name('users.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
     Route::get('/create', [UserController::class, 'create'])->name('create');

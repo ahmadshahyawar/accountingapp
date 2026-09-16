@@ -3,8 +3,8 @@
     // groups of buttons — compared directly against screenshots of every
     // tab, not guessed. Only links to screens that actually exist in this
     // app; a few old-app buttons (دفتر تفصیل/معین, بک آپ اطلاعات,
-    // یادداشت/یادآور/دفتر تلفن, تغییر رمز عبور) don't have a home yet so
-    // aren't listed rather than pointing at a 404.
+    // یادداشت/یادآور/دفتر تلفن) don't have a home yet so aren't listed
+    // rather than pointing at a 404.
     $ribbonTabs = [
         'home' => [
             'label' => 'اطلاعات اولیه',
@@ -95,6 +95,7 @@
             'groups' => [
                 'کاربر' => [
                     ['label' => 'مدیریت کاربر ها', 'route' => 'users.index', 'admin' => true],
+                    ['label' => 'تغییر رمز عبور', 'route' => 'profile.password'],
                 ],
             ],
         ],
