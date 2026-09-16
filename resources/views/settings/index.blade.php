@@ -3,6 +3,41 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
+        {{-- Company info (مشخصات شرکت) — printed on invoice letterheads in the old app. --}}
+        <div id="company" class="bg-white rounded-lg shadow p-4 scroll-mt-4 lg:col-span-2">
+            <h3 class="font-bold mb-3">مشخصات شرکت</h3>
+            <form action="{{ route('settings.company.update') }}" method="POST" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                @csrf @method('PUT')
+                <div class="sm:col-span-2">
+                    <label class="block text-xs text-gray-500 mb-1">نام شرکت</label>
+                    <input type="text" name="name" value="{{ old('name', $company->name) }}" class="w-full border rounded-md px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">تلفن</label>
+                    <input type="text" name="phone" value="{{ old('phone', $company->phone) }}" class="w-full border rounded-md px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">موبایل</label>
+                    <input type="text" name="mobile" value="{{ old('mobile', $company->mobile) }}" class="w-full border rounded-md px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">ایمیل</label>
+                    <input type="email" name="email" value="{{ old('email', $company->email) }}" class="w-full border rounded-md px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-500 mb-1">وبسایت</label>
+                    <input type="text" name="website" value="{{ old('website', $company->website) }}" class="w-full border rounded-md px-3 py-2">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs text-gray-500 mb-1">آدرس</label>
+                    <textarea name="address" rows="2" class="w-full border rounded-md px-3 py-2">{{ old('address', $company->address) }}</textarea>
+                </div>
+                <div class="sm:col-span-2">
+                    <button class="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-sky-800">ذخیره</button>
+                </div>
+            </form>
+        </div>
+
         {{-- Fiscal years --}}
         <div id="fiscal-years" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">سال های مالی</h3>

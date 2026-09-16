@@ -106,6 +106,7 @@ Route::prefix('settings')->name('settings.')->group(function () {
     Route::post('/fiscal-years/{fiscalYear}/activate', [SettingsController::class, 'activateFiscalYear'])->name('fiscal-years.activate');
     Route::post('/cashboxes', [SettingsController::class, 'storeCashbox'])->name('cashboxes.store');
     Route::post('/bank-accounts', [SettingsController::class, 'storeBankAccount'])->name('bank-accounts.store');
+    Route::put('/company', [SettingsController::class, 'updateCompany'])->name('company.update');
 });
 
 }); // end auth + restrict.destroy group

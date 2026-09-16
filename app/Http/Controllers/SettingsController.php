@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\BankAccount;
 use App\Models\Cashbox;
+use App\Models\CompanySetting;
 use App\Models\Currency;
 use App\Models\ExchangeRate;
 use App\Models\FiscalYear;
@@ -26,7 +27,25 @@ class SettingsController extends Controller
             'bankAccounts' => BankAccount::with(['currency', 'account'])->orderBy('name')->get(),
             'moneyAccounts' => Account::where('is_group', false)->orderBy('code')->get(),
             'todayShamsi' => Jalalian::now()->format('Y-m-d'),
+            'company' => CompanySetting::current(),
         ]);
+    }
+
+    // --- Company info (مشخصات شرکت) ---
+    public function updateCompany(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'mobile' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'website' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:500',
+        ]);
+
+        CompanySetting::current()->update($data);
+
+        return back()->with('success', 'مشخصات شرکت ذخیره شد.');
     }
 
     // --- Units ---

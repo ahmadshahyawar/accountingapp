@@ -109,6 +109,7 @@
             'groups' => [
                 'تنظیمات' => [
                     ['label' => 'تنظیمات عمومی', 'route' => 'settings.index'],
+                    ['label' => 'مشخصات شرکت', 'route' => 'settings.index', 'hash' => 'company'],
                 ],
             ],
         ],
