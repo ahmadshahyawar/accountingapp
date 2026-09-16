@@ -36,6 +36,7 @@ class SalesInvoiceController extends Controller
             'currencies' => Currency::orderBy('code')->get(),
             'nextNumber' => 'INV-'.now()->format('Ymd').'-'.str_pad((string) (SalesInvoice::count() + 1), 4, '0', STR_PAD_LEFT),
             'balances' => $this->arBalances($arAccount),
+            'proformas' => \App\Models\ProformaInvoice::latest('date')->limit(30)->get(),
         ]);
     }
 
