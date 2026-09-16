@@ -26,3 +26,26 @@ body {
 [x-cloak] {
     display: none !important;
 }
+
+/* Dashboard quick-access tiles — mirrors the original app's colored,
+   icon-and-label module tiles: white bold centered text, generous padding,
+   a subtle lift on hover, consistent height regardless of how many words
+   the label has. */
+.tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+    padding: 1.5rem 1rem;
+    min-height: 6.5rem;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.tile:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
