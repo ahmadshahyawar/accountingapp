@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Windows;
@@ -32,6 +33,7 @@ public partial class MainWindow : Window
             StatusText.Text = "در حال یافتن مسیر برنامه...";
             var appRoot = FindLaravelRoot();
             var phpExe = FindPhpExecutable(appRoot);
+            EnsureBundledPhpIniIsPortable(phpExe);
 
             // The install folder is read-only once packaged (Program Files-style),
             // so the real, writable database always lives per-user — never inside
@@ -118,6 +120,62 @@ public partial class MainWindow : Window
     {
         var bundled = Path.Combine(AppContext.BaseDirectory, "php", "php.exe");
         return File.Exists(bundled) ? bundled : "php";
+    }
+
+    /// <summary>
+    /// Rewrites the bundled php.ini's "extension_dir" line to an absolute
+    /// path, in place, every launch. This has to live in the ini file
+    /// itself, not a command-line -d flag: "php artisan serve" doesn't run
+    /// requests in the process it was launched as — Laravel's ServeCommand
+    /// re-spawns its own inner worker via `[php_binary(), '-S', ...]`
+    /// (see vendor/laravel/framework/.../ServeCommand.php),
+    /// which carries over none of this process's command-line arguments,
+    /// only the environment and whatever php.ini that re-spawned php.exe
+    /// finds next to itself. A -d override here would fix the one-shot
+    /// artisan calls (migrate/seed) but silently not the actual request
+    /// handler — confirmed by testing, not by inspection: migrate succeeded
+    /// with a -d-flags-only fix, then every page request 500'd with
+    /// "Call to undefined function ...mb_split()" once the re-spawned
+    /// worker actually served a request.
+    ///
+    /// php.ini's own "extension_dir = ext" (set at publish time, see
+    /// publish.ps1) is ALSO not enough on its own: it's relative to the
+    /// process's current working directory, not to php.ini's own folder,
+    /// so it silently resolves to nothing once WorkingDirectory is set to
+    /// the Laravel app root instead of the php folder. Rewriting it here to
+    /// an absolute path — recomputed from AppContext.BaseDirectory on every
+    /// launch, not baked in once at publish time — means it keeps working
+    /// even if the whole dist folder is moved, zipped, or reinstalled
+    /// somewhere else after publishing.
+    /// </summary>
+    private static void EnsureBundledPhpIniIsPortable(string phpExe)
+    {
+        var phpDir = Path.GetDirectoryName(phpExe);
+        if (phpDir == null || phpExe == "php") return; // system PATH php (dev) — nothing to fix
+
+        var iniPath = Path.Combine(phpDir, "php.ini");
+        if (! File.Exists(iniPath)) return;
+
+        var absoluteExtDir = Path.Combine(phpDir, "ext");
+        var lines = File.ReadAllLines(iniPath);
+        var desired = $"extension_dir = \"{absoluteExtDir}\"";
+        var rewritten = false;
+
+        for (var i = 0; i < lines.Length; i++)
+        {
+            if (lines[i].TrimStart().StartsWith("extension_dir"))
+            {
+                if (lines[i] == desired) return; // already correct — nothing to do
+                lines[i] = desired;
+                rewritten = true;
+                break;
+            }
+        }
+
+        if (rewritten)
+        {
+            File.WriteAllLines(iniPath, lines);
+        }
     }
 
     private static int FindFreeTcpPort()

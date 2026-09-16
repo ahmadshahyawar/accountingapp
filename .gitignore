@@ -27,3 +27,5 @@ Thumbs.db
 # WPF desktop shell build output
 /shell/bin
 /shell/obj
+/shell/dist
+/shell/.publish-cache

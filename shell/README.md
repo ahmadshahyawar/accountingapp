@@ -16,6 +16,23 @@ dotnet run --project shell
 It walks up from its own folder looking for `artisan` to find the Laravel
 root, so running from `shell/bin/Debug/...` during development works as-is.
 
+## Build the real standalone installer-ready folder
+
+```
+.\shell\publish.ps1 -PhpZip <path to a downloaded *-nts-Win32-*-x64.zip>
+```
+
+(The zip is only needed the first time — it's cached under
+`shell/.publish-cache/` after that, so re-running the script with no
+`-PhpZip` reuses it.) Produces `shell/dist/` — `UnicAccountingShell.exe`, a
+bundled PHP, and a production copy of the app — a folder a user can copy
+anywhere and double-click, with **nothing preinstalled**: no PHP, no
+Composer, no Node, nothing but the WebView2 Runtime. Verified end-to-end:
+cleared `%LOCALAPPDATA%`, ran the built `dist\UnicAccountingShell.exe`
+directly, it reached the login page, and a curl login against the
+dynamically-chosen port confirmed the seeded admin account authenticates
+and reaches the real dashboard.
+
 ## How it works
 
 - `MainWindow.xaml.cs` picks a free TCP port, starts
@@ -46,26 +63,54 @@ root, so running from `shell/bin/Debug/...` during development works as-is.
   overlay opts into RTL for its own Persian text.
 - Closing the window kills the PHP server process tree.
 
-## Not done yet (packaging)
+## Bundled-PHP pitfalls found by actually running the published build
 
-This still runs against a `php` on PATH — it is not yet a self-contained
-installer a user can double-click with nothing preinstalled. `FindPhpExecutable()`
-already prefers a bundled `shell/php/php.exe` next to the exe if one exists,
-so what's left:
+Three real bugs surfaced only by running `dist\UnicAccountingShell.exe`
+end-to-end after a clean `%LOCALAPPDATA%`, not by reading the code — each
+is now guarded against, and worth knowing about if this ever needs
+touching again:
 
-1. Bundle a portable PHP build (e.g. from windows.php.net) into
-   `shell/php/` at publish time, or switch to a compiled runtime like
-   static-php-cli — nothing in the shell code needs to change for this.
-2. Copy the Laravel app (minus `node_modules`, `tests`, `.git`) into
-   `shell/app_root/` alongside it — `FindLaravelRoot()` already checks
-   there first. Run `composer install --no-dev --optimize-autoloader`
-   inside that copy so `vendor/` ships too (a portable install has no
-   Composer available to do this at runtime).
-3. Don't run `php artisan config:cache` when assembling that bundle — a
-   cached config bakes in whatever `.env` values were present at cache time,
-   which would silently override the `DB_DATABASE` environment variable this
-   shell sets at runtime and point every install back at one shared/baked-in
-   database path.
-4. `dotnet publish -c Release -r win-x64 --self-contained` and wire up an
-   update mechanism, mirroring `HSG-desktop/publish-shell-update.ps1`
-   (referenced in the original plan) once that pattern is available to copy.
+1. **php.ini's `extension_dir = "ext"` is relative to the process's
+   *working directory*, not to php.ini's own folder** — despite living
+   right next to php.exe. Since every artisan call runs with
+   `WorkingDirectory` set to the Laravel app root (not the php folder),
+   that relative path silently resolved to nothing and every extension
+   failed to load, no error, just a missing module. A `-d extension_dir=`
+   command-line override does *not* fix this either: `php artisan serve`
+   re-spawns its own inner worker via Laravel's `ServeCommand` using just
+   `[php_binary(), '-S', ...]` (see
+   `vendor/laravel/framework/.../ServeCommand.php`), which carries over
+   none of the original process's command-line arguments — only the
+   environment and whatever php.ini that re-spawned php.exe finds next to
+   itself. So the fix has to live in the ini file: `MainWindow.xaml.cs`'s
+   `EnsureBundledPhpIniIsPortable()` rewrites `extension_dir` to an
+   absolute path, recomputed on every launch (not baked in once at publish
+   time), so it keeps working even if the whole `dist` folder is moved or
+   reinstalled elsewhere after publishing.
+2. **`php.ini-production`'s CRLF line endings silently broke the regex
+   that uncomments each `extension=` line** — a `(?m)^;extension=curl$`
+   pattern doesn't match right before `\r\n` in .NET regex (only right
+   before the `\n`), so PowerShell reported no error while zero extensions
+   ever got enabled. `publish.ps1` now uses `\r?$` and explicitly verifies
+   every required extension actually got uncommented, throwing if not, so
+   this can't silently ship broken again.
+3. **`storage/framework/{views,sessions,cache/data}` and
+   `bootstrap/cache` need to physically exist**, not just be writable —
+   they're `.gitignore`'d runtime state with nothing to copy, but Laravel
+   doesn't create missing parents for them; the app 500'd with "Please
+   provide a valid cache path" the moment the first Blade view tried to
+   compile. `publish.ps1` creates these directories explicitly after
+   copying the app.
+
+Also worth remembering: never run `php artisan config:cache` when
+assembling this bundle — a cached config bakes in whatever `.env` values
+were present at cache time, which would silently override the
+`DB_DATABASE` environment variable the shell sets at runtime and point
+every install back at one shared/baked-in database path.
+
+## Not done yet
+
+- **Update mechanism** — mirroring `HSG-desktop/publish-shell-update.ps1`
+  (referenced in the original plan) once that pattern is available to copy.
+- **Installer** — `dist/` is a copy-and-run folder today, not an `.msi`/`.exe`
+  installer with Start Menu shortcuts, uninstall support, etc.
