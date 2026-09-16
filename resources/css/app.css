@@ -15,8 +15,11 @@
    (the dropdown list is only positioned/hidden correctly once this loads). */
 @import 'choices.js/public/assets/styles/choices.css';
 
+/* Tahoma first — the old app's actual UI font (classic WinForms default for
+   Persian/Dari text). Vazirmatn stays bundled as the offline fallback for
+   machines/browsers without Tahoma (non-Windows), so text is never unstyled. */
 @theme {
-    --font-sans: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: Tahoma, 'Vazirmatn', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
@@ -25,7 +28,7 @@ html {
 }
 
 body {
-    font-family: 'Vazirmatn', sans-serif;
+    font-family: Tahoma, 'Vazirmatn', sans-serif;
 }
 
 [x-cloak] {
@@ -194,6 +197,61 @@ table.grid-selectable tbody tr.is-selected {
 
 .choices__list--dropdown .choices__item--selectable.is-highlighted {
     background: #eaf4fd;
+}
+
+/* Old-app-style form field: label above a plain square-bordered input, not
+   the rounded shadowed modern-SaaS look. Used by x-ui.field across every
+   create/edit screen in the app, so this one change reaches all of them. */
+.legacy-field {
+    margin-bottom: 14px;
+}
+
+.legacy-field label {
+    display: block;
+    font-size: 13px;
+    color: #384451;
+    margin-bottom: 3px;
+}
+
+.legacy-field input[type='text'],
+.legacy-field input[type='number'],
+.legacy-field input[type='date'],
+.legacy-field input[type='datetime-local'],
+.legacy-field input[type='email'],
+.legacy-field input[type='password'],
+.legacy-field select,
+.legacy-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #b9bfc6;
+    border-radius: 3px;
+    background: #fff;
+    padding: 6px 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #1c2733;
+}
+
+.legacy-field input:focus,
+.legacy-field select:focus,
+.legacy-field textarea:focus {
+    outline: none;
+    border-color: #7fb3e0;
+}
+
+.legacy-field input[type='checkbox'] {
+    accent-color: #2f8fd0;
+}
+
+/* Old-app-style form window: centered title + thin rule (matches
+   x-ui.legacy-list's header) wrapping a field grid, with the same 3D
+   button toolbar at the bottom (انصراف/ذخیره/ذخیره و جدید). */
+.legacy-form-title {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1c2733;
+    padding: 10px 0 8px;
 }
 
 /* Old-app-style list screen (تعریف اجناس/انبار‌ها/اشخاص/... pattern): centered

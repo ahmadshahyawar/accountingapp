@@ -19,11 +19,12 @@ class AccountController extends Controller
         return view('accounts.index', compact('accounts', 'type'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $parents = Account::where('is_group', true)->orderBy('code')->get();
+        $account = new Account(['type' => $request->get('type')]);
 
-        return view('accounts.form', ['account' => new Account, 'parents' => $parents]);
+        return view('accounts.form', ['account' => $account, 'parents' => $parents]);
     }
 
     public function store(Request $request)

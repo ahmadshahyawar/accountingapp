@@ -21,9 +21,11 @@ class PersonController extends Controller
         return view('persons.index', compact('persons', 'filter'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('persons.form', ['person' => new Person]);
+        $person = new Person(['is_employee' => $request->get('type') === 'employee']);
+
+        return view('persons.form', ['person' => $person]);
     }
 
     /** دفتر تلفن — every person with a phone or mobile number on file, old-app screen this app never had. */

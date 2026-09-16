@@ -1,61 +1,62 @@
 <x-layouts.app title="جنس">
-    <x-ui.page-header :title="$item->exists ? 'ویرایش جنس' : 'جنس جدید'" :back-route="route('items.index')" />
-
     <form action="{{ $item->exists ? route('items.update', $item) : route('items.store') }}" method="POST"
-        enctype="multipart/form-data" class="bg-white rounded border border-gray-300 p-6 max-w-3xl grid grid-cols-1 md:grid-cols-3 gap-6"
+        enctype="multipart/form-data"
         x-data="{ removePhoto: false, previewUrl: @js($item->photoUrl()) }">
         @csrf
         @if($item->exists) @method('PUT') @endif
 
-        {{-- Fields — right side, matching the old app's تعریف جنس layout --}}
-        <div class="md:col-span-2 md:order-2">
-            <x-ui.field label="کد جنس" name="code" :value="$item->code" required />
-            <x-ui.field label="نام جنس" name="name" :value="$item->name" required />
+        <x-ui.legacy-form :title="$item->exists ? 'ویرایش جنس' : 'تعریف جنس'" :back-route="route('items.index')">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {{-- Fields — right side, matching the old app's تعریف جنس layout --}}
+                <div class="md:col-span-2 md:order-2">
+                    <x-ui.field label="کد جنس" name="code" :value="$item->code" required />
+                    <x-ui.field label="نام جنس" name="name" :value="$item->name" required />
 
-            <x-ui.field label="واحد" name="unit_id" type="select" :value="$item->unit_id" required
-                :options="$units->pluck('name', 'id')->all()" />
+                    <x-ui.field label="واحد" name="unit_id" type="select" :value="$item->unit_id" required
+                        :options="$units->pluck('name', 'id')->all()" />
 
-            <x-ui.field label="گدام پیش‌فرض" name="warehouse_id" type="select" :value="$item->warehouse_id"
-                :options="['' => '— ندارد —'] + $warehouses->pluck('name', 'id')->all()" />
+                    <x-ui.field label="گدام پیش‌فرض" name="warehouse_id" type="select" :value="$item->warehouse_id"
+                        :options="['' => '— ندارد —'] + $warehouses->pluck('name', 'id')->all()" />
 
-            <x-ui.field label="قیمت خرید" name="cost_price" type="number" step="0.01" :value="$item->cost_price" required />
-            <x-ui.field label="قیمت فروش" name="sale_price" type="number" step="0.01" :value="$item->sale_price" required />
-            <x-ui.field label="حد اقل موجودی (هشدار)" name="reorder_level" type="number" step="0.01" :value="$item->reorder_level" />
+                    <x-ui.field label="قیمت خرید" name="cost_price" type="number" step="0.01" :value="$item->cost_price" required />
+                    <x-ui.field label="قیمت فروش" name="sale_price" type="number" step="0.01" :value="$item->sale_price" required />
+                    <x-ui.field label="حد اقل موجودی (هشدار)" name="reorder_level" type="number" step="0.01" :value="$item->reorder_level" />
+                </div>
 
-            <button type="submit" class="px-6 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800">ذخیره</button>
-        </div>
+                {{-- Barcode + photo — left side, matching the old app's باکرد / عکس panels --}}
+                <div class="md:order-1 space-y-6">
+                    @if($item->exists)
+                        <div>
+                            <div style="font-size:13px;color:#384451;margin-bottom:3px">بارکد:</div>
+                            <div style="border:1px solid #b9bfc6;border-radius:3px;padding:12px;display:flex;flex-direction:column;align-items:center;background:#fff">
+                                <svg id="item-barcode" data-code="{{ $item->code }}"></svg>
+                            </div>
+                            <button type="button" onclick="printItemBarcode()" class="btn3d" style="width:100%;justify-content:center;margin-top:8px">
+                                <svg class="ic ic-gray" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 8V3h10v5M5 14h10v3H5v-3zM3 8h14v5h-3M3 8v4h2"/></svg>
+                                چاپ بارکد
+                            </button>
+                        </div>
+                    @endif
 
-        {{-- Barcode + photo — left side, matching the old app's باکرد / عکس panels --}}
-        <div class="md:order-1 space-y-6">
-            @if($item->exists)
-                <div>
-                    <div class="text-sm font-medium text-gray-700 mb-1">بارکد:</div>
-                    <div class="border rounded-md p-3 flex flex-col items-center bg-white">
-                        <svg id="item-barcode" data-code="{{ $item->code }}"></svg>
+                    <div>
+                        <div style="font-size:13px;color:#384451;margin-bottom:3px">عکس:</div>
+                        <div style="border:1px solid #b9bfc6;border-radius:3px;height:160px;display:flex;align-items:center;justify-content:center;background:#fafbfc;overflow:hidden">
+                            <img x-show="previewUrl && !removePhoto" :src="previewUrl" class="max-h-full max-w-full object-contain">
+                            <span x-show="!previewUrl || removePhoto" class="text-gray-400 text-sm">...</span>
+                        </div>
+                        <input type="file" name="photo" accept="image/*"
+                            @change="removePhoto = false; previewUrl = URL.createObjectURL($event.target.files[0])"
+                            class="mt-2 w-full text-sm">
+                        @if($item->photo_path)
+                            <label class="flex items-center gap-2 mt-2 text-sm text-red-600">
+                                <input type="checkbox" name="remove_photo" value="1" x-model="removePhoto">
+                                حذف عکس
+                            </label>
+                        @endif
                     </div>
-                    <button type="button" onclick="printItemBarcode()" class="mt-2 w-full px-4 py-2 bg-gray-100 border rounded-md text-sm hover:bg-gray-200">
-                        چاپ بارکد
-                    </button>
                 </div>
-            @endif
-
-            <div>
-                <div class="text-sm font-medium text-gray-700 mb-1">عکس:</div>
-                <div class="border rounded-md h-40 flex items-center justify-center bg-gray-50 overflow-hidden">
-                    <img x-show="previewUrl && !removePhoto" :src="previewUrl" class="max-h-full max-w-full object-contain">
-                    <span x-show="!previewUrl || removePhoto" class="text-gray-400 text-sm">...</span>
-                </div>
-                <input type="file" name="photo" accept="image/*"
-                    @change="removePhoto = false; previewUrl = URL.createObjectURL($event.target.files[0])"
-                    class="mt-2 w-full text-sm">
-                @if($item->photo_path)
-                    <label class="flex items-center gap-2 mt-2 text-sm text-red-600">
-                        <input type="checkbox" name="remove_photo" value="1" x-model="removePhoto" class="rounded border-gray-300 text-red-600">
-                        حذف عکس
-                    </label>
-                @endif
             </div>
-        </div>
+        </x-ui.legacy-form>
     </form>
 
     @if($item->exists)
