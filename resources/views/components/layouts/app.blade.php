@@ -15,21 +15,21 @@
                     ['label' => 'اول دوره اجناس', 'route' => 'opening-balances.index'],
                 ],
                 'سال مالی' => [
-                    ['label' => 'سال مالی', 'route' => 'settings.index'],
+                    ['label' => 'سال مالی', 'route' => 'settings.index', 'hash' => 'fiscal-years'],
                 ],
                 'ارز' => [
-                    ['label' => 'نرخ ارز', 'route' => 'settings.index'],
-                    ['label' => 'ارز ها', 'route' => 'settings.index'],
+                    ['label' => 'نرخ ارز', 'route' => 'settings.index', 'hash' => 'exchange-rates'],
+                    ['label' => 'ارز ها', 'route' => 'settings.index', 'hash' => 'currencies'],
                 ],
                 'تعریف حساب ها' => [
-                    ['label' => 'بانک ها', 'route' => 'settings.index'],
-                    ['label' => 'صندوق', 'route' => 'settings.index'],
+                    ['label' => 'بانک ها', 'route' => 'settings.index', 'hash' => 'bank-accounts'],
+                    ['label' => 'صندوق', 'route' => 'settings.index', 'hash' => 'cashboxes'],
                     ['label' => 'اشخاص', 'route' => 'persons.index'],
                     ['label' => 'حساب ها', 'route' => 'accounts.index'],
                 ],
                 'تعریف انبار ها و اجناس' => [
-                    ['label' => 'واحد ها', 'route' => 'settings.index'],
-                    ['label' => 'انبار ها', 'route' => 'settings.index'],
+                    ['label' => 'واحد ها', 'route' => 'settings.index', 'hash' => 'units'],
+                    ['label' => 'انبار ها', 'route' => 'settings.index', 'hash' => 'warehouses'],
                     ['label' => 'اجناس', 'route' => 'items.index'],
                 ],
             ],
@@ -167,7 +167,7 @@
                             <div class="flex flex-col items-center shrink-0">
                                 <div class="flex gap-1.5">
                                     @foreach($visibleItems as $item)
-                                        <a href="{{ route($item['route'], $item['params'] ?? []) }}"
+                                        <a href="{{ route($item['route'], $item['params'] ?? []) }}{{ isset($item['hash']) ? '#'.$item['hash'] : '' }}"
                                             class="flex flex-col items-center justify-center text-center text-white text-xs bg-slate-700 hover:bg-sky-700 rounded px-2 py-1.5 w-20 h-14 transition">
                                             {{ $item['label'] }}
                                         </a>

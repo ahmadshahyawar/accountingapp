@@ -4,7 +4,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {{-- Fiscal years --}}
-        <div class="bg-white rounded-lg shadow p-4">
+        <div id="fiscal-years" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">سال های مالی</h3>
             <table class="w-full text-sm text-right mb-3">
                 <thead class="text-gray-500"><tr><th class="py-1">نام</th><th>شروع</th><th>ختم</th><th>وضعیت</th><th></th></tr></thead>
@@ -37,8 +37,8 @@
         </div>
 
         {{-- Currencies --}}
-        <div class="bg-white rounded-lg shadow p-4">
-            <h3 class="font-bold mb-3">واحد های پول و نرخ ارز</h3>
+        <div id="currencies" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
+            <h3 class="font-bold mb-3" id="exchange-rates">واحد های پول و نرخ ارز</h3>
             <table class="w-full text-sm text-right mb-3">
                 <thead class="text-gray-500"><tr><th class="py-1">کد</th><th>نام</th><th>پایه</th><th>آخرین نرخ</th></tr></thead>
                 <tbody class="divide-y">
@@ -76,7 +76,7 @@
         </div>
 
         {{-- Units --}}
-        <div class="bg-white rounded-lg shadow p-4">
+        <div id="units" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">واحد های اندازه‌گیری</h3>
             <ul class="text-sm mb-3 divide-y">
                 @foreach($units as $unit)
@@ -98,7 +98,7 @@
         </div>
 
         {{-- Warehouses --}}
-        <div class="bg-white rounded-lg shadow p-4">
+        <div id="warehouses" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">گدام ها</h3>
             <ul class="text-sm mb-3 divide-y">
                 @foreach($warehouses as $warehouse)
@@ -120,7 +120,7 @@
         </div>
 
         {{-- Cashboxes --}}
-        <div class="bg-white rounded-lg shadow p-4">
+        <div id="cashboxes" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">صندوق های نقدی</h3>
             <ul class="text-sm mb-3 divide-y">
                 @foreach($cashboxes as $cashbox)
@@ -147,7 +147,7 @@
         </div>
 
         {{-- Bank accounts --}}
-        <div class="bg-white rounded-lg shadow p-4">
+        <div id="bank-accounts" class="bg-white rounded-lg shadow p-4 scroll-mt-4">
             <h3 class="font-bold mb-3">حساب های بانکی</h3>
             <ul class="text-sm mb-3 divide-y">
                 @foreach($bankAccounts as $bank)
@@ -175,4 +175,17 @@
             </form>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        // The ribbon's #section links land before Alpine's x-cloak reveals the active
+        // tab panel, so the browser's initial scroll-to-anchor lands short — redo it
+        // once Alpine has finished and the real layout height is known.
+        document.addEventListener('alpine:initialized', () => {
+            if (location.hash) {
+                document.querySelector(location.hash)?.scrollIntoView();
+            }
+        });
+    </script>
+    @endpush
 </x-layouts.app>
