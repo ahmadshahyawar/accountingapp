@@ -161,27 +161,26 @@
 <body class="text-gray-900 antialiased" style="background:#E1E1E1">
     <div class="min-h-screen flex flex-col">
         <div x-data="{ activeTab: '{{ $defaultTab }}' }" class="bg-white border-b border-gray-300">
-            {{-- Title bar --}}
-            <div class="px-4 py-1.5 flex items-center justify-between text-sm border-b border-gray-200">
-                <a href="{{ route('dashboard') }}" class="font-bold text-sky-900 hover:underline">سیستم حسابداری یونیک</a>
-                <div class="flex items-center gap-3 text-gray-600">
+            {{-- Title bar + tab strip merged into one row — matches the real app, where the
+                 window caption and the ribbon's tab captions sit in the same title-bar row. --}}
+            <div class="px-4 flex items-center gap-4 text-sm border-b border-gray-200 overflow-x-auto">
+                <a href="{{ route('dashboard') }}" class="font-bold text-sky-900 hover:underline whitespace-nowrap py-2">سیستم حسابداری یونیک</a>
+                <div class="flex gap-1 flex-1">
+                    @foreach($ribbonTabs as $key => $tab)
+                        <button type="button" @click="activeTab = '{{ $key }}'"
+                            class="px-4 py-2 border-b-2 whitespace-nowrap transition"
+                            :class="activeTab === '{{ $key }}' ? 'border-[#0072C6] text-[#0072C6] font-semibold' : 'border-transparent text-gray-600 hover:text-[#0072C6]'">
+                            {{ $tab['label'] }}
+                        </button>
+                    @endforeach
+                </div>
+                <div class="flex items-center gap-3 text-gray-600 whitespace-nowrap">
                     <span>کاربر: {{ auth()->user()?->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="hover:underline">خروج</button>
                     </form>
                 </div>
-            </div>
-
-            {{-- Ribbon tab strip --}}
-            <div class="px-4 flex gap-1 text-sm overflow-x-auto">
-                @foreach($ribbonTabs as $key => $tab)
-                    <button type="button" @click="activeTab = '{{ $key }}'"
-                        class="px-4 py-2 border-b-2 whitespace-nowrap transition"
-                        :class="activeTab === '{{ $key }}' ? 'border-[#0072C6] text-[#0072C6] font-semibold' : 'border-transparent text-gray-600 hover:text-[#0072C6]'">
-                        {{ $tab['label'] }}
-                    </button>
-                @endforeach
             </div>
 
             {{-- Ribbon group panels — one per tab, holding its labeled icon-button groups --}}
