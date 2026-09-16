@@ -5,7 +5,16 @@
         @csrf
         @if($person->exists) @method('PUT') @endif
 
+        @if($person->exists)
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">کد</label>
+                <input type="text" value="{{ $person->code() }}" disabled
+                    class="w-full rounded-md border-gray-300 bg-gray-100 text-gray-500 shadow-sm text-sm py-2 px-3 border">
+            </div>
+        @endif
+
         <x-ui.field label="نام" name="name" :value="$person->name" required />
+        <x-ui.field label="موبایل" name="mobile" :value="$person->mobile" />
         <x-ui.field label="تلفن" name="phone" :value="$person->phone" />
         <x-ui.field label="آدرس" name="address" :value="$person->address" />
 

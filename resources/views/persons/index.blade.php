@@ -16,7 +16,9 @@
         <table class="w-full text-sm text-right">
             <thead class="bg-gray-50 text-gray-600">
                 <tr>
+                    <th class="px-4 py-2">کد</th>
                     <th class="px-4 py-2">نام</th>
+                    <th class="px-4 py-2">موبایل</th>
                     <th class="px-4 py-2">تلفن</th>
                     <th class="px-4 py-2">آدرس</th>
                     <th class="px-4 py-2">نوعیت</th>
@@ -30,7 +32,9 @@
                         $balance = $person->journalLines()->sum('base_debit') - $person->journalLines()->sum('base_credit');
                     @endphp
                     <tr>
+                        <td class="px-4 py-2 text-gray-400">{{ $person->code() }}</td>
                         <td class="px-4 py-2">{{ $person->name }}</td>
+                        <td class="px-4 py-2 text-gray-500">{{ $person->mobile }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $person->phone }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $person->address }}</td>
                         <td class="px-4 py-2 text-gray-500 text-xs">
