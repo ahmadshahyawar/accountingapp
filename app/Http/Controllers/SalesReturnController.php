@@ -25,12 +25,31 @@ class SalesReturnController extends Controller
 
     public function create()
     {
+        $arAccount = Account::where('code', '1200')->first();
+
         return view('sales-returns.form', [
             'customers' => Person::customers()->orderBy('name')->get(),
             'warehouses' => Warehouse::orderBy('name')->get(),
             'items' => Item::with('unit')->orderBy('name')->get(),
             'currencies' => Currency::orderBy('code')->get(),
+            'nextNumber' => 'SRET-'.now()->format('Ymd').'-'.str_pad((string) (SalesReturn::count() + 1), 4, '0', STR_PAD_LEFT),
+            'balances' => $this->arBalances($arAccount),
         ]);
+    }
+
+    /** Every customer's running AR balance, keyed by person_id — matches the "حساب قبلی" box. */
+    private function arBalances(?Account $account): array
+    {
+        if (! $account) {
+            return [];
+        }
+
+        return \App\Models\JournalLine::where('account_id', $account->id)
+            ->whereNotNull('person_id')
+            ->get()
+            ->groupBy('person_id')
+            ->map(fn ($lines) => (float) $lines->sum('base_debit') - (float) $lines->sum('base_credit'))
+            ->all();
     }
 
     public function store(Request $request, LedgerService $ledger)
@@ -42,6 +61,8 @@ class SalesReturnController extends Controller
             'currency_id' => 'required|exists:currencies,id',
             'fx_rate' => 'required|numeric|min:0.000001',
             'notes' => 'nullable|string',
+            'discount' => 'nullable|numeric|min:0',
+            'paid_amount' => 'nullable|numeric|min:0',
             'lines' => 'required|array|min:1',
             'lines.*.item_id' => 'required|exists:items,id',
             'lines.*.quantity' => 'required|numeric|min:0.0001',
@@ -55,8 +76,9 @@ class SalesReturnController extends Controller
         $revenueAccount = Account::where('code', '4100')->firstOrFail();
         $cogsAccount = Account::where('code', '5100')->firstOrFail();
         $inventoryAccount = Account::where('code', '1300')->firstOrFail();
+        $cashbox = \App\Models\Cashbox::first();
 
-        $return = DB::transaction(function () use ($data, $fiscalYear, $arAccount, $revenueAccount, $cogsAccount, $inventoryAccount, $ledger) {
+        $return = DB::transaction(function () use ($data, $fiscalYear, $arAccount, $revenueAccount, $cogsAccount, $inventoryAccount, $cashbox, $ledger) {
             $number = 'SRET-'.now()->format('Ymd').'-'.str_pad((string) (SalesReturn::count() + 1), 4, '0', STR_PAD_LEFT);
 
             $totalAmount = 0;
@@ -74,6 +96,10 @@ class SalesReturnController extends Controller
                     'total' => $lineTotal,
                 ];
             }
+
+            $discount = $data['discount'] ?? 0;
+            $paidAmount = $data['paid_amount'] ?? 0;
+            $totalAmount -= $discount;
 
             $return = SalesReturn::create([
                 'number' => $number,
@@ -128,6 +154,23 @@ class SalesReturnController extends Controller
                     'lines' => [
                         ['account_id' => $inventoryAccount->id, 'debit' => $totalCost, 'credit' => 0],
                         ['account_id' => $cogsAccount->id, 'debit' => 0, 'credit' => $totalCost],
+                    ],
+                ]);
+            }
+
+            // Matches the reference form's "پرداخت نقدی" box — cash we hand back to the customer.
+            if ($paidAmount > 0 && $cashbox) {
+                $ledger->postEntry([
+                    'fiscal_year_id' => $fiscalYear->id,
+                    'date' => $data['date'],
+                    'reference_type' => 'sales_return',
+                    'reference_id' => $return->id,
+                    'description' => "پرداخت نقدی بابت برگشت از فروش {$number}",
+                    'currency_id' => $data['currency_id'],
+                    'fx_rate' => $data['fx_rate'],
+                    'lines' => [
+                        ['account_id' => $arAccount->id, 'person_id' => $data['person_id'], 'debit' => $paidAmount, 'credit' => 0],
+                        ['account_id' => $cashbox->account_id, 'debit' => 0, 'credit' => $paidAmount],
                     ],
                 ]);
             }
