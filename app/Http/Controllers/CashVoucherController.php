@@ -8,6 +8,7 @@ use App\Models\CashVoucher;
 use App\Models\Cashbox;
 use App\Models\Currency;
 use App\Models\FiscalYear;
+use App\Models\JournalLine;
 use App\Models\Person;
 use App\Services\LedgerService;
 use Illuminate\Http\Request;
@@ -28,15 +29,40 @@ class CashVoucherController extends Controller
 
     public function create(Request $request)
     {
+        $type = $request->get('type', 'receipt');
+
+        // Same account store() posts a person-linked voucher against, so the
+        // حساب گذشته box always matches what actually happens on save.
+        $account = Account::where('code', $type === 'receipt' ? '1200' : '2100')->first();
+
         return view('cash-vouchers.form', [
-            'type' => $request->get('type', 'receipt'),
+            'type' => $type,
             'cashboxes' => Cashbox::orderBy('name')->get(),
             'bankAccounts' => BankAccount::orderBy('name')->get(),
             'persons' => Person::orderBy('name')->get(),
             'currencies' => Currency::orderBy('code')->get(),
             'expenseAccounts' => Account::where('is_group', false)->where('type', 'expense')->orderBy('code')->get(),
             'revenueAccounts' => Account::where('is_group', false)->where('type', 'revenue')->orderBy('code')->get(),
+            'nextNumber' => 'CV-'.now()->format('Ymd').'-'.str_pad((string) (CashVoucher::count() + 1), 4, '0', STR_PAD_LEFT),
+            'balances' => $this->personBalances($account, $type === 'receipt' ? 'debit' : 'credit'),
         ]);
+    }
+
+    /** Matches the old app's "حساب گذشته" (previous balance) box — every person's running balance on the account this voucher type posts against. */
+    private function personBalances(?Account $account, string $side): array
+    {
+        if (! $account) {
+            return [];
+        }
+
+        return JournalLine::where('account_id', $account->id)
+            ->whereNotNull('person_id')
+            ->get()
+            ->groupBy('person_id')
+            ->map(fn ($lines) => $side === 'debit'
+                ? (float) $lines->sum('base_debit') - (float) $lines->sum('base_credit')
+                : (float) $lines->sum('base_credit') - (float) $lines->sum('base_debit'))
+            ->all();
     }
 
     public function store(Request $request, LedgerService $ledger)
