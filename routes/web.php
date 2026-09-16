@@ -69,6 +69,7 @@ Route::prefix('reports')->name('reports.')->group(function () {
     Route::get('/debtors', [ReportController::class, 'debtors'])->name('debtors');
     Route::get('/creditors', [ReportController::class, 'creditors'])->name('creditors');
     Route::get('/sales-graph', [ReportController::class, 'salesGraph'])->name('sales-graph');
+    Route::get('/kardex', [ReportController::class, 'kardex'])->name('kardex');
 });
 
 Route::prefix('settings')->name('settings.')->group(function () {

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Item;
 use App\Models\JournalEntry;
 use App\Models\JournalLine;
 use App\Models\Person;
 use App\Models\SalesInvoice;
+use App\Models\StockMove;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -110,6 +113,39 @@ class ReportController extends Controller
             ->groupBy('month')->orderBy('month')->get();
 
         return view('reports.sales-graph', compact('monthly'));
+    }
+
+    /** کاردکس — an item's full stock movement history with a running on-hand balance, the old app screen this app never had. */
+    public function kardex(Request $request)
+    {
+        $items = Item::orderBy('name')->get();
+        $warehouses = Warehouse::orderBy('name')->get();
+        $itemId = $request->get('item_id');
+        $warehouseId = $request->get('warehouse_id');
+
+        $item = null;
+        $rows = collect();
+
+        if ($itemId) {
+            $item = Item::findOrFail($itemId);
+
+            $balance = 0;
+            $rows = StockMove::where('item_id', $itemId)
+                ->when($warehouseId, fn ($q) => $q->where('warehouse_id', $warehouseId))
+                ->with('warehouse')
+                ->orderBy('date')->orderBy('id')
+                ->get()
+                ->map(function ($move) use (&$balance) {
+                    $balance += $move->type === 'in' ? $move->quantity : -$move->quantity;
+
+                    return [
+                        'move' => $move,
+                        'balance' => $balance,
+                    ];
+                });
+        }
+
+        return view('reports.kardex', compact('items', 'warehouses', 'item', 'rows', 'itemId', 'warehouseId'));
     }
 
     private function personBalances(?Account $account, string $side)
