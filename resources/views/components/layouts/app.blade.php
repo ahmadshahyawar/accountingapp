@@ -1,3 +1,128 @@
+@php
+    // Mirrors the old app's real ribbon: 7 tabs, each holding a few labeled
+    // groups of buttons — compared directly against screenshots of every
+    // tab, not guessed. Only links to screens that actually exist in this
+    // app; a few old-app buttons (کاردکس, دفتر تفصیل/معین, بک آپ اطلاعات,
+    // یادداشت/یادآور/دفتر تلفن, تغییر رمز عبور) don't have a home yet so
+    // aren't listed rather than pointing at a 404.
+    $ribbonTabs = [
+        'home' => [
+            'label' => 'اطلاعات اولیه',
+            'groups' => [
+                'ثبت اطلاعات اول دوره' => [
+                    ['label' => 'اول دوره حساب ها', 'route' => 'opening-balances.index'],
+                    ['label' => 'اول دوره صندوق و بانک', 'route' => 'opening-balances.index'],
+                    ['label' => 'اول دوره اجناس', 'route' => 'opening-balances.index'],
+                ],
+                'سال مالی' => [
+                    ['label' => 'سال مالی', 'route' => 'settings.index'],
+                ],
+                'ارز' => [
+                    ['label' => 'نرخ ارز', 'route' => 'settings.index'],
+                    ['label' => 'ارز ها', 'route' => 'settings.index'],
+                ],
+                'تعریف حساب ها' => [
+                    ['label' => 'بانک ها', 'route' => 'settings.index'],
+                    ['label' => 'صندوق', 'route' => 'settings.index'],
+                    ['label' => 'اشخاص', 'route' => 'persons.index'],
+                    ['label' => 'حساب ها', 'route' => 'accounts.index'],
+                ],
+                'تعریف انبار ها و اجناس' => [
+                    ['label' => 'واحد ها', 'route' => 'settings.index'],
+                    ['label' => 'انبار ها', 'route' => 'settings.index'],
+                    ['label' => 'اجناس', 'route' => 'items.index'],
+                ],
+            ],
+        ],
+        'invoices' => [
+            'label' => 'صدور فاکتور',
+            'groups' => [
+                'خرید و فروش' => [
+                    ['label' => 'فاکتور فروش', 'route' => 'sales-invoices.index'],
+                    ['label' => 'فاکتور خرید', 'route' => 'purchase-invoices.index'],
+                    ['label' => 'برگشت از فروش', 'route' => 'sales-returns.index'],
+                    ['label' => 'برگشت از خرید', 'route' => 'purchase-returns.index'],
+                    ['label' => 'پیش فاکتور', 'route' => 'proforma-invoices.index'],
+                ],
+                'متفرقه' => [
+                    ['label' => 'انتقال اجناس', 'route' => 'item-transfers.index'],
+                ],
+            ],
+        ],
+        'payments' => [
+            'label' => 'دریافت و پرداخت',
+            'groups' => [
+                'دریافت و پرداخت' => [
+                    ['label' => 'دریافت نقدی', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'receipt']],
+                    ['label' => 'پرداخت نقدی', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment']],
+                    ['label' => 'جستجوی دریافت و پرداخت', 'route' => 'cash-vouchers.index'],
+                ],
+                'معاش، مصارف و عواید' => [
+                    ['label' => 'ثبت مصارف', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment']],
+                    ['label' => 'ثبت عواید', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'receipt']],
+                ],
+                'تبادله و انتقال پول' => [
+                    ['label' => 'تبادله ارز', 'route' => 'currency-exchanges.index'],
+                    ['label' => 'انتقال پول', 'route' => 'money-transfers.index'],
+                    ['label' => 'انتقال حساب', 'route' => 'account-transfers.index'],
+                ],
+            ],
+        ],
+        'finreports' => [
+            'label' => 'گزارشات مالی',
+            'groups' => [
+                'گزارشات' => [
+                    ['label' => 'گزارش حساب', 'route' => 'reports.account-statement'],
+                    ['label' => 'میزان آزمایشی', 'route' => 'reports.trial-balance'],
+                    ['label' => 'دفتر روزنامچه', 'route' => 'reports.day-book'],
+                    ['label' => 'لیست طلبکار ها', 'route' => 'reports.debtors'],
+                    ['label' => 'لیست قرضدار ها', 'route' => 'reports.creditors'],
+                ],
+            ],
+        ],
+        'itemreports' => [
+            'label' => 'گزارشات اجناس',
+            'groups' => [
+                'گزارشات' => [
+                    ['label' => 'موجودی اجناس', 'route' => 'items.index'],
+                    ['label' => 'گراف اجناس پرفروش', 'route' => 'reports.sales-graph'],
+                ],
+            ],
+        ],
+        'tools' => [
+            'label' => 'امکانات',
+            'groups' => [
+                'کاربر' => [
+                    ['label' => 'مدیریت کاربر ها', 'route' => 'users.index', 'admin' => true],
+                ],
+            ],
+        ],
+        'settings' => [
+            'label' => 'تنظیمات',
+            'groups' => [
+                'تنظیمات' => [
+                    ['label' => 'تنظیمات عمومی', 'route' => 'settings.index'],
+                ],
+            ],
+        ],
+    ];
+
+    // Auto-select the tab whose group contains a route matching the current
+    // one, so landing on e.g. /sales-invoices from a bookmark or a redirect
+    // opens the ribbon already on "صدور فاکتور" instead of always "اطلاعات اولیه".
+    $currentRouteName = request()->route()?->getName();
+    $defaultTab = 'home';
+    foreach ($ribbonTabs as $key => $tab) {
+        foreach ($tab['groups'] as $items) {
+            foreach ($items as $item) {
+                if ($item['route'] === $currentRouteName) {
+                    $defaultTab = $key;
+                    break 3;
+                }
+            }
+        }
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -8,38 +133,53 @@
 </head>
 <body class="bg-gray-100 text-gray-900 antialiased">
     <div class="min-h-screen flex flex-col">
-        <header class="bg-sky-900 text-white px-6 py-3 flex items-center justify-between shadow flex-wrap gap-2">
-            <h1 class="text-lg font-bold">سیستم حسابداری</h1>
-            <nav class="flex gap-4 text-sm flex-wrap">
-                <a href="{{ route('dashboard') }}" class="hover:underline">داشبورد</a>
-                <a href="{{ route('sales-invoices.index') }}" class="hover:underline">فروش</a>
-                <a href="{{ route('purchase-invoices.index') }}" class="hover:underline">خرید</a>
-                <a href="{{ route('sales-returns.index') }}" class="hover:underline">برگشت فروش</a>
-                <a href="{{ route('purchase-returns.index') }}" class="hover:underline">برگشت خرید</a>
-                <a href="{{ route('proforma-invoices.index') }}" class="hover:underline">پیش فاکتور</a>
-                <a href="{{ route('cash-vouchers.index') }}" class="hover:underline">صندوق</a>
-                <a href="{{ route('money-transfers.index') }}" class="hover:underline">انتقال پول</a>
-                <a href="{{ route('account-transfers.index') }}" class="hover:underline">انتقال حساب</a>
-                <a href="{{ route('currency-exchanges.index') }}" class="hover:underline">تبادله ارز</a>
-                <a href="{{ route('item-transfers.index') }}" class="hover:underline">انتقال اجناس</a>
-                <a href="{{ route('persons.index') }}" class="hover:underline">اشخاص</a>
-                <a href="{{ route('items.index') }}" class="hover:underline">اجناس</a>
-                <a href="{{ route('accounts.index') }}" class="hover:underline">حساب ها</a>
-                <a href="{{ route('opening-balances.index') }}" class="hover:underline">اول دوره</a>
-                <a href="{{ route('reports.trial-balance') }}" class="hover:underline">گزارشات</a>
-                @if(auth()->user()?->isAdmin())
-                    <a href="{{ route('users.index') }}" class="hover:underline">مدیریت کاربر ها</a>
-                @endif
-                <a href="{{ route('settings.index') }}" class="hover:underline">تنظیمات</a>
-            </nav>
-            <div class="flex items-center gap-3 text-sm">
-                <span>کاربر: {{ auth()->user()?->name }}</span>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="hover:underline">خروج</button>
-                </form>
+        <div x-data="{ activeTab: '{{ $defaultTab }}' }">
+            {{-- Title bar --}}
+            <div class="bg-white border-b px-4 py-1.5 flex items-center justify-between text-sm">
+                <a href="{{ route('dashboard') }}" class="font-bold text-sky-900 hover:underline">سیستم حسابداری یونیک</a>
+                <div class="flex items-center gap-3 text-gray-600">
+                    <span>کاربر: {{ auth()->user()?->name }}</span>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="hover:underline">خروج</button>
+                    </form>
+                </div>
             </div>
-        </header>
+
+            {{-- Ribbon tab strip --}}
+            <div class="bg-gray-50 border-b px-4 flex gap-1 text-sm overflow-x-auto">
+                @foreach($ribbonTabs as $key => $tab)
+                    <button type="button" @click="activeTab = '{{ $key }}'"
+                        class="px-4 py-2 border-b-2 whitespace-nowrap"
+                        :class="activeTab === '{{ $key }}' ? 'border-sky-700 text-sky-800 font-semibold bg-white' : 'border-transparent text-gray-600 hover:text-sky-700'">
+                        {{ $tab['label'] }}
+                    </button>
+                @endforeach
+            </div>
+
+            {{-- Ribbon group panels — one per tab, holding its labeled button groups --}}
+            @foreach($ribbonTabs as $key => $tab)
+                <div x-show="activeTab === '{{ $key }}'" x-cloak
+                    class="bg-slate-800 px-4 py-2 flex gap-6 overflow-x-auto">
+                    @foreach($tab['groups'] as $groupLabel => $items)
+                        @php $visibleItems = array_filter($items, fn($i) => empty($i['admin']) || auth()->user()?->isAdmin()); @endphp
+                        @if(count($visibleItems))
+                            <div class="flex flex-col items-center shrink-0">
+                                <div class="flex gap-1.5">
+                                    @foreach($visibleItems as $item)
+                                        <a href="{{ route($item['route'], $item['params'] ?? []) }}"
+                                            class="flex flex-col items-center justify-center text-center text-white text-xs bg-slate-700 hover:bg-sky-700 rounded px-2 py-1.5 w-20 h-14 transition">
+                                            {{ $item['label'] }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-1 border-t border-slate-600 pt-0.5 w-full text-center">{{ $groupLabel }}</div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @endforeach
+        </div>
 
         <main class="flex-1 p-6">
             @if(session('success'))
@@ -56,8 +196,9 @@
             {{ $slot }}
         </main>
 
-        <footer class="px-6 py-2 text-xs text-gray-500 border-t bg-white">
-            &copy; {{ date('Y') }} — نسخه در حال توسعه
+        <footer class="px-6 py-1.5 text-xs text-gray-500 border-t bg-white flex items-center justify-between">
+            <span>&copy; {{ date('Y') }} — نسخه در حال توسعه</span>
+            <span>سال مالی: {{ \App\Models\FiscalYear::current()?->name ?? '—' }}</span>
         </footer>
     </div>
 </body>
