@@ -132,6 +132,7 @@
             ],
         ],
     ];
+    $ribbonTabs = array_reverse($ribbonTabs, true);
 
     // Auto-select the tab whose group contains a route matching the current
     // one, so landing on e.g. /sales-invoices from a bookmark or a redirect
