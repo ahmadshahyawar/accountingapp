@@ -3,17 +3,6 @@
 
     @include('reports._nav')
 
-    @php
-        $referenceLabels = [
-            'sales_invoice' => 'فاکتور فروش',
-            'purchase_invoice' => 'فاکتور خرید',
-            'sales_return' => 'برگشت از فروش',
-            'purchase_return' => 'برگشت از خرید',
-            'item_transfer' => 'انتقال اجناس',
-            'opening_balance' => 'اول دوره',
-        ];
-    @endphp
-
     <form method="GET" class="bg-white rounded-lg shadow p-4 mb-4 flex flex-wrap gap-3 items-end text-sm">
         <div>
             <label class="block text-xs text-gray-500 mb-1">جنس</label>
@@ -45,27 +34,41 @@
             </div>
             <table class="w-full text-sm text-right">
                 <thead class="bg-gray-50 text-gray-600">
-                    <tr><th class="px-4 py-2">تاریخ</th><th>نوع</th><th>مرجع</th><th>گدام</th><th>تعداد</th><th>نرخ</th><th>موجودی</th></tr>
+                    <tr>
+                        <th class="px-4 py-2">تاریخ</th><th>فاکتور</th><th>خریدار / فروشنده</th><th>گدام</th>
+                        <th>ورود جنس</th><th>خروج جنس</th><th>قیمت</th><th>جمع کل</th><th>الباقی</th>
+                    </tr>
                 </thead>
                 <tbody class="divide-y">
                     @foreach($rows as $row)
                         @php $move = $row['move']; @endphp
                         <tr>
                             <td class="px-4 py-2">{{ shamsi($move->date) }}</td>
-                            <td class="px-4 py-2 {{ $move->type === 'in' ? 'text-emerald-700' : 'text-rose-700' }}">
-                                {{ $move->type === 'in' ? 'ورود' : 'خروج' }}
-                            </td>
-                            <td class="px-4 py-2 text-gray-500">{{ $referenceLabels[$move->reference_type] ?? $move->reference_type }}</td>
+                            <td class="px-4 py-2 text-gray-500">{{ $row['number'] }}</td>
+                            <td class="px-4 py-2 text-gray-500">{{ $row['person']?->name }}</td>
                             <td class="px-4 py-2 text-gray-500">{{ $move->warehouse->name }}</td>
-                            <td class="px-4 py-2">{{ number_format($move->quantity, 2) }}</td>
+                            <td class="px-4 py-2 text-emerald-700">{{ $move->type === 'in' ? number_format($move->quantity, 2) : '0' }}</td>
+                            <td class="px-4 py-2 text-rose-700">{{ $move->type === 'out' ? number_format($move->quantity, 2) : '0' }}</td>
                             <td class="px-4 py-2 text-gray-500">{{ number_format($move->unit_cost, 2) }}</td>
+                            <td class="px-4 py-2">{{ number_format($move->quantity * $move->unit_cost, 2) }}</td>
                             <td class="px-4 py-2 font-semibold">{{ number_format($row['balance'], 2) }}</td>
                         </tr>
                     @endforeach
                     @if($rows->isEmpty())
-                        <tr><td colspan="7" class="px-4 py-6 text-center text-gray-400">حرکتی برای این جنس ثبت نشده است.</td></tr>
+                        <tr><td colspan="9" class="px-4 py-6 text-center text-gray-400">حرکتی برای این جنس ثبت نشده است.</td></tr>
                     @endif
                 </tbody>
+                @if($rows->isNotEmpty())
+                    <tfoot>
+                        <tr class="font-bold bg-gray-50">
+                            <td class="px-4 py-2" colspan="4">مجموع</td>
+                            <td class="px-4 py-2 text-emerald-700">{{ number_format($totalIn, 2) }}</td>
+                            <td class="px-4 py-2 text-rose-700">{{ number_format($totalOut, 2) }}</td>
+                            <td colspan="2"></td>
+                            <td class="px-4 py-2">{{ number_format($rows->last()['balance'], 2) }}</td>
+                        </tr>
+                    </tfoot>
+                @endif
             </table>
         </div>
     @else

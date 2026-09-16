@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Item;
+use App\Models\ItemTransfer;
 use App\Models\JournalEntry;
 use App\Models\JournalLine;
 use App\Models\Person;
+use App\Models\PurchaseInvoice;
+use App\Models\PurchaseReturn;
 use App\Models\SalesInvoice;
+use App\Models\SalesReturn;
 use App\Models\StockMove;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -125,6 +129,8 @@ class ReportController extends Controller
 
         $item = null;
         $rows = collect();
+        $totalIn = 0;
+        $totalOut = 0;
 
         if ($itemId) {
             $item = Item::findOrFail($itemId);
@@ -135,17 +141,39 @@ class ReportController extends Controller
                 ->with('warehouse')
                 ->orderBy('date')->orderBy('id')
                 ->get()
-                ->map(function ($move) use (&$balance) {
+                ->map(function ($move) use (&$balance, &$totalIn, &$totalOut) {
                     $balance += $move->type === 'in' ? $move->quantity : -$move->quantity;
+                    $move->type === 'in' ? $totalIn += $move->quantity : $totalOut += $move->quantity;
+                    ['number' => $number, 'person' => $person] = $this->stockMoveReference($move);
 
                     return [
                         'move' => $move,
                         'balance' => $balance,
+                        'number' => $number,
+                        'person' => $person,
                     ];
                 });
         }
 
-        return view('reports.kardex', compact('items', 'warehouses', 'item', 'rows', 'itemId', 'warehouseId'));
+        return view('reports.kardex', compact('items', 'warehouses', 'item', 'rows', 'itemId', 'warehouseId', 'totalIn', 'totalOut'));
+    }
+
+    /** Matches the old app's کاردکس, which shows the invoice number and the خریدار/فروشنده (buyer/seller) beside each stock move. */
+    private function stockMoveReference(StockMove $move): array
+    {
+        $reference = match ($move->reference_type) {
+            'sales_invoice' => SalesInvoice::with('customer')->find($move->reference_id),
+            'purchase_invoice' => PurchaseInvoice::with('supplier')->find($move->reference_id),
+            'sales_return' => SalesReturn::with('customer')->find($move->reference_id),
+            'purchase_return' => PurchaseReturn::with('supplier')->find($move->reference_id),
+            'item_transfer' => ItemTransfer::find($move->reference_id),
+            default => null,
+        };
+
+        return [
+            'number' => $reference?->number,
+            'person' => $reference?->customer ?? $reference?->supplier,
+        ];
     }
 
     private function personBalances(?Account $account, string $side)

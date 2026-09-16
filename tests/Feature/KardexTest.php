@@ -52,8 +52,8 @@ class KardexTest extends TestCase
 
         $response->assertOk();
         $response->assertSeeInOrder(['20.00', '14.00']); // balance after purchase, then after sale
-        $response->assertSee('فاکتور خرید');
-        $response->assertSee('فاکتور فروش');
+        $response->assertSee('Kardex Supplier'); // خریدار/فروشنده column
+        $response->assertSee('Kardex Customer');
     }
 
     public function test_kardex_without_an_item_selected_shows_a_prompt_not_an_error(): void
