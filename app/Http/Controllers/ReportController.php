@@ -93,7 +93,7 @@ class ReportController extends Controller
         $arAccount = Account::where('code', '1200')->first();
         $rows = $this->personBalances($arAccount, 'debit');
 
-        return view('reports.debtors', ['rows' => $rows]);
+        return view('reports.debtors', ['rows' => $rows, 'baseCurrency' => \App\Models\Currency::where('is_base', true)->first()]);
     }
 
     public function creditors()
@@ -101,7 +101,7 @@ class ReportController extends Controller
         $apAccount = Account::where('code', '2100')->first();
         $rows = $this->personBalances($apAccount, 'credit');
 
-        return view('reports.creditors', ['rows' => $rows]);
+        return view('reports.creditors', ['rows' => $rows, 'baseCurrency' => \App\Models\Currency::where('is_base', true)->first()]);
     }
 
     public function salesGraph()
