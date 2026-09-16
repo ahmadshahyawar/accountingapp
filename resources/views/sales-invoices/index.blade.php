@@ -7,20 +7,28 @@
         <table class="w-full text-sm text-right">
             <thead class="bg-gray-50 text-gray-600">
                 <tr>
-                    <th class="px-4 py-2">شماره</th>
                     <th class="px-4 py-2">تاریخ</th>
-                    <th class="px-4 py-2">مشتری</th>
+                    <th class="px-4 py-2">فاکتور</th>
+                    <th class="px-4 py-2">نام شخص</th>
+                    <th class="px-4 py-2">تخفیف</th>
+                    <th class="px-4 py-2">مصارف</th>
                     <th class="px-4 py-2">مبلغ کل</th>
+                    <th class="px-4 py-2">مبلغ رسید</th>
+                    <th class="px-4 py-2">ارز</th>
                     <th class="px-4 py-2">عملیات</th>
                 </tr>
             </thead>
             <tbody class="divide-y">
                 @foreach($invoices as $invoice)
                     <tr>
-                        <td class="px-4 py-2">{{ $invoice->number }}</td>
                         <td class="px-4 py-2">{{ shamsi($invoice->date) }}</td>
+                        <td class="px-4 py-2">{{ $invoice->number }}</td>
                         <td class="px-4 py-2">{{ $invoice->customer->name }}</td>
-                        <td class="px-4 py-2">{{ number_format($invoice->total_amount, 2) }} {{ $invoice->currency->code }}</td>
+                        <td class="px-4 py-2 text-gray-500">{{ number_format($invoice->discount, 2) }}</td>
+                        <td class="px-4 py-2 text-gray-500">{{ number_format($invoice->expense, 2) }}</td>
+                        <td class="px-4 py-2">{{ number_format($invoice->total_amount, 2) }}</td>
+                        <td class="px-4 py-2 text-gray-500">{{ number_format($invoice->paid_amount, 2) }}</td>
+                        <td class="px-4 py-2 text-gray-500">{{ $invoice->currency->code }}</td>
                         <td class="px-4 py-2 flex gap-2">
                             <a href="{{ route('sales-invoices.show', $invoice) }}" class="text-sky-700 hover:underline">مشاهده</a>
                             <form action="{{ route('sales-invoices.destroy', $invoice) }}" method="POST" onsubmit="return confirm('این فاکتور حذف شود؟')">
