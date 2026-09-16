@@ -1,11 +1,15 @@
 @props(['name'])
 
 @php
-    // The old app's ribbon icons are full-color DevExpress artwork we don't
-    // have access to. Emoji are the closest practical substitute — they're
-    // natively colorful (unlike a single-color SVG glyph) and need no asset
-    // loading, so a button reads as a distinct colorful icon instead of a
-    // uniform colored square, closer to the real ribbon's look.
+    // Where the real icon has been extracted from a live screenshot of the
+    // old app (same technique as the dashboard tiles — see
+    // <x-dashboard-icon>), render that actual artwork. Everything else
+    // still falls back to an emoji approximation until it's been extracted
+    // too; extracting the rest requires clicking through the old app's
+    // other ribbon tabs, which turned out to be unsafe to automate (a
+    // stray click landed on an unrelated window instead of the target app).
+    $hasRealIcon = file_exists(public_path("images/ribbon/{$name}.png"));
+
     $emoji = [
         'cart' => '🛒',
         'box' => '📦',
@@ -40,4 +44,8 @@
         'grid' => '🔲',
     ];
 @endphp
-<span {{ $attributes }}>{{ $emoji[$name] ?? $emoji['grid'] }}</span>
+@if($hasRealIcon)
+    <img src="{{ asset("images/ribbon/{$name}.png") }}" alt="" {{ $attributes->merge(['class' => 'block mx-auto w-9 h-9 object-contain']) }}>
+@else
+    <span {{ $attributes->merge(['class' => 'block text-3xl leading-none']) }}>{{ $emoji[$name] ?? $emoji['grid'] }}</span>
+@endif

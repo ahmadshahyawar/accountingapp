@@ -12,30 +12,31 @@
             'label' => 'اطلاعات اولیه',
             'groups' => [
                 'ثبت اطلاعات اول دوره' => [
-                    ['label' => 'اول دوره حساب ها', 'route' => 'opening-balances.index', 'icon' => 'clipboard'],
-                    ['label' => 'اول دوره صندوق و بانک', 'route' => 'opening-balances.index', 'icon' => 'bank'],
-                    ['label' => 'اول دوره اجناس', 'route' => 'opening-balances.index', 'icon' => 'cube'],
+                    ['label' => 'اول دوره حساب ها', 'route' => 'opening-balances.index', 'icon' => 'opening-accounts'],
+                    ['label' => 'اول دوره صندوق و بانک', 'route' => 'opening-balances.index', 'icon' => 'opening-cashbank'],
+                    ['label' => 'اول دوره اجناس', 'route' => 'opening-balances.index', 'icon' => 'opening-items'],
                 ],
                 'سال مالی' => [
-                    ['label' => 'سال مالی', 'route' => 'settings.fiscal-years', 'icon' => 'calendar'],
+                    ['label' => 'سال مالی', 'route' => 'settings.fiscal-years', 'icon' => 'fiscal-year'],
                 ],
                 'ارز' => [
-                    ['label' => 'نرخ ارز', 'route' => 'settings.exchange-rates', 'icon' => 'exchange'],
-                    ['label' => 'ارز ها', 'route' => 'settings.currencies', 'icon' => 'currency'],
+                    ['label' => 'نرخ ارز', 'route' => 'settings.exchange-rates', 'icon' => 'exchange-rate'],
+                    ['label' => 'ارز ها', 'route' => 'settings.currencies', 'icon' => 'currencies'],
                 ],
+                // Real ribbon has 6 buttons here, no separate "حساب ها" — confirmed against a
+                // live screenshot of the old app, not guessed.
                 'تعریف حساب ها' => [
-                    ['label' => 'بانک ها', 'route' => 'settings.bank-accounts', 'icon' => 'bank'],
-                    ['label' => 'صندوق', 'route' => 'settings.cashboxes', 'icon' => 'archive'],
-                    ['label' => 'عواید', 'route' => 'accounts.index', 'params' => ['type' => 'revenue'], 'icon' => 'currency'],
-                    ['label' => 'مصارف', 'route' => 'accounts.index', 'params' => ['type' => 'expense'], 'icon' => 'cash-out'],
-                    ['label' => 'کارمندان', 'route' => 'persons.index', 'params' => ['type' => 'employee'], 'icon' => 'user-group'],
-                    ['label' => 'اشخاص', 'route' => 'persons.index', 'icon' => 'users'],
-                    ['label' => 'حساب ها', 'route' => 'accounts.index', 'icon' => 'clipboard'],
+                    ['label' => 'بانک ها', 'route' => 'settings.bank-accounts', 'icon' => 'banks'],
+                    ['label' => 'صندوق', 'route' => 'settings.cashboxes', 'icon' => 'cashbox'],
+                    ['label' => 'عواید', 'route' => 'accounts.index', 'params' => ['type' => 'revenue'], 'icon' => 'revenue'],
+                    ['label' => 'مصارف', 'route' => 'accounts.index', 'params' => ['type' => 'expense'], 'icon' => 'expense'],
+                    ['label' => 'کارمندان', 'route' => 'persons.index', 'params' => ['type' => 'employee'], 'icon' => 'employees'],
+                    ['label' => 'اشخاص', 'route' => 'persons.index', 'icon' => 'persons'],
                 ],
                 'تعریف انبار ها و اجناس' => [
-                    ['label' => 'واحد ها', 'route' => 'settings.units', 'icon' => 'scale'],
-                    ['label' => 'انبار ها', 'route' => 'settings.warehouses', 'icon' => 'warehouse'],
-                    ['label' => 'اجناس', 'route' => 'items.index', 'icon' => 'cube'],
+                    ['label' => 'واحد ها', 'route' => 'settings.units', 'icon' => 'units'],
+                    ['label' => 'انبار ها', 'route' => 'settings.warehouses', 'icon' => 'warehouses'],
+                    ['label' => 'اجناس', 'route' => 'items.index', 'icon' => 'items'],
                 ],
             ],
         ],
@@ -43,15 +44,15 @@
             'label' => 'صدور فاکتور',
             'groups' => [
                 'خرید و فروش' => [
-                    ['label' => 'فاکتور فروش', 'route' => 'sales-invoices.index', 'icon' => 'cart'],
-                    ['label' => 'فاکتور خرید', 'route' => 'purchase-invoices.index', 'icon' => 'box'],
-                    ['label' => 'برگشت از فروش', 'route' => 'sales-returns.index', 'icon' => 'return'],
-                    ['label' => 'برگشت از خرید', 'route' => 'purchase-returns.index', 'icon' => 'return'],
-                    ['label' => 'پیش فاکتور', 'route' => 'proforma-invoices.index', 'icon' => 'document'],
+                    ['label' => 'فاکتور فروش', 'route' => 'sales-invoices.index', 'icon' => 'sales-invoice'],
+                    ['label' => 'فاکتور خرید', 'route' => 'purchase-invoices.index', 'icon' => 'purchase-invoice'],
+                    ['label' => 'برگشت از فروش', 'route' => 'sales-returns.index', 'icon' => 'sales-return'],
+                    ['label' => 'برگشت از خرید', 'route' => 'purchase-returns.index', 'icon' => 'purchase-return'],
+                    ['label' => 'پیش فاکتور', 'route' => 'proforma-invoices.index', 'icon' => 'proforma'],
                 ],
                 'متفرقه' => [
-                    ['label' => 'انتقال اجناس', 'route' => 'item-transfers.create', 'icon' => 'transfer'],
-                    ['label' => 'جستجوی فاکتورهای انتقال اجناس', 'route' => 'item-transfers.index', 'icon' => 'search'],
+                    ['label' => 'انتقال اجناس', 'route' => 'item-transfers.create', 'icon' => 'item-transfer-new'],
+                    ['label' => 'جستجوی فاکتورهای انتقال اجناس', 'route' => 'item-transfers.index', 'icon' => 'search-item-transfer'],
                 ],
             ],
         ],
@@ -59,35 +60,37 @@
             'label' => 'دریافت و پرداخت',
             'groups' => [
                 'دریافت و پرداخت' => [
-                    ['label' => 'دریافت نقدی', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'receipt'], 'icon' => 'cash-in'],
-                    ['label' => 'پرداخت نقدی', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment'], 'icon' => 'cash-out'],
-                    ['label' => 'جستجوی دریافت و پرداخت', 'route' => 'cash-vouchers.index', 'icon' => 'search'],
+                    ['label' => 'دریافت نقدی', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'receipt'], 'icon' => 'cash-receipt'],
+                    ['label' => 'پرداخت نقدی', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment'], 'icon' => 'cash-payment'],
+                    ['label' => 'جستجوی دریافت و پرداخت', 'route' => 'cash-vouchers.index', 'icon' => 'search-payments'],
                 ],
                 'معاش، مصارف و عواید' => [
-                    ['label' => 'ثبت معاش', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment'], 'icon' => 'user-group'],
-                    ['label' => 'ثبت مصارف', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment'], 'icon' => 'cash-out'],
-                    ['label' => 'ثبت عواید', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'receipt'], 'icon' => 'currency'],
+                    ['label' => 'ثبت معاش', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment'], 'icon' => 'payroll-entry'],
+                    ['label' => 'ثبت مصارف', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'payment'], 'icon' => 'expense-entry'],
+                    ['label' => 'ثبت عواید', 'route' => 'cash-vouchers.create', 'params' => ['type' => 'receipt'], 'icon' => 'revenue-entry'],
                 ],
                 'تبادله و انتقال پول' => [
-                    ['label' => 'تبادله ارز', 'route' => 'currency-exchanges.index', 'icon' => 'exchange'],
-                    ['label' => 'انتقال پول', 'route' => 'money-transfers.index', 'icon' => 'transfer'],
-                    ['label' => 'انتقال حساب', 'route' => 'account-transfers.index', 'icon' => 'transfer'],
+                    ['label' => 'تبادله ارز', 'route' => 'currency-exchanges.index', 'icon' => 'currency-exchange'],
+                    ['label' => 'انتقال پول', 'route' => 'money-transfers.index', 'icon' => 'money-transfer'],
+                    ['label' => 'انتقال حساب', 'route' => 'account-transfers.index', 'icon' => 'account-transfer'],
                 ],
             ],
         ],
         'finreports' => [
             'label' => 'گزارشات مالی',
             'groups' => [
+                // Order corrected against a live screenshot — گزارش حساب is rightmost (RTL-first),
+                // not لیست قرضدار ها as originally guessed.
                 'گزارشات مالی' => [
-                    ['label' => 'لیست قرضدار ها', 'route' => 'reports.creditors', 'icon' => 'user-group'],
-                    ['label' => 'لیست طلبکار ها', 'route' => 'reports.debtors', 'icon' => 'users'],
-                    ['label' => 'گزارش صندوق و بانک', 'route' => 'reports.cash-and-bank', 'icon' => 'bank'],
-                    ['label' => 'دفتر روزنامچه', 'route' => 'reports.day-book', 'icon' => 'clipboard'],
-                    ['label' => 'بالانس مالی', 'route' => 'reports.trial-balance', 'icon' => 'scale'],
-                    ['label' => 'گزارش حساب', 'route' => 'reports.account-statement', 'icon' => 'document'],
+                    ['label' => 'گزارش حساب', 'route' => 'reports.account-statement', 'icon' => 'account-statement'],
+                    ['label' => 'لیست طلبکار ها', 'route' => 'reports.debtors', 'icon' => 'debtors-report'],
+                    ['label' => 'لیست قرضدار ها', 'route' => 'reports.creditors', 'icon' => 'creditors-report'],
+                    ['label' => 'گزارش صندوق و بانک', 'route' => 'reports.cash-and-bank', 'icon' => 'cash-bank-report'],
+                    ['label' => 'دفتر روزنامچه', 'route' => 'reports.day-book', 'icon' => 'day-book'],
+                    ['label' => 'بالانس مالی', 'route' => 'reports.trial-balance', 'icon' => 'trial-balance'],
                 ],
                 'گراف' => [
-                    ['label' => 'مفاد و ضرر', 'route' => 'reports.profit-and-loss', 'icon' => 'chart'],
+                    ['label' => 'مفاد و ضرر', 'route' => 'reports.profit-and-loss', 'icon' => 'profit-loss-bar'],
                 ],
             ],
         ],
@@ -95,14 +98,14 @@
             'label' => 'گزارشات اجناس',
             'groups' => [
                 'گزارشات اجناس' => [
-                    ['label' => 'موجودی اجناس', 'route' => 'items.index', 'icon' => 'cube'],
-                    ['label' => 'کاردکس', 'route' => 'reports.kardex', 'icon' => 'clipboard'],
-                    ['label' => 'اجناس منفی', 'route' => 'reports.negative-stock', 'icon' => 'exclamation'],
-                    ['label' => 'فاکتور های فروش', 'route' => 'sales-invoices.index', 'icon' => 'cart'],
-                    ['label' => 'فاکتور های خرید', 'route' => 'purchase-invoices.index', 'icon' => 'box'],
+                    ['label' => 'موجودی اجناس', 'route' => 'items.index', 'icon' => 'stock-inventory'],
+                    ['label' => 'کاردکس', 'route' => 'reports.kardex', 'icon' => 'kardex'],
+                    ['label' => 'اجناس منفی', 'route' => 'reports.negative-stock', 'icon' => 'negative-stock'],
+                    ['label' => 'فاکتور های فروش', 'route' => 'sales-invoices.index', 'icon' => 'sales-invoice-report'],
+                    ['label' => 'فاکتور های خرید', 'route' => 'purchase-invoices.index', 'icon' => 'purchase-invoice-report'],
                 ],
                 'گراف' => [
-                    ['label' => 'گراف اجناس پرفروش', 'route' => 'reports.sales-graph', 'icon' => 'chart'],
+                    ['label' => 'گراف اجناس پرفروش', 'route' => 'reports.sales-graph', 'icon' => 'top-items-graph'],
                 ],
             ],
         ],
@@ -110,17 +113,17 @@
             'label' => 'امکانات',
             'groups' => [
                 'کاربر' => [
-                    ['label' => 'مدیریت کاربر ها', 'route' => 'users.index', 'admin' => true, 'icon' => 'user-group'],
-                    ['label' => 'تغییر رمز ورود', 'route' => 'profile.password', 'icon' => 'key'],
+                    ['label' => 'مدیریت کاربر ها', 'route' => 'users.index', 'admin' => true, 'icon' => 'user-management'],
+                    ['label' => 'تغییر رمز ورود', 'route' => 'profile.password', 'icon' => 'change-password'],
                 ],
                 'بک آپ اطلاعات' => [
-                    ['label' => 'تهیه بک آپ از اطلاعات', 'route' => 'backup.download', 'admin' => true, 'icon' => 'cloud-down'],
-                    ['label' => 'بازیابی اطلاعات', 'route' => 'settings.backup', 'admin' => true, 'icon' => 'cloud-up'],
+                    ['label' => 'تهیه بک آپ از اطلاعات', 'route' => 'backup.download', 'admin' => true, 'icon' => 'backup-data'],
+                    ['label' => 'بازیابی اطلاعات', 'route' => 'settings.backup', 'admin' => true, 'icon' => 'restore-data'],
                 ],
                 'ابزار' => [
-                    ['label' => 'یادداشت', 'route' => 'notes.index', 'icon' => 'pencil'],
-                    ['label' => 'یادآور', 'route' => 'notes.index', 'icon' => 'bell'],
-                    ['label' => 'دفتر تلفن', 'route' => 'persons.phonebook', 'icon' => 'phone'],
+                    ['label' => 'یادداشت', 'route' => 'notes.index', 'icon' => 'note'],
+                    ['label' => 'یادآور', 'route' => 'notes.index', 'icon' => 'reminder'],
+                    ['label' => 'دفتر تلفن', 'route' => 'persons.phonebook', 'icon' => 'phonebook'],
                 ],
             ],
         ],
@@ -128,7 +131,7 @@
             'label' => 'تنظیمات',
             'groups' => [
                 'تنظیمات' => [
-                    ['label' => 'مشخصات شرکت', 'route' => 'settings.company', 'icon' => 'building'],
+                    ['label' => 'مشخصات شرکت', 'route' => 'settings.company', 'icon' => 'company-info'],
                 ],
             ],
         ],
@@ -197,7 +200,7 @@
                                     @foreach($visibleItems as $item)
                                         <a href="{{ route($item['route'], $item['params'] ?? []) }}"
                                             class="flex flex-col items-center justify-start text-center text-gray-700 text-[11px] leading-tight hover:bg-gray-50 rounded px-1.5 py-1 w-[72px] transition">
-                                            <x-ribbon-icon :name="$item['icon'] ?? 'grid'" class="text-3xl leading-none mb-1" />
+                                            <x-ribbon-icon :name="$item['icon'] ?? 'grid'" class="mb-1" />
                                             <span class="line-clamp-2">{{ $item['label'] }}</span>
                                         </a>
                                     @endforeach
