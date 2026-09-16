@@ -1,37 +1,31 @@
 <x-layouts.app title="برگشت از خرید">
-    <x-ui.page-header title="برگشت از خرید">
-        <a href="{{ route('purchase-returns.create') }}" class="px-4 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800">+ برگشت جدید</a>
-    </x-ui.page-header>
-
-    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
-        <table class="w-full text-sm text-right">
-            <thead class="bg-gray-50 text-gray-600">
+    <x-ui.legacy-list title="برگشت از خرید" :create-route="route('purchase-returns.create')" create-label="برگشت جدید" table-id="purchase-returns-grid">
+        <table class="legacy-grid" id="purchase-returns-grid">
+            <thead>
                 <tr>
-                    <th class="px-4 py-2">تاریخ</th>
-                    <th class="px-4 py-2">فاکتور</th>
-                    <th class="px-4 py-2">نام شخص</th>
-                    <th class="px-4 py-2">مبلغ کل</th>
-                    <th class="px-4 py-2">ارز</th>
-                    <th class="px-4 py-2">عملیات</th>
+                    <th>تاریخ</th>
+                    <th>فاکتور</th>
+                    <th>نام شخص</th>
+                    <th>مبلغ کل</th>
+                    <th>ارز</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
+            <tbody>
                 @foreach($returns as $r)
-                    <tr>
-                        <td class="px-4 py-2">{{ shamsi($r->date) }}</td>
-                        <td class="px-4 py-2">{{ $r->number }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $r->supplier->name }}</td>
-                        <td class="px-4 py-2">{{ number_format($r->total_amount, 2) }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $r->currency->code }}</td>
-                        <td class="px-4 py-2">
-                            <form action="{{ route('purchase-returns.destroy', $r) }}" method="POST" onsubmit="return confirm('این برگشت حذف شود؟')">
+                    <tr data-row data-delete-form="delete-purchase-return-{{ $r->id }}">
+                        <td>{{ shamsi($r->date) }}</td>
+                        <td>{{ $r->number }}</td>
+                        <td>{{ $r->supplier->name }}</td>
+                        <td>{{ number_format($r->total_amount, 2) }}</td>
+                        <td>{{ $r->currency->code }}</td>
+                        <td class="hidden">
+                            <form id="delete-purchase-return-{{ $r->id }}" action="{{ route('purchase-returns.destroy', $r) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">حذف</button>
                             </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+    </x-ui.legacy-list>
 </x-layouts.app>

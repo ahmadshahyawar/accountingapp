@@ -1,46 +1,35 @@
 <x-layouts.app title="مدیریت کاربر ها">
-    <x-ui.page-header title="مدیریت کاربر ها">
-        <a href="{{ route('users.create') }}" class="px-4 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800">+ کاربر جدید</a>
-    </x-ui.page-header>
-
-    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
-        <table class="w-full text-sm text-right">
-            <thead class="bg-gray-50 text-gray-600">
+    <x-ui.legacy-list title="مدیریت کاربر ها" :create-route="route('users.create')" create-label="کاربر جدید" table-id="users-grid">
+        <table class="legacy-grid" id="users-grid">
+            <thead>
                 <tr>
-                    <th class="px-4 py-2">نام</th>
-                    <th class="px-4 py-2">ایمیل</th>
-                    <th class="px-4 py-2">نقش</th>
-                    <th class="px-4 py-2">وضعیت</th>
-                    <th class="px-4 py-2">عملیات</th>
+                    <th>نام</th>
+                    <th>ایمیل</th>
+                    <th>نقش</th>
+                    <th>وضعیت</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
+            <tbody>
                 @foreach($users as $u)
-                    <tr>
-                        <td class="px-4 py-2">{{ $u->name }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $u->email }}</td>
-                        <td class="px-4 py-2">
-                            <span class="{{ $u->role === 'admin' ? 'text-sky-700 font-semibold' : 'text-gray-600' }}">
-                                {{ $u->role === 'admin' ? 'مدیر سیستم' : 'کاربر' }}
-                            </span>
+                    <tr data-row data-edit-url="{{ route('users.edit', $u) }}" @if($u->id !== auth()->id()) data-delete-form="delete-user-{{ $u->id }}" @endif>
+                        <td>{{ $u->name }}</td>
+                        <td>{{ $u->email }}</td>
+                        <td class="{{ $u->role === 'admin' ? 'text-sky-700 font-semibold' : '' }}">
+                            {{ $u->role === 'admin' ? 'مدیر سیستم' : 'کاربر' }}
                         </td>
-                        <td class="px-4 py-2">
-                            <span class="{{ $u->is_active ? 'text-green-700' : 'text-red-700' }}">
-                                {{ $u->is_active ? 'فعال' : 'غیرفعال' }}
-                            </span>
+                        <td class="{{ $u->is_active ? 'text-green-700' : 'text-red-700' }}">
+                            {{ $u->is_active ? 'فعال' : 'غیرفعال' }}
                         </td>
-                        <td class="px-4 py-2 flex gap-3">
-                            <a href="{{ route('users.edit', $u) }}" class="text-sky-700 hover:underline">ویرایش</a>
-                            @if($u->id !== auth()->id())
-                                <form action="{{ route('users.destroy', $u) }}" method="POST" onsubmit="return confirm('این کاربر حذف شود؟')">
+                        @if($u->id !== auth()->id())
+                            <td class="hidden">
+                                <form id="delete-user-{{ $u->id }}" action="{{ route('users.destroy', $u) }}" method="POST">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:underline">حذف</button>
                                 </form>
-                            @endif
-                        </td>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+    </x-ui.legacy-list>
 </x-layouts.app>

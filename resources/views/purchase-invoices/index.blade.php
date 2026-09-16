@@ -1,44 +1,37 @@
 <x-layouts.app title="خرید">
-    <x-ui.page-header title="فاکتور های خرید">
-        <a href="{{ route('purchase-invoices.create') }}" class="px-4 py-2 bg-orange-700 text-white rounded-md text-sm hover:bg-orange-800">+ فاکتور خرید جدید</a>
-    </x-ui.page-header>
-
-    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
-        <table class="w-full text-sm text-right">
-            <thead class="bg-gray-50 text-gray-600">
+    <x-ui.legacy-list title="فاکتور های خرید" :create-route="route('purchase-invoices.create')" create-label="فاکتور جدید" table-id="purchase-invoices-grid">
+        <table class="legacy-grid" id="purchase-invoices-grid">
+            <thead>
                 <tr>
-                    <th class="px-4 py-2">تاریخ</th>
-                    <th class="px-4 py-2">فاکتور</th>
-                    <th class="px-4 py-2">نام شخص</th>
-                    <th class="px-4 py-2">تخفیف</th>
-                    <th class="px-4 py-2">مصارف</th>
-                    <th class="px-4 py-2">مبلغ کل</th>
-                    <th class="px-4 py-2">مبلغ پرداخت</th>
-                    <th class="px-4 py-2">ارز</th>
-                    <th class="px-4 py-2">عملیات</th>
+                    <th>تاریخ</th>
+                    <th>فاکتور</th>
+                    <th>نام شخص</th>
+                    <th>تخفیف</th>
+                    <th>مصارف</th>
+                    <th>مبلغ کل</th>
+                    <th>مبلغ پرداخت</th>
+                    <th>ارز</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
+            <tbody>
                 @foreach($invoices as $invoice)
-                    <tr>
-                        <td class="px-4 py-2">{{ shamsi($invoice->date) }}</td>
-                        <td class="px-4 py-2">{{ $invoice->number }}</td>
-                        <td class="px-4 py-2">{{ $invoice->supplier->name }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ number_format($invoice->discount, 2) }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ number_format($invoice->expense, 2) }}</td>
-                        <td class="px-4 py-2">{{ number_format($invoice->total_amount, 2) }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ number_format($invoice->paid_amount, 2) }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $invoice->currency->code }}</td>
-                        <td class="px-4 py-2 flex gap-2">
-                            <a href="{{ route('purchase-invoices.show', $invoice) }}" class="text-sky-700 hover:underline">مشاهده</a>
-                            <form action="{{ route('purchase-invoices.destroy', $invoice) }}" method="POST" onsubmit="return confirm('این فاکتور حذف شود؟')">
+                    <tr data-row data-edit-url="{{ route('purchase-invoices.show', $invoice) }}" data-delete-form="delete-purchase-invoice-{{ $invoice->id }}">
+                        <td>{{ shamsi($invoice->date) }}</td>
+                        <td>{{ $invoice->number }}</td>
+                        <td>{{ $invoice->supplier->name }}</td>
+                        <td>{{ number_format($invoice->discount, 2) }}</td>
+                        <td>{{ number_format($invoice->expense, 2) }}</td>
+                        <td>{{ number_format($invoice->total_amount, 2) }}</td>
+                        <td>{{ number_format($invoice->paid_amount, 2) }}</td>
+                        <td>{{ $invoice->currency->code }}</td>
+                        <td class="hidden">
+                            <form id="delete-purchase-invoice-{{ $invoice->id }}" action="{{ route('purchase-invoices.destroy', $invoice) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">حذف</button>
                             </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+    </x-ui.legacy-list>
 </x-layouts.app>

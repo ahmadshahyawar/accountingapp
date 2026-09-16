@@ -1,53 +1,48 @@
 <x-layouts.app title="یادداشت و یادآور">
-    <x-ui.page-header title="یادداشت و یادآور" />
+    <div x-data="{ adding: false }">
+        <x-ui.legacy-list title="یادداشت" create-inline table-id="notes-grid">
+            <table class="legacy-grid" id="notes-grid">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>عنوان</th>
+                        <th>یادداشت</th>
+                        <th>یادآوری</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($notes as $note)
+                        <tr data-row data-delete-form="delete-note-{{ $note->id }}" class="{{ $note->is_done ? 'opacity-50' : '' }}">
+                            <td>
+                                <form action="{{ route('notes.toggle', $note) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" style="width:16px;height:16px;border-radius:3px;border:1px solid #a9aeb5;{{ $note->is_done ? 'background:#1D9D51;color:#fff' : 'background:#fff' }}">{{ $note->is_done ? '✓' : '' }}</button>
+                                </form>
+                            </td>
+                            <td class="{{ $note->is_done ? 'line-through' : '' }}">{{ $note->title }}</td>
+                            <td>{{ $note->body }}</td>
+                            <td class="{{ $note->remind_at && !$note->is_done && $note->remind_at->isPast() ? 'text-rose-700 font-semibold' : '' }}">
+                                @if($note->remind_at) {{ shamsi($note->remind_at, 'Y/m/d') }} — {{ $note->remind_at->format('H:i') }} @endif
+                            </td>
+                            <td class="hidden">
+                                <form id="delete-note-{{ $note->id }}" action="{{ route('notes.remove', $note) }}" method="POST">
+                                    @csrf @method('DELETE')
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="4" style="text-align:center;color:#9aa3ab;padding:20px">یادداشتی ثبت نشده است.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
 
-    <div class="bg-white rounded border border-gray-300 p-4 mb-6">
-        <form action="{{ route('notes.store') }}" method="POST" class="flex flex-wrap gap-3 items-end text-sm">
-            @csrf
-            <div class="flex-1 min-w-[160px]">
-                <label class="block text-xs text-gray-500 mb-1">عنوان<span class="text-red-600">*</span></label>
-                <input type="text" name="title" required class="w-full border rounded-md px-3 py-2">
-            </div>
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-xs text-gray-500 mb-1">یادداشت</label>
-                <input type="text" name="body" class="w-full border rounded-md px-3 py-2">
-            </div>
-            <div>
-                <label class="block text-xs text-gray-500 mb-1">یادآوری در (اختیاری)</label>
-                <input type="datetime-local" name="remind_at" class="border rounded-md px-3 py-2">
-            </div>
-            <button class="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-sky-800">افزودن</button>
-        </form>
-    </div>
-
-    <div class="bg-white rounded border border-gray-300 divide-y">
-        @forelse($notes as $note)
-            <div class="p-4 flex items-start gap-3 {{ $note->is_done ? 'opacity-50' : '' }}">
-                <form action="{{ route('notes.toggle', $note) }}" method="POST" class="pt-0.5">
-                    @csrf
-                    <button type="submit" class="w-5 h-5 rounded border flex items-center justify-center {{ $note->is_done ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-gray-300' }}">
-                        @if($note->is_done) ✓ @endif
-                    </button>
-                </form>
-                <div class="flex-1">
-                    <div class="font-semibold {{ $note->is_done ? 'line-through' : '' }}">{{ $note->title }}</div>
-                    @if($note->body)
-                        <div class="text-sm text-gray-500">{{ $note->body }}</div>
-                    @endif
-                    @if($note->remind_at)
-                        <div class="text-xs mt-1 {{ !$note->is_done && $note->remind_at->isPast() ? 'text-rose-700 font-semibold' : 'text-sky-700' }}">
-                            یادآوری: {{ shamsi($note->remind_at, 'Y/m/d') }} — {{ $note->remind_at->format('H:i') }}
-                            @if(!$note->is_done && $note->remind_at->isPast()) (سررسید شده) @endif
-                        </div>
-                    @endif
-                </div>
-                <form action="{{ route('notes.remove', $note) }}" method="POST" onsubmit="return confirm('حذف شود؟')">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="text-red-600 hover:underline text-xs">حذف</button>
-                </form>
-            </div>
-        @empty
-            <div class="p-6 text-center text-gray-400 text-sm">یادداشتی ثبت نشده است.</div>
-        @endforelse
+            <form action="{{ route('notes.store') }}" method="POST" x-show="adding" x-cloak class="legacy-searchrow" style="margin-top:10px;gap:8px;flex-wrap:wrap">
+                @csrf
+                <input name="title" placeholder="عنوان" required style="flex:1;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <input name="body" placeholder="یادداشت" style="flex:2;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <input type="datetime-local" name="remind_at" style="border:1px solid #d1d5db;border-radius:4px;padding:4px 8px;font-size:13px">
+                <button class="btn3d" type="submit" style="min-height:30px">افزودن</button>
+            </form>
+        </x-ui.legacy-list>
     </div>
 </x-layouts.app>

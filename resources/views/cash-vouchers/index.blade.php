@@ -1,53 +1,61 @@
 <x-layouts.app title="صندوق">
-    <x-ui.page-header title="دریافت و پرداخت نقدی">
-        <a href="{{ route('cash-vouchers.create', ['type' => 'receipt']) }}" class="px-4 py-2 bg-green-700 text-white rounded-md text-sm hover:bg-green-800">+ دریافت نقدی</a>
-        <a href="{{ route('cash-vouchers.create', ['type' => 'payment']) }}" class="px-4 py-2 bg-pink-700 text-white rounded-md text-sm hover:bg-pink-800">+ پرداخت نقدی</a>
-    </x-ui.page-header>
+    <x-ui.legacy-list title="دریافت و پرداخت نقدی" table-id="cash-vouchers-grid">
+        <x-slot:subtabs>
+            <div class="flex justify-end gap-1 mb-2 text-sm">
+                @foreach(['all' => 'همه', 'receipt' => 'دریافت ها', 'payment' => 'پرداخت ها'] as $key => $label)
+                    <a href="{{ route('cash-vouchers.index', ['type' => $key]) }}"
+                        class="px-4 py-1.5 border-t border-x rounded-t {{ $type === $key ? 'bg-white border-gray-300 font-semibold text-sky-800' : 'bg-gray-100 border-transparent text-gray-500 hover:text-sky-700' }}">
+                        {{ $label }}
+                    </a>
+                @endforeach
+            </div>
+        </x-slot:subtabs>
 
-    <div class="flex gap-2 mb-4 text-sm">
-        @foreach(['all' => 'همه', 'receipt' => 'دریافت ها', 'payment' => 'پرداخت ها'] as $key => $label)
-            <a href="{{ route('cash-vouchers.index', ['type' => $key]) }}"
-                class="px-3 py-1.5 rounded-md {{ $type === $key ? 'bg-sky-700 text-white' : 'bg-white text-gray-600 border' }}">{{ $label }}</a>
-        @endforeach
-    </div>
-
-    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
-        <table class="w-full text-sm text-right">
-            <thead class="bg-gray-50 text-gray-600">
+        <table class="legacy-grid" id="cash-vouchers-grid">
+            <thead>
                 <tr>
-                    <th class="px-4 py-2">شماره</th>
-                    <th class="px-4 py-2">تاریخ</th>
-                    <th class="px-4 py-2">نوعیت</th>
-                    <th class="px-4 py-2">شخص</th>
-                    <th class="px-4 py-2">صندوق/بانک</th>
-                    <th class="px-4 py-2">مبلغ</th>
-                    <th class="px-4 py-2">توضیحات</th>
-                    <th class="px-4 py-2">عملیات</th>
+                    <th>شماره</th>
+                    <th>تاریخ</th>
+                    <th>نوعیت</th>
+                    <th>شخص</th>
+                    <th>صندوق/بانک</th>
+                    <th>مبلغ</th>
+                    <th>توضیحات</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
+            <tbody>
                 @foreach($vouchers as $voucher)
-                    <tr>
-                        <td class="px-4 py-2">{{ $voucher->number }}</td>
-                        <td class="px-4 py-2">{{ shamsi($voucher->date) }}</td>
-                        <td class="px-4 py-2">
-                            <span class="{{ $voucher->type === 'receipt' ? 'text-green-700' : 'text-pink-700' }}">
-                                {{ $voucher->type === 'receipt' ? 'دریافت' : 'پرداخت' }}
-                            </span>
+                    <tr data-row data-delete-form="delete-voucher-{{ $voucher->id }}">
+                        <td>{{ $voucher->number }}</td>
+                        <td>{{ shamsi($voucher->date) }}</td>
+                        <td class="{{ $voucher->type === 'receipt' ? 'text-green-700' : 'text-pink-700' }}">
+                            {{ $voucher->type === 'receipt' ? 'دریافت' : 'پرداخت' }}
                         </td>
-                        <td class="px-4 py-2 text-gray-500">{{ $voucher->person?->name }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $voucher->cashbox?->name ?? $voucher->bankAccount?->name }}</td>
-                        <td class="px-4 py-2">{{ number_format($voucher->amount, 2) }} {{ $voucher->currency->code }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $voucher->description }}</td>
-                        <td class="px-4 py-2">
-                            <form action="{{ route('cash-vouchers.destroy', $voucher) }}" method="POST" onsubmit="return confirm('این رسید حذف شود؟')">
+                        <td>{{ $voucher->person?->name }}</td>
+                        <td>{{ $voucher->cashbox?->name ?? $voucher->bankAccount?->name }}</td>
+                        <td>{{ number_format($voucher->amount, 2) }} {{ $voucher->currency->code }}</td>
+                        <td>{{ $voucher->description }}</td>
+                        <td class="hidden">
+                            <form id="delete-voucher-{{ $voucher->id }}" action="{{ route('cash-vouchers.destroy', $voucher) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">حذف</button>
                             </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+
+        <div class="grid-toolbar" style="border-top:none;padding-top:0;margin-top:-6px;justify-content:flex-start">
+            <div class="grp">
+                <a href="{{ route('cash-vouchers.create', ['type' => 'receipt']) }}" class="btn3d">
+                    <svg class="ic ic-blue" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M10 6v8M6 10h8"/></svg>
+                    دریافت نقدی
+                </a>
+                <a href="{{ route('cash-vouchers.create', ['type' => 'payment']) }}" class="btn3d">
+                    <svg class="ic ic-blue" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M10 6v8M6 10h8"/></svg>
+                    پرداخت نقدی
+                </a>
+            </div>
+        </div>
+    </x-ui.legacy-list>
 </x-layouts.app>

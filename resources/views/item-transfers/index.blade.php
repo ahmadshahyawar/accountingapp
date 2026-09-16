@@ -1,37 +1,31 @@
 <x-layouts.app title="انتقال اجناس">
-    <x-ui.page-header title="انتقال اجناس بین گدام‌ها">
-        <a href="{{ route('item-transfers.create') }}" class="px-4 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800">+ انتقال جدید</a>
-    </x-ui.page-header>
-
-    <div class="bg-white rounded border border-gray-300 overflow-x-auto">
-        <table class="w-full text-sm text-right">
-            <thead class="bg-gray-50 text-gray-600">
+    <x-ui.legacy-list title="انتقال اجناس بین گدام‌ها" :create-route="route('item-transfers.create')" create-label="انتقال جدید" table-id="item-transfers-grid">
+        <table class="legacy-grid" id="item-transfers-grid">
+            <thead>
                 <tr>
-                    <th class="px-4 py-2">شماره</th>
-                    <th class="px-4 py-2">تاریخ</th>
-                    <th class="px-4 py-2">از گدام</th>
-                    <th class="px-4 py-2">به گدام</th>
-                    <th class="px-4 py-2">تعداد اقلام</th>
-                    <th class="px-4 py-2">عملیات</th>
+                    <th>شماره</th>
+                    <th>تاریخ</th>
+                    <th>از گدام</th>
+                    <th>به گدام</th>
+                    <th>تعداد اقلام</th>
                 </tr>
             </thead>
-            <tbody class="divide-y">
+            <tbody>
                 @foreach($transfers as $t)
-                    <tr>
-                        <td class="px-4 py-2">{{ $t->number }}</td>
-                        <td class="px-4 py-2">{{ shamsi($t->date) }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $t->fromWarehouse->name }}</td>
-                        <td class="px-4 py-2 text-gray-500">{{ $t->toWarehouse->name }}</td>
-                        <td class="px-4 py-2">{{ $t->lines()->count() }}</td>
-                        <td class="px-4 py-2">
-                            <form action="{{ route('item-transfers.destroy', $t) }}" method="POST" onsubmit="return confirm('این انتقال حذف شود؟')">
+                    <tr data-row data-delete-form="delete-item-transfer-{{ $t->id }}">
+                        <td>{{ $t->number }}</td>
+                        <td>{{ shamsi($t->date) }}</td>
+                        <td>{{ $t->fromWarehouse->name }}</td>
+                        <td>{{ $t->toWarehouse->name }}</td>
+                        <td>{{ $t->lines()->count() }}</td>
+                        <td class="hidden">
+                            <form id="delete-item-transfer-{{ $t->id }}" action="{{ route('item-transfers.destroy', $t) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">حذف</button>
                             </form>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+    </x-ui.legacy-list>
 </x-layouts.app>
