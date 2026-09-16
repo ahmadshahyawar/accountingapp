@@ -10,6 +10,11 @@
 @import '@fontsource/vazirmatn/500.css';
 @import '@fontsource/vazirmatn/700.css';
 
+/* Choices.js base styles — must come before our own overrides below, since
+   those only tweak colors/sizing and rely on this for show/hide behavior
+   (the dropdown list is only positioned/hidden correctly once this loads). */
+@import 'choices.js/public/assets/styles/choices.css';
+
 @theme {
     --font-sans: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';

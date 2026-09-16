@@ -1,5 +1,5 @@
 @php $current = request()->route()->getName(); @endphp
-<div class="flex gap-2 mb-4 text-sm flex-wrap">
+<div class="flex justify-end gap-1 mb-2 text-sm flex-wrap">
     @foreach([
         'reports.trial-balance' => 'تراز آزمایشی',
         'reports.account-statement' => 'گزارش حساب',
@@ -10,7 +10,11 @@
         'reports.creditors' => 'لیست قرضدار ها',
         'reports.sales-graph' => 'گراف فروش',
         'reports.kardex' => 'کاردکس',
+        'reports.negative-stock' => 'اجناس منفی',
     ] as $route => $label)
-        <a href="{{ route($route) }}" class="px-3 py-1.5 rounded-md {{ $current === $route ? 'bg-sky-700 text-white' : 'bg-white text-gray-600 border' }}">{{ $label }}</a>
+        <a href="{{ route($route) }}"
+            class="px-3 py-1.5 border-t border-x rounded-t {{ $current === $route ? 'bg-white border-gray-300 font-semibold text-sky-800' : 'bg-gray-100 border-transparent text-gray-500 hover:text-sky-700' }}">
+            {{ $label }}
+        </a>
     @endforeach
 </div>

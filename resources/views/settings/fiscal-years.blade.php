@@ -1,37 +1,46 @@
 <x-layouts.app title="سال مالی">
-    <x-ui.page-header title="سال های مالی" />
-
-    <div class="bg-white rounded border border-gray-300 p-4">
-        <table class="w-full text-sm text-right mb-4">
-            <thead class="text-gray-500"><tr><th class="py-1">نام</th><th>شروع</th><th>ختم</th><th>وضعیت</th><th></th></tr></thead>
-            <tbody class="divide-y">
-                @foreach($fiscalYears as $fy)
+    <div x-data="{ adding: false }">
+        <x-ui.legacy-list title="سال های مالی" create-inline table-id="fy-grid">
+            <table class="legacy-grid" id="fy-grid">
+                <thead>
                     <tr>
-                        <td class="py-1">{{ $fy->name }}</td>
-                        <td>{{ shamsi($fy->start_date) }}</td>
-                        <td>{{ shamsi($fy->end_date) }}</td>
-                        <td>@if($fy->is_current)<span class="text-emerald-700 font-semibold">جاری</span>@endif</td>
-                        <td>
-                            @unless($fy->is_current)
-                                <form action="{{ route('settings.fiscal-years.activate', $fy) }}" method="POST">
-                                    @csrf
-                                    <button class="text-sky-700 hover:underline">فعال‌سازی</button>
-                                </form>
-                            @endunless
-                        </td>
+                        <th>نام</th>
+                        <th>شروع</th>
+                        <th>ختم</th>
+                        <th>وضعیت</th>
                     </tr>
-                @endforeach
-                @if($fiscalYears->isEmpty())
-                    <tr><td colspan="5" class="py-6 text-center text-gray-400">سال مالی تعریف نشده است.</td></tr>
-                @endif
-            </tbody>
-        </table>
-        <form action="{{ route('settings.fiscal-years.store') }}" method="POST" class="flex flex-wrap gap-2 items-end text-sm border-t pt-4">
-            @csrf
-            <div><label class="block text-xs text-gray-500 mb-1">نام (مثلاً 1406)</label><input name="name" class="border rounded px-2 py-1 w-24" required></div>
-            <div><label class="block text-xs text-gray-500 mb-1">تاریخ شروع</label><input type="date" name="start_date" class="border rounded px-2 py-1" required></div>
-            <div><label class="block text-xs text-gray-500 mb-1">تاریخ ختم</label><input type="date" name="end_date" class="border rounded px-2 py-1" required></div>
-            <button class="px-3 py-1.5 bg-sky-700 text-white rounded">افزودن</button>
-        </form>
+                </thead>
+                <tbody>
+                    @foreach($fiscalYears as $fy)
+                        <tr data-row>
+                            <td>{{ $fy->name }}</td>
+                            <td>{{ shamsi($fy->start_date) }}</td>
+                            <td>{{ shamsi($fy->end_date) }}</td>
+                            <td class="{{ $fy->is_current ? 'text-emerald-700 font-semibold' : '' }}">
+                                @if($fy->is_current)
+                                    جاری
+                                @else
+                                    <form action="{{ route('settings.fiscal-years.activate', $fy) }}" method="POST" style="display:inline">
+                                        @csrf
+                                        <button class="text-sky-700 hover:underline" style="font-size:12px">فعال‌سازی</button>
+                                    </form>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                    @if($fiscalYears->isEmpty())
+                        <tr><td colspan="4" style="text-align:center;color:#9aa3ab;padding:20px">سال مالی تعریف نشده است.</td></tr>
+                    @endif
+                </tbody>
+            </table>
+
+            <form action="{{ route('settings.fiscal-years.store') }}" method="POST" x-show="adding" x-cloak class="legacy-searchrow" style="margin-top:10px;gap:8px">
+                @csrf
+                <input name="name" placeholder="نام (مثلاً 1406)" required style="width:120px;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <input type="date" name="start_date" required style="border:1px solid #d1d5db;border-radius:4px;padding:4px 8px;font-size:13px">
+                <input type="date" name="end_date" required style="border:1px solid #d1d5db;border-radius:4px;padding:4px 8px;font-size:13px">
+                <button class="btn3d" type="submit" style="min-height:30px">افزودن</button>
+            </form>
+        </x-ui.legacy-list>
     </div>
 </x-layouts.app>

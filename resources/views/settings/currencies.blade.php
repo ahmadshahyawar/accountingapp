@@ -1,26 +1,34 @@
 <x-layouts.app title="ارز ها">
-    <x-ui.page-header title="ارز ها" />
-
-    <div class="bg-white rounded border border-gray-300 p-4">
-        <table class="w-full text-sm text-right mb-4">
-            <thead class="text-gray-500"><tr><th class="py-1">کد</th><th>نام</th><th>علامت</th><th>پایه</th></tr></thead>
-            <tbody class="divide-y">
-                @foreach($currencies as $currency)
+    <div x-data="{ adding: false }">
+        <x-ui.legacy-list title="ارز ها" create-inline table-id="currencies-grid">
+            <table class="legacy-grid" id="currencies-grid">
+                <thead>
                     <tr>
-                        <td class="py-1">{{ $currency->code }}</td>
-                        <td>{{ $currency->name }}</td>
-                        <td class="text-gray-500">{{ $currency->symbol }}</td>
-                        <td>{{ $currency->is_base ? 'بلی' : '' }}</td>
+                        <th>کد</th>
+                        <th>نام</th>
+                        <th>علامت</th>
+                        <th>پایه</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
-        <form action="{{ route('settings.currencies.store') }}" method="POST" class="flex flex-wrap gap-2 items-end text-sm border-t pt-4">
-            @csrf
-            <div><label class="block text-xs text-gray-500 mb-1">کد</label><input name="code" class="border rounded px-2 py-1 w-20" required></div>
-            <div><label class="block text-xs text-gray-500 mb-1">نام</label><input name="name" class="border rounded px-2 py-1" required></div>
-            <div><label class="block text-xs text-gray-500 mb-1">علامت</label><input name="symbol" class="border rounded px-2 py-1 w-16"></div>
-            <button class="px-3 py-1.5 bg-sky-700 text-white rounded">افزودن</button>
-        </form>
+                </thead>
+                <tbody>
+                    @foreach($currencies as $currency)
+                        <tr data-row>
+                            <td>{{ $currency->code }}</td>
+                            <td>{{ $currency->name }}</td>
+                            <td>{{ $currency->symbol }}</td>
+                            <td>{{ $currency->is_base ? 'بلی' : '' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <form action="{{ route('settings.currencies.store') }}" method="POST" x-show="adding" x-cloak class="legacy-searchrow" style="margin-top:10px;gap:8px">
+                @csrf
+                <input name="code" placeholder="کد" required style="width:80px;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <input name="name" placeholder="نام" required style="flex:1;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <input name="symbol" placeholder="علامت" style="width:80px;border:none;background:transparent;padding:4px 8px;font-size:13px">
+                <button class="btn3d" type="submit" style="min-height:30px">افزودن</button>
+            </form>
+        </x-ui.legacy-list>
     </div>
 </x-layouts.app>

@@ -1,4 +1,4 @@
-@props(['createRoute' => null, 'createLabel' => 'جدید', 'createInline' => false, 'backRoute' => null, 'editLabel' => 'ویرایش', 'deleteLabel' => 'حذف', 'deleteConfirm' => 'حذف شود؟', 'printLabel' => 'چاپ'])
+@props(['createRoute' => null, 'createLabel' => 'جدید', 'createInline' => false, 'backRoute' => null, 'editLabel' => 'ویرایش', 'deleteLabel' => 'حذف', 'deleteConfirm' => 'حذف شود؟', 'printLabel' => 'چاپ', 'reportOnly' => false])
 
 <div class="grid-toolbar" data-grid-toolbar>
     <div class="grp">
@@ -14,6 +14,7 @@
         </button>
         {{ $slot }}
     </div>
+    @unless($reportOnly)
     <div class="grp">
         <button type="button" class="btn3d" data-role="delete" disabled data-confirm="{{ $deleteConfirm }}">
             <svg class="ic ic-red" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="9"/><path d="M7 7l6 6M13 7l-6 6"/></svg>
@@ -35,4 +36,5 @@
             </a>
         @endif
     </div>
+    @endunless
 </div>

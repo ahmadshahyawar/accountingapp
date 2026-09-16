@@ -1,39 +1,41 @@
 <x-layouts.app title="دفتر روزنامچه">
-    <x-ui.page-header title="دفتر روزنامچه (Day Book)" />
+    <x-ui.legacy-list title="دفتر روزنامچه" report-only :search="false" table-id="day-book-grid">
+        <x-slot:subtabs>
+            @include('reports._nav')
+        </x-slot:subtabs>
 
-    @include('reports._nav')
+        <form method="GET" class="legacy-searchrow" style="gap:8px">
+            <input type="date" name="from" value="{{ $from }}" style="border:1px solid #d1d5db;border-radius:4px;padding:4px 8px;font-size:13px">
+            <input type="date" name="to" value="{{ $to }}" style="border:1px solid #d1d5db;border-radius:4px;padding:4px 8px;font-size:13px">
+            <button type="submit" class="btn3d" style="min-height:30px">نمایش</button>
+        </form>
 
-    <form method="GET" class="bg-white rounded border border-gray-300 p-4 mb-4 flex flex-wrap gap-3 items-end text-sm">
-        <div><label class="block text-xs text-gray-500 mb-1">از تاریخ</label><input type="date" name="from" value="{{ $from }}" class="border rounded px-2 py-1"></div>
-        <div><label class="block text-xs text-gray-500 mb-1">الی تاریخ</label><input type="date" name="to" value="{{ $to }}" class="border rounded px-2 py-1"></div>
-        <button class="px-3 py-1.5 bg-sky-700 text-white rounded">نمایش</button>
-    </form>
-
-    <div class="space-y-4">
-        @foreach($entries as $entry)
-            <div class="bg-white rounded border border-gray-300 p-4">
-                <div class="flex justify-between text-sm text-gray-500 mb-2">
-                    <span>{{ shamsi($entry->date) }} — {{ $entry->description }}</span>
-                    <span class="text-xs">سند #{{ $entry->id }}</span>
+        <div id="day-book-grid" style="display:flex;flex-direction:column;gap:10px">
+            @foreach($entries as $entry)
+                <div style="border:1px solid #c7d1db">
+                    <div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f2f4f6;font-size:13px;color:#586470">
+                        <span>{{ shamsi($entry->date) }} — {{ $entry->description }}</span>
+                        <span>سند #{{ $entry->id }}</span>
+                    </div>
+                    <table class="legacy-grid" style="border:none">
+                        <thead><tr><th>حساب</th><th>شخص</th><th>مدین</th><th>داین</th></tr></thead>
+                        <tbody>
+                            @foreach($entry->lines as $line)
+                                <tr>
+                                    <td>{{ $line->account->code }} - {{ $line->account->name }}</td>
+                                    <td>{{ $line->person?->name }}</td>
+                                    <td>{{ $line->debit > 0 ? number_format($line->debit, 2) : '' }}</td>
+                                    <td>{{ $line->credit > 0 ? number_format($line->credit, 2) : '' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                <table class="w-full text-sm text-right">
-                    <thead class="text-gray-400"><tr><th class="py-1">حساب</th><th>شخص</th><th>مدین</th><th>داین</th></tr></thead>
-                    <tbody class="divide-y">
-                        @foreach($entry->lines as $line)
-                            <tr>
-                                <td class="py-1">{{ $line->account->code }} - {{ $line->account->name }}</td>
-                                <td class="text-gray-500">{{ $line->person?->name }}</td>
-                                <td>{{ $line->debit > 0 ? number_format($line->debit, 2) : '' }}</td>
-                                <td>{{ $line->credit > 0 ? number_format($line->credit, 2) : '' }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endforeach
+            @endforeach
 
-        @if($entries->isEmpty())
-            <p class="text-gray-500 text-sm">در این بازه تاریخی سندی ثبت نشده است.</p>
-        @endif
-    </div>
+            @if($entries->isEmpty())
+                <p style="color:#9aa3ab;font-size:13px">در این بازه تاریخی سندی ثبت نشده است.</p>
+            @endif
+        </div>
+    </x-ui.legacy-list>
 </x-layouts.app>

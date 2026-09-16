@@ -1,60 +1,62 @@
 <x-layouts.app title="مفاد و ضرر">
-    <x-ui.page-header title="گزارش مفاد و ضرر (Profit & Loss)" />
+    <x-ui.legacy-list title="مفاد و ضرر" report-only :search="false" table-id="pl-grid">
+        <x-slot:subtabs>
+            @include('reports._nav')
+        </x-slot:subtabs>
 
-    @include('reports._nav')
+        <form method="GET" class="legacy-searchrow" style="gap:8px">
+            <input type="date" name="from" value="{{ $from }}" style="border:1px solid #d1d5db;border-radius:4px;padding:4px 8px;font-size:13px">
+            <input type="date" name="to" value="{{ $to }}" style="border:1px solid #d1d5db;border-radius:4px;padding:4px 8px;font-size:13px">
+            <button type="submit" class="btn3d" style="min-height:30px">نمایش</button>
+        </form>
 
-    <form method="GET" class="bg-white rounded border border-gray-300 p-4 mb-4 flex flex-wrap gap-3 items-end text-sm">
-        <div><label class="block text-xs text-gray-500 mb-1">از تاریخ</label><input type="date" name="from" value="{{ $from }}" class="border rounded px-2 py-1"></div>
-        <div><label class="block text-xs text-gray-500 mb-1">الی تاریخ</label><input type="date" name="to" value="{{ $to }}" class="border rounded px-2 py-1"></div>
-        <button class="px-3 py-1.5 bg-sky-700 text-white rounded">نمایش</button>
-    </form>
+        <div id="pl-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div style="border:1px solid #c7d1db">
+                <div style="padding:6px 10px;background:#e8f7ee;color:#1D9D51;font-weight:700">عواید</div>
+                <table class="legacy-grid" style="border:none">
+                    <tbody>
+                        @foreach($revenueAccounts as $row)
+                            <tr>
+                                <td style="color:#8a95a1">{{ $row['account']->code }}</td>
+                                <td>{{ $row['account']->name }}</td>
+                                <td>{{ number_format($row['balance'], 2) }}</td>
+                            </tr>
+                        @endforeach
+                        @if($revenueAccounts->isEmpty())
+                            <tr><td colspan="3" style="text-align:center;color:#9aa3ab;padding:20px">عایدی در این دوره ثبت نشده است.</td></tr>
+                        @endif
+                    </tbody>
+                    <tfoot>
+                        <tr style="font-weight:700;background:#f2f4f6"><td colspan="2">مجموع عواید</td><td>{{ number_format($totalRevenue, 2) }}</td></tr>
+                    </tfoot>
+                </table>
+            </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div class="bg-white rounded border border-gray-300 overflow-hidden">
-            <div class="bg-emerald-50 text-emerald-800 font-bold px-4 py-2">عواید</div>
-            <table class="w-full text-sm text-right">
-                <tbody class="divide-y">
-                    @foreach($revenueAccounts as $row)
-                        <tr>
-                            <td class="px-4 py-2 text-gray-500">{{ $row['account']->code }}</td>
-                            <td class="px-4 py-2">{{ $row['account']->name }}</td>
-                            <td class="px-4 py-2">{{ number_format($row['balance'], 2) }}</td>
-                        </tr>
-                    @endforeach
-                    @if($revenueAccounts->isEmpty())
-                        <tr><td colspan="3" class="px-4 py-6 text-center text-gray-400">عایدی در این دوره ثبت نشده است.</td></tr>
-                    @endif
-                </tbody>
-                <tfoot>
-                    <tr class="font-bold bg-gray-50"><td colspan="2" class="px-4 py-2">مجموع عواید</td><td class="px-4 py-2">{{ number_format($totalRevenue, 2) }}</td></tr>
-                </tfoot>
-            </table>
+            <div style="border:1px solid #c7d1db">
+                <div style="padding:6px 10px;background:#fdeceb;color:#c0392b;font-weight:700">مصارف</div>
+                <table class="legacy-grid" style="border:none">
+                    <tbody>
+                        @foreach($expenseAccounts as $row)
+                            <tr>
+                                <td style="color:#8a95a1">{{ $row['account']->code }}</td>
+                                <td>{{ $row['account']->name }}</td>
+                                <td>{{ number_format($row['balance'], 2) }}</td>
+                            </tr>
+                        @endforeach
+                        @if($expenseAccounts->isEmpty())
+                            <tr><td colspan="3" style="text-align:center;color:#9aa3ab;padding:20px">مصرفی در این دوره ثبت نشده است.</td></tr>
+                        @endif
+                    </tbody>
+                    <tfoot>
+                        <tr style="font-weight:700;background:#f2f4f6"><td colspan="2">مجموع مصارف</td><td>{{ number_format($totalExpense, 2) }}</td></tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
 
-        <div class="bg-white rounded border border-gray-300 overflow-hidden">
-            <div class="bg-rose-50 text-rose-800 font-bold px-4 py-2">مصارف</div>
-            <table class="w-full text-sm text-right">
-                <tbody class="divide-y">
-                    @foreach($expenseAccounts as $row)
-                        <tr>
-                            <td class="px-4 py-2 text-gray-500">{{ $row['account']->code }}</td>
-                            <td class="px-4 py-2">{{ $row['account']->name }}</td>
-                            <td class="px-4 py-2">{{ number_format($row['balance'], 2) }}</td>
-                        </tr>
-                    @endforeach
-                    @if($expenseAccounts->isEmpty())
-                        <tr><td colspan="3" class="px-4 py-6 text-center text-gray-400">مصرفی در این دوره ثبت نشده است.</td></tr>
-                    @endif
-                </tbody>
-                <tfoot>
-                    <tr class="font-bold bg-gray-50"><td colspan="2" class="px-4 py-2">مجموع مصارف</td><td class="px-4 py-2">{{ number_format($totalExpense, 2) }}</td></tr>
-                </tfoot>
-            </table>
+        <div style="border:1px solid #c7d1db;padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-weight:700;font-size:16px">{{ $netProfit >= 0 ? 'مفاد خالص' : 'ضرر خالص' }}</span>
+            <span style="font-weight:700;font-size:16px" class="{{ $netProfit >= 0 ? 'text-emerald-700' : 'text-rose-700' }}">{{ number_format(abs($netProfit), 2) }}</span>
         </div>
-    </div>
-
-    <div class="bg-white rounded border border-gray-300 p-4 flex items-center justify-between">
-        <span class="font-bold text-lg">{{ $netProfit >= 0 ? 'مفاد خالص' : 'ضرر خالص' }}</span>
-        <span class="font-bold text-lg {{ $netProfit >= 0 ? 'text-emerald-700' : 'text-rose-700' }}">{{ number_format(abs($netProfit), 2) }}</span>
-    </div>
+    </x-ui.legacy-list>
 </x-layouts.app>
