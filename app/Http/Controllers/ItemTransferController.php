@@ -24,6 +24,7 @@ class ItemTransferController extends Controller
         return view('item-transfers.form', [
             'warehouses' => Warehouse::orderBy('name')->get(),
             'items' => Item::with('unit')->orderBy('name')->get(),
+            'nextNumber' => 'IT-'.now()->format('Ymd').'-'.str_pad((string) (ItemTransfer::count() + 1), 4, '0', STR_PAD_LEFT),
         ]);
     }
 

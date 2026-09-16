@@ -24,6 +24,7 @@ class ProformaInvoiceController extends Controller
             'warehouses' => Warehouse::orderBy('name')->get(),
             'items' => Item::with('unit')->orderBy('name')->get(),
             'currencies' => Currency::orderBy('code')->get(),
+            'nextNumber' => 'PF-'.now()->format('Ymd').'-'.str_pad((string) (ProformaInvoice::count() + 1), 4, '0', STR_PAD_LEFT),
         ]);
     }
 

@@ -7,6 +7,7 @@
 
     @if($type === 'select')
         <select name="{{ $name }}" id="{{ $name }}" data-searchable
+            {{ $attributes }}
             @if($required) required @endif>
             @foreach($options as $optValue => $optLabel)
                 <option value="{{ $optValue }}" @selected(old($name, $value) == $optValue)>{{ $optLabel }}</option>
@@ -15,12 +16,14 @@
     @elseif($type === 'checkbox')
         <input type="checkbox" name="{{ $name }}" id="{{ $name }}" value="1"
             style="width:16px;height:16px"
+            {{ $attributes }}
             @checked(old($name, $value))>
     @elseif($type === 'textarea')
-        <textarea name="{{ $name }}" id="{{ $name }}" rows="3">{{ old($name, $value) }}</textarea>
+        <textarea name="{{ $name }}" id="{{ $name }}" rows="3" {{ $attributes }}>{{ old($name, $value) }}</textarea>
     @else
         <input type="{{ $type }}" name="{{ $name }}" id="{{ $name }}" value="{{ old($name, $value) }}"
             @if($step) step="{{ $step }}" @endif
+            {{ $attributes }}
             @if($required) required @endif>
     @endif
 
