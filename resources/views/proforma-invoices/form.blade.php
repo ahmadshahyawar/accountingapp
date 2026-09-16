@@ -3,13 +3,21 @@
 
     <form action="{{ route('proforma-invoices.store') }}" method="POST"
         x-data="{
-            items: @js($items->map(fn($i) => ['id' => $i->id, 'name' => $i->name, 'price' => (float) $i->sale_price, 'unit' => $i->unit->name])),
-            lines: [{ item_id: '', quantity: 1, unit_price: 0 }],
-            addLine() { this.lines.push({ item_id: '', quantity: 1, unit_price: 0 }) },
+            items: @js($items->map(fn($i) => ['id' => $i->id, 'code' => $i->code, 'name' => $i->name, 'price' => (float) $i->sale_price, 'unit' => $i->unit->name])),
+            lines: [],
+            pending: { item_id: '', quantity: 0, unit_price: 0 },
+            discount: {{ old('discount', 0) }},
+            fillPriceFromItem() { const it = this.items.find(x => x.id == this.pending.item_id); if (it) this.pending.unit_price = it.price },
+            addLine() {
+                if (!this.pending.item_id || !this.pending.quantity) return;
+                const it = this.items.find(x => x.id == this.pending.item_id);
+                this.lines.push({ item_id: this.pending.item_id, code: it.code, name: it.name, unit: it.unit, quantity: this.pending.quantity, unit_price: this.pending.unit_price });
+                this.pending = { item_id: '', quantity: 0, unit_price: 0 };
+            },
             removeLine(i) { this.lines.splice(i, 1) },
-            fillPrice(line) { const it = this.items.find(x => x.id == line.item_id); if (it) line.unit_price = it.price },
             lineTotal(l) { return l.quantity * l.unit_price },
-            get grandTotal() { return this.lines.reduce((s, l) => s + this.lineTotal(l), 0) }
+            get linesTotal() { return this.lines.reduce((s, l) => s + this.lineTotal(l), 0) },
+            get grandTotal() { return this.linesTotal - (parseFloat(this.discount) || 0) }
         }"
         class="bg-white rounded-lg shadow p-6">
         @csrf
@@ -27,32 +35,59 @@
         </div>
 
         <h3 class="font-bold mt-4 mb-2 text-sm">اجناس</h3>
-        <table class="w-full text-sm text-right mb-3">
-            <thead class="text-gray-500">
-                <tr><th class="py-1">جنس</th><th>مقدار</th><th>قیمت واحد</th><th>مجموعه</th><th></th></tr>
+        <table class="w-full text-sm text-right mb-2 border">
+            <thead class="bg-gray-50 text-gray-600">
+                <tr><th class="px-2 py-1.5">کد جنس</th><th>مشخصات جنس</th><th>واحد</th><th>تعداد</th><th>قیمت واحد</th><th>مجموعه</th><th></th></tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y">
                 <template x-for="(line, index) in lines" :key="index">
                     <tr>
-                        <td class="py-1 pl-2">
-                            <select :name="`lines[${index}][item_id]`" x-model="line.item_id" @change="fillPrice(line)" class="border rounded px-2 py-1 w-full" required>
-                                <option value="">— انتخاب —</option>
-                                <template x-for="it in items" :key="it.id">
-                                    <option :value="it.id" x-text="it.name + ' (' + it.unit + ')'"></option>
-                                </template>
-                            </select>
+                        <td class="px-2 py-1.5" x-text="line.code"></td>
+                        <td x-text="line.name"></td>
+                        <td x-text="line.unit"></td>
+                        <td x-text="line.quantity"></td>
+                        <td x-text="Number(line.unit_price).toFixed(2)"></td>
+                        <td x-text="lineTotal(line).toFixed(2)"></td>
+                        <td>
+                            <button type="button" @click="removeLine(index)" class="text-red-600">✕</button>
+                            <input type="hidden" :name="`lines[${index}][item_id]`" :value="line.item_id">
+                            <input type="hidden" :name="`lines[${index}][quantity]`" :value="line.quantity">
+                            <input type="hidden" :name="`lines[${index}][unit_price]`" :value="line.unit_price">
                         </td>
-                        <td class="pl-2"><input type="number" step="0.01" :name="`lines[${index}][quantity]`" x-model.number="line.quantity" class="border rounded px-2 py-1 w-20" required></td>
-                        <td class="pl-2"><input type="number" step="0.01" :name="`lines[${index}][unit_price]`" x-model.number="line.unit_price" class="border rounded px-2 py-1 w-24" required></td>
-                        <td class="pl-2" x-text="lineTotal(line).toFixed(2)"></td>
-                        <td><button type="button" @click="removeLine(index)" class="text-red-600">✕</button></td>
                     </tr>
                 </template>
+                <tr x-show="lines.length === 0"><td colspan="7" class="text-center text-gray-400 py-6">هیچ جنسی اضافه نشده است</td></tr>
             </tbody>
         </table>
-        <button type="button" @click="addLine()" class="text-sky-700 text-sm mb-4 hover:underline">+ افزودن سطر</button>
 
-        <x-ui.field label="تخفیف" name="discount" type="number" step="0.01" value="0" />
+        <div class="flex items-end gap-3 mb-4 bg-gray-50 border rounded-md p-3">
+            <div class="flex-1">
+                <label class="block text-xs text-gray-500 mb-1">اجناس</label>
+                <select x-model="pending.item_id" @change="fillPriceFromItem()" class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
+                    <option value="">— جستجوی اجناس —</option>
+                    <template x-for="it in items" :key="it.id">
+                        <option :value="it.id" x-text="it.name + ' (' + it.unit + ')'"></option>
+                    </template>
+                </select>
+            </div>
+            <div class="w-28">
+                <label class="block text-xs text-gray-500 mb-1">تعداد</label>
+                <input type="number" step="0.01" x-model.number="pending.quantity" @keydown.enter.prevent="addLine()"
+                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
+            </div>
+            <div class="w-28">
+                <label class="block text-xs text-gray-500 mb-1">قیمت</label>
+                <input type="number" step="0.01" x-model.number="pending.unit_price" @keydown.enter.prevent="addLine()"
+                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
+            </div>
+            <button type="button" @click="addLine()" class="px-4 py-2 bg-sky-700 text-white rounded-md text-sm hover:bg-sky-800 whitespace-nowrap">+ افزودن</button>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">تخفیف</label>
+            <input type="number" step="0.01" name="discount" x-model.number="discount"
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 text-sm py-2 px-3 border">
+        </div>
 
         <div class="text-left font-bold text-lg mb-4" x-text="'مجموع کل: ' + grandTotal.toFixed(2)"></div>
 
