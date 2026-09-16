@@ -14,6 +14,7 @@
         @endif
 
         <x-ui.field label="نام" name="name" :value="$person->name" required />
+        <x-ui.field label="نام پدر" name="father_name" :value="$person->father_name" />
         <x-ui.field label="موبایل" name="mobile" :value="$person->mobile" />
         <x-ui.field label="تلفن" name="phone" :value="$person->phone" />
         <x-ui.field label="آدرس" name="address" :value="$person->address" />

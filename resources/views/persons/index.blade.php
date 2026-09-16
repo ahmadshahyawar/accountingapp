@@ -18,6 +18,7 @@
                 <tr>
                     <th class="px-4 py-2">کد</th>
                     <th class="px-4 py-2">نام</th>
+                    <th class="px-4 py-2">نام پدر</th>
                     <th class="px-4 py-2">موبایل</th>
                     <th class="px-4 py-2">تلفن</th>
                     <th class="px-4 py-2">آدرس</th>
@@ -34,6 +35,7 @@
                     <tr>
                         <td class="px-4 py-2 text-gray-400">{{ $person->code() }}</td>
                         <td class="px-4 py-2">{{ $person->name }}</td>
+                        <td class="px-4 py-2 text-gray-500">{{ $person->father_name }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $person->mobile }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $person->phone }}</td>
                         <td class="px-4 py-2 text-gray-500">{{ $person->address }}</td>

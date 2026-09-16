@@ -13,7 +13,7 @@ class Person extends Model
     protected $table = 'persons';
 
     protected $fillable = [
-        'name', 'phone', 'mobile', 'address', 'is_customer', 'is_supplier', 'is_employee', 'notes',
+        'name', 'father_name', 'phone', 'mobile', 'address', 'is_customer', 'is_supplier', 'is_employee', 'notes',
     ];
 
     /** The old app's تعریف شخص form shows this padded numeric code — id-based, so unique and stable. */

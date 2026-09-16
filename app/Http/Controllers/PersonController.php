@@ -74,6 +74,7 @@ class PersonController extends Controller
     {
         return $request->validate([
             'name' => 'required|string|max:255',
+            'father_name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:50',
             'mobile' => 'nullable|string|max:50',
             'address' => 'nullable|string|max:255',
