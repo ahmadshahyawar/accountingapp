@@ -96,7 +96,7 @@
             <form action="{{ route('opening-balances.items') }}" method="POST">
                 @csrf
                 <table class="w-full text-sm text-right mb-3">
-                    <thead class="text-gray-500"><tr><th class="py-1">جنس</th><th>گدام</th><th>مقدار</th><th>قیمت واحد</th></tr></thead>
+                    <thead class="text-gray-500"><tr><th class="py-1">کد جنس</th><th>نام جنس</th><th>واحد</th><th>گدام</th><th>تعداد</th><th>قیمت خرید</th><th>جمع کل</th></tr></thead>
                     <tbody class="divide-y">
                         @foreach($items as $i => $item)
                             @php
@@ -104,7 +104,9 @@
                                 $unitCost = $existing && $existing->quantity ? $existing->debit / $existing->quantity : 0;
                             @endphp
                             <tr>
-                                <td class="py-1">{{ $item->name }} <span class="text-gray-400">({{ $item->unit->name }})</span></td>
+                                <td class="py-1 text-gray-500">{{ $item->code }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td class="text-gray-500">{{ $item->unit->name }}</td>
                                 <td>
                                     <select name="lines[{{ $i }}][warehouse_id]" class="border rounded px-2 py-1">
                                         @foreach($warehouses as $warehouse)
@@ -119,6 +121,7 @@
                                 <td>
                                     <input type="number" step="0.01" name="lines[{{ $i }}][unit_cost]" value="{{ $unitCost }}" class="border rounded px-2 py-1 w-24">
                                 </td>
+                                <td class="text-gray-500">{{ number_format(($existing->quantity ?? 0) * $unitCost, 2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
