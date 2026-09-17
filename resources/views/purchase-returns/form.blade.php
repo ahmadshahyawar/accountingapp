@@ -44,17 +44,12 @@
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-4 items-start">
             <div class="md:col-span-2">
-                <div class="legacy-field" style="margin-bottom:8px">
-                    <label>تامین‌کننده</label>
-                    <div style="display:flex;gap:8px">
-                        <select name="person_id" x-ref="personSelect" required @change="personId = $event.target.value" data-searchable style="flex:1"
-                            x-effect="personId; $nextTick(() => window.setNativeSelectValue($refs.personSelect, personId))">
-                            <option value="">— انتخاب —</option>
-                            <template x-for="s in suppliers" :key="s.id">
-                                <option :value="s.id" :selected="s.id == personId" x-text="s.name"></option>
-                            </template>
-                        </select>
-                        <x-ui.person-search-modal list="suppliers" selected="personId" :create-route="route('persons.store')" :create-extra="['is_supplier' => 1]" />
+                <input type="hidden" name="person_id" :value="personId">
+                <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px">
+                    <x-ui.person-search-modal list="suppliers" selected="personId" :create-route="route('persons.store')" :create-extra="['is_supplier' => 1]" />
+                    <div class="legacy-field" style="margin-bottom:0;flex:1">
+                        <label>نام</label>
+                        <input type="text" readonly :value="selectedSupplier?.name || ''" style="background:#f2f4f6;color:#586470">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">

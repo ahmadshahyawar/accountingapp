@@ -7,10 +7,11 @@
     {{ $selected }} variables already declared there), so it must be placed
     inside that form's x-data element rather than isolated.
 --}}
-<div x-data="{ personModalOpen: false, personModalQuery: '', personModalCreating: false, newPersonName: '', newPersonPhone: '', newPersonMobile: '' }">
-    <button type="button" class="btn3d" @click="personModalOpen = true; personModalQuery = ''; personModalCreating = false">
-        <svg class="ic ic-blue" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
-        جستجوی حساب ها
+<div x-data="{ personModalOpen: false, personModalQuery: '', personModalCreating: false, newPersonName: '', newPersonPhone: '', newPersonMobile: '' }" style="flex-shrink:0">
+    <button type="button" class="btn3d" @click="personModalOpen = true; personModalQuery = ''; personModalCreating = false"
+        style="flex-direction:column;gap:2px;width:92px;min-height:52px;justify-content:center;white-space:normal;line-height:1.3">
+        <svg class="ic ic-blue" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" style="width:20px;height:20px"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+        <span>جستجوی حساب ها</span>
     </button>
 
     <div x-show="personModalOpen" x-cloak style="position:fixed;inset:0;z-index:50;background:rgba(20,26,33,.45);display:flex;align-items:center;justify-content:center" @keydown.escape.window="personModalOpen = false">

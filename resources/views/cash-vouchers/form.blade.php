@@ -21,15 +21,10 @@
 
             <div class="legacy-field">
                 <label>حساب</label>
+                <input type="hidden" name="person_id" x-show="contraType === 'person'" :value="personId">
                 <div x-show="contraType === 'person'" style="display:flex;gap:8px">
-                    <select name="person_id" x-ref="personSelect" @change="personId = $event.target.value" data-searchable style="flex:1"
-                        x-effect="personId; $nextTick(() => window.setNativeSelectValue($refs.personSelect, personId))">
-                        <option value="">— انتخاب —</option>
-                        <template x-for="p in persons" :key="p.id">
-                            <option :value="p.id" :selected="p.id == personId" x-text="p.name"></option>
-                        </template>
-                    </select>
                     <x-ui.person-search-modal list="persons" selected="personId" :create-route="route('persons.store')" />
+                    <input type="text" readonly :value="persons.find(p => p.id == personId)?.name || ''" style="flex:1;border:1px solid #b9bfc6;border-radius:3px;padding:6px 8px;font-size:13px;background:#f2f4f6;color:#586470">
                 </div>
                 <div x-show="contraType === 'account'" x-cloak>
                     <select name="contra_account_id" data-searchable>
