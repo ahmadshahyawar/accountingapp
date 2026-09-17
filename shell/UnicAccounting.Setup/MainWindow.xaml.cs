@@ -52,21 +52,61 @@ namespace UnicAccountingSetup
 
             try
             {
+                // Extraction is the only step that actually matters — it's what
+                // makes the app usable at all, so a failure here is fatal and
+                // leaves the user back on the form to retry (e.g. a different
+                // folder, or after closing whatever is locking a file).
                 await Task.Run(() => ExtractPayload(_installDir, ReportProgress));
-                CreateDesktopShortcut(_installDir);
-                WriteUninstallRegistryEntry(_installDir);
+
+                // The shortcut and the Apps & Features registry entry are
+                // conveniences on top of an already-usable install — if either
+                // one fails (e.g. WScript.Shell COM automation blocked by AV/EDR
+                // policy on this machine), that shouldn't discard a successful
+                // extraction and leave the user with nothing. Collected and
+                // shown as a non-fatal warning instead.
+                var warnings = new List<string>();
+                try { CreateDesktopShortcut(_installDir); }
+                catch (Exception ex) { warnings.Add("میانبر دسکتاپ ساخته نشد: " + DescribeException(ex)); }
+                try { WriteUninstallRegistryEntry(_installDir); }
+                catch (Exception ex) { warnings.Add("مدخل حذف نصب (Apps & Features) نوشته نشد: " + DescribeException(ex)); }
 
                 ProgressPanel.Visibility = Visibility.Collapsed;
                 DonePanel.Visibility = Visibility.Visible;
                 BtnFinish.Visibility = Visibility.Visible;
+
+                if (warnings.Count > 0)
+                {
+                    TxtWarning.Text = string.Join("\n", warnings) +
+                        $"\n\nبرنامه با موفقیت در «{_installDir}» نصب شد — می‌توانید UnicAccountingShell.exe را مستقیماً از آن پوشه اجرا کنید.";
+                    TxtWarning.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {
                 ProgressPanel.Visibility = Visibility.Collapsed;
                 FormPanel.Visibility = Visibility.Visible;
                 BtnInstall.Visibility = Visibility.Visible;
-                TxtError.Text = "نصب ناموفق بود: " + ex.Message;
+                TxtError.Text = "نصب ناموفق بود: " + DescribeException(ex);
             }
+        }
+
+        /// <summary>
+        /// Unwraps TargetInvocationException/AggregateException down to the
+        /// innermost real exception's message. Without this, any failure
+        /// inside the late-bound COM calls in CreateDesktopShortcut (which go
+        /// through Type.InvokeMember — effectively a reflection call) surfaces
+        /// to the user as the generic, useless
+        /// "Exception has been thrown by the target of an invocation." instead
+        /// of the actual root cause.
+        /// </summary>
+        private static string DescribeException(Exception ex)
+        {
+            var inner = ex;
+            while (inner.InnerException != null && inner is TargetInvocationException or AggregateException)
+            {
+                inner = inner.InnerException;
+            }
+            return inner.Message;
         }
 
         private void ReportProgress(int percent, string status)
@@ -159,12 +199,24 @@ namespace UnicAccountingSetup
         /// toolchain this project uses. Late binding needs no interop
         /// assembly at all, just the COM component already on every
         /// Windows machine (wshom.ocx). Mirrors HSG.Setup's shortcut step.
+        ///
+        /// The .lnk FILE NAME itself must stay ASCII — WshShortcut.Save()
+        /// writes the file through the legacy Windows Script Host COM layer,
+        /// which marshals the path through the system's ANSI codepage rather
+        /// than Unicode (unlike TargetPath/Description, which are fine with
+        /// Persian text). On a machine whose "language for non-Unicode
+        /// programs" isn't Persian/Arabic, a Persian filename gets silently
+        /// mangled to "????" during that conversion and Save() throws
+        /// FileNotFoundException — reproduced directly (outside the installer)
+        /// with a minimal WScript.Shell CreateShortcut/Save call before this
+        /// fix; an ASCII filename with the very same Persian Description
+        /// saved without issue.
         /// </summary>
         private void CreateDesktopShortcut(string installDir)
         {
             var exePath = Path.Combine(installDir, "UnicAccountingShell.exe");
             var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            var shortcutPath = Path.Combine(desktop, "حسابداری یونیک.lnk");
+            var shortcutPath = Path.Combine(desktop, "Unic Accounting.lnk");
 
             var shellType = Type.GetTypeFromProgID("WScript.Shell")
                 ?? throw new InvalidOperationException("مؤلفه WScript.Shell در دسترس نیست.");

@@ -84,6 +84,7 @@
         <StackPanel x:Name="DonePanel" Grid.Row="2" VerticalAlignment="Center" Visibility="Collapsed">
             <TextBlock Text="✓ نصب با موفقیت انجام شد" FontSize="18" FontWeight="Bold" Foreground="#2E7D32" HorizontalAlignment="Center" Margin="0,0,0,10"/>
             <TextBlock Text="یک میانبر روی دسکتاپ شما اضافه شد." HorizontalAlignment="Center" Margin="0,0,0,20"/>
+            <TextBlock x:Name="TxtWarning" Foreground="#B26A00" TextWrapping="Wrap" TextAlignment="Center" Margin="0,0,0,16" Visibility="Collapsed"/>
             <CheckBox x:Name="ChkLaunchNow" Content="اکنون برنامه را اجرا کن" IsChecked="True" HorizontalAlignment="Center"/>
         </StackPanel>
 

@@ -132,8 +132,12 @@ What the wizard does on "نصب" (Install):
 1. Reads the zip payload appended to its own running exe (via
    `Environment.ProcessPath` + the footer), extracts it into the chosen
    folder (default `C:\UnicAccounting`) with a progress bar.
-2. Creates a `حسابداری یونیک.lnk` shortcut on the Desktop pointing at the
-   extracted `UnicAccountingShell.exe`.
+2. Creates a `Unic Accounting.lnk` shortcut on the Desktop pointing at the
+   extracted `UnicAccountingShell.exe`. The filename has to stay ASCII — see
+   the comment on `CreateDesktopShortcut` in
+   `UnicAccounting.Setup/MainWindow.xaml.cs` for why a Persian filename
+   breaks `WshShortcut.Save()` on this machine's ANSI codepage (found by
+   actually running the installer, not by inspection).
 3. Writes an HKCU "Apps & Features" uninstall entry pointing at
    `UnicAccounting-Uninstall.exe` (also part of the payload, published
    alongside the shell by `publish.ps1`) — no admin elevation needed, since

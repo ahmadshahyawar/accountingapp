@@ -22,8 +22,29 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        FitToWorkArea();
         Loaded += MainWindow_Loaded;
         Closing += MainWindow_Closing;
+    }
+
+    /// <summary>
+    /// The window's default size (set in XAML) is a fixed 1300x800 — fine on
+    /// a Full HD display, but taller than a smaller/older screen. Found by
+    /// actually capturing the running window on a real 1366x768 display:
+    /// WPF's WindowStartupLocation="CenterScreen" has no choice but to
+    /// position a taller-than-screen window with a NEGATIVE top (centering
+    /// an 800-tall window on a 768-tall screen needs top = (768-800)/2 =
+    /// -16, plus a bit more for the taskbar), which pushes the title bar —
+    /// and with it the minimize/maximize/close buttons — entirely above
+    /// y=0, off-screen. Clamping to the actual work area (already excludes
+    /// the taskbar) guarantees the whole window, title bar included, always
+    /// fits on whatever screen it launches on.
+    /// </summary>
+    private void FitToWorkArea()
+    {
+        var workArea = SystemParameters.WorkArea;
+        Width = Math.Min(Width, workArea.Width);
+        Height = Math.Min(Height, workArea.Height);
     }
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)

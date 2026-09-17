@@ -14,7 +14,12 @@ namespace UnicAccountingUninstall
     internal static class Program
     {
         internal const string UninstallRegistryKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\UnicAccounting";
-        internal const string ShortcutName = "حسابداری یونیک.lnk";
+
+        // Must stay ASCII and match UnicAccounting.Setup/MainWindow.xaml.cs's
+        // shortcutPath exactly — see the comment on CreateDesktopShortcut there
+        // for why a Persian filename breaks WshShortcut.Save() on this
+        // machine's ANSI codepage.
+        internal const string ShortcutName = "Unic Accounting.lnk";
 
         [STAThread]
         private static void Main()
@@ -87,6 +92,16 @@ namespace UnicAccountingUninstall
         /// short-lived detached cmd.exe (started after this process has had
         /// time to exit) to remove what's left — its own exe and the now-
         /// empty folder.
+        ///
+        /// Retries with a growing delay rather than a single fixed wait:
+        /// this exe is a self-contained single-file publish (~115MB), and a
+        /// single "wait 2s then rmdir" attempt was found — by actually
+        /// running an uninstall and checking the folder afterward, not by
+        /// inspection — to sometimes still hit ERROR_SHARING_VIOLATION on
+        /// its own exe, since releasing that large a memory-mapped bundle
+        /// can occasionally take a little longer than 2 seconds after the
+        /// process exits. Three attempts with 2s/3s/4s waits comfortably
+        /// covers that without meaningfully slowing down the common case.
         /// </summary>
         private static void SelfDeleteInstallDirectory(string installDir)
         {
@@ -110,10 +125,15 @@ namespace UnicAccountingUninstall
                 }
             }
 
+            var quotedDir = $"\"{installDir}\"";
+            var script = $"/C timeout /t 2 /nobreak >nul & rmdir /s /q {quotedDir} " +
+                         $"& if exist {quotedDir} (timeout /t 3 /nobreak >nul & rmdir /s /q {quotedDir}) " +
+                         $"& if exist {quotedDir} (timeout /t 4 /nobreak >nul & rmdir /s /q {quotedDir})";
+
             var psi = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = $"/C timeout /t 2 /nobreak >nul & rmdir /s /q \"{installDir}\"",
+                Arguments = script,
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 WindowStyle = ProcessWindowStyle.Hidden,
