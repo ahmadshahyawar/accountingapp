@@ -1,9 +1,11 @@
 <#
 .SYNOPSIS
-    Assembles a self-contained UnicAccountingShell build: the WPF exe, a
-    portable PHP runtime, and a production copy of the Laravel app, all in
-    one folder a user can copy anywhere and double-click - no PHP, no
-    Composer, no Node, nothing else preinstalled.
+    Assembles a self-contained UnicAccountingShell build: the WPF exe, the
+    uninstaller exe, a portable PHP runtime, and a production copy of the
+    Laravel app, all in one folder a user can copy anywhere and
+    double-click - no PHP, no Composer, no Node, nothing else preinstalled.
+    Feed this folder to build-installer.ps1 to wrap it into a single
+    one-click UnicAccounting-Setup.exe.
 
 .PARAMETER PhpZip
     Path to an already-downloaded portable PHP NTS x64 zip
@@ -25,11 +27,22 @@ $repoRoot = Split-Path $PSScriptRoot -Parent
 $cacheDir = Join-Path $PSScriptRoot ".publish-cache"
 $phpCacheDir = Join-Path $cacheDir "php"
 
-Write-Host "== 1/5: dotnet publish (self-contained win-x64) ==" -ForegroundColor Cyan
+Write-Host "== 1/6: dotnet publish shell (self-contained win-x64) ==" -ForegroundColor Cyan
 dotnet publish $PSScriptRoot -c Release -r win-x64 --self-contained true -o $OutDir
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed" }
 
-Write-Host "== 2/5: portable PHP ==" -ForegroundColor Cyan
+# Dropped in alongside UnicAccountingShell.exe so the registry uninstall entry
+# the installer writes (see UnicAccounting.Setup/MainWindow.xaml.cs) has a real
+# exe to point at — published as a single file so it's just one extra ~15MB
+# item here, not a second full self-contained runtime copy.
+Write-Host "== 1b/6: dotnet publish uninstaller (self-contained win-x64, single file) ==" -ForegroundColor Cyan
+dotnet publish (Join-Path $PSScriptRoot "UnicAccounting.Uninstall") `
+    -c Release -r win-x64 --self-contained true `
+    -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
+    -o $OutDir
+if ($LASTEXITCODE -ne 0) { throw "dotnet publish (UnicAccounting.Uninstall) failed" }
+
+Write-Host "== 2/6: portable PHP ==" -ForegroundColor Cyan
 if (-not (Test-Path (Join-Path $phpCacheDir "php.exe"))) {
     if (-not $PhpZip) {
         throw "No cached portable PHP found under $phpCacheDir and -PhpZip was not given. " +
@@ -74,7 +87,7 @@ $phpDestDir = Join-Path $OutDir "php"
 if (Test-Path $phpDestDir) { Remove-Item -Recurse -Force $phpDestDir }
 Copy-Item -Recurse -Path $phpCacheDir -Destination $phpDestDir
 
-Write-Host "== 3/5: copy Laravel app (production files only) ==" -ForegroundColor Cyan
+Write-Host "== 3/6: copy Laravel app (production files only) ==" -ForegroundColor Cyan
 $appDestDir = Join-Path $OutDir "app_root"
 if (Test-Path $appDestDir) { Remove-Item -Recurse -Force $appDestDir }
 New-Item -ItemType Directory -Force -Path $appDestDir | Out-Null
@@ -95,7 +108,7 @@ foreach ($dir in @('storage\logs', 'storage\framework\cache\data', 'storage\fram
     New-Item -ItemType Directory -Force -Path (Join-Path $appDestDir $dir) | Out-Null
 }
 
-Write-Host "== 4/5: composer install --no-dev (production vendor/) ==" -ForegroundColor Cyan
+Write-Host "== 4/6: composer install --no-dev (production vendor/) ==" -ForegroundColor Cyan
 Push-Location $appDestDir
 try {
     composer install --no-dev --optimize-autoloader --no-interaction
@@ -104,11 +117,13 @@ try {
     Pop-Location
 }
 
-Write-Host "== 5/5: sanity checks ==" -ForegroundColor Cyan
+Write-Host "== 5/6: sanity checks ==" -ForegroundColor Cyan
 if (-not (Test-Path (Join-Path $appDestDir "artisan"))) { throw "app_root\artisan missing - copy step failed" }
 if (-not (Test-Path (Join-Path $phpDestDir "php.exe"))) { throw "php\php.exe missing - PHP bundling failed" }
 if (-not (Test-Path (Join-Path $OutDir "UnicAccountingShell.exe"))) { throw "UnicAccountingShell.exe missing - dotnet publish failed" }
+if (-not (Test-Path (Join-Path $OutDir "UnicAccounting-Uninstall.exe"))) { throw "UnicAccounting-Uninstall.exe missing - dotnet publish (uninstaller) failed" }
 
 Write-Host ""
 Write-Host "Done. Self-contained build at: $OutDir" -ForegroundColor Green
 Write-Host "It needs nothing preinstalled except the WebView2 Runtime (present on current Windows 10/11)."
+Write-Host "6/6: To wrap this into a single one-click installer exe, run shell\build-installer.ps1."

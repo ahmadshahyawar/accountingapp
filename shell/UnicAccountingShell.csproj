@@ -6,6 +6,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <!-- UnicAccounting.Setup/ and UnicAccounting.Uninstall/ are separate sibling
+         projects that happen to live under this same shell/ folder (rather than
+         each getting its own subfolder like HSG-desktop's layout) — without this,
+         the SDK's default recursive **/*.cs and **/*.xaml globbing pulls their
+         files into this project too and both projects fail to compile with
+         duplicate-member errors. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);UnicAccounting.Setup/**;UnicAccounting.Uninstall/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

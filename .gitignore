@@ -28,4 +28,9 @@ Thumbs.db
 /shell/bin
 /shell/obj
 /shell/dist
+/shell/dist-installer
 /shell/.publish-cache
+/shell/UnicAccounting.Setup/bin
+/shell/UnicAccounting.Setup/obj
+/shell/UnicAccounting.Uninstall/bin
+/shell/UnicAccounting.Uninstall/obj

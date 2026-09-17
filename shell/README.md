@@ -108,9 +108,53 @@ were present at cache time, which would silently override the
 `DB_DATABASE` environment variable the shell sets at runtime and point
 every install back at one shared/baked-in database path.
 
+## Build the one-click installer
+
+```
+.\shell\build-installer.ps1
+```
+
+Runs `publish.ps1` first (so the payload can never go stale), zips its
+`dist/` output, and appends that zip plus a small footer onto a
+self-contained WPF setup wizard (`UnicAccounting.Setup`). The result is a
+single file — `shell/dist-installer/UnicAccounting-Setup.exe` — with
+**nothing preinstalled needed to build or run it**: no third-party installer
+tooling (no Inno Setup/WiX), just `dotnet publish`. Copy that one exe
+anywhere and double-click it.
+
+Mirrors the HSG-desktop installer pattern (`HSG.Setup`/`HSG.Uninstall`/
+`build-installer.ps1`) exactly, minus HSG's sync-specific `.env` templating
+(this app has no sync feature to configure), with its own distinct 16-byte
+footer magic string (`UNICPAYLOADEND!!`) so the two installers' payloads can
+never be confused for each other.
+
+What the wizard does on "نصب" (Install):
+1. Reads the zip payload appended to its own running exe (via
+   `Environment.ProcessPath` + the footer), extracts it into the chosen
+   folder (default `C:\UnicAccounting`) with a progress bar.
+2. Creates a `حسابداری یونیک.lnk` shortcut on the Desktop pointing at the
+   extracted `UnicAccountingShell.exe`.
+3. Writes an HKCU "Apps & Features" uninstall entry pointing at
+   `UnicAccounting-Uninstall.exe` (also part of the payload, published
+   alongside the shell by `publish.ps1`) — no admin elevation needed, since
+   everything installs into a user-writable folder.
+
+The per-user database, first-run migrate+seed, and local web server all
+still work exactly as described above — the installer only extracts files
+and registers the shortcut/uninstall entry; it does no Laravel-specific
+setup of its own.
+
+**Verified end-to-end**: ran `build-installer.ps1` to completion, confirmed
+the produced exe's footer bytes and embedded zip parse correctly (the exact
+logic `UnicAccounting.Setup/MainWindow.xaml.cs` runs at install time), then
+launched the extracted `UnicAccountingShell.exe` from a clean temp folder
+standalone (not from `shell/dist`) and confirmed via `server.log` that it
+served `/login` and its built CSS/JS assets successfully.
+
 ## Not done yet
 
 - **Update mechanism** — mirroring `HSG-desktop/publish-shell-update.ps1`
   (referenced in the original plan) once that pattern is available to copy.
-- **Installer** — `dist/` is a copy-and-run folder today, not an `.msi`/`.exe`
-  installer with Start Menu shortcuts, uninstall support, etc.
+- **Code signing** — the produced exe is unsigned, so Windows SmartScreen
+  will show an "unknown publisher" warning on first run until it accrues
+  enough reputation or is signed with a code-signing certificate.
