@@ -35,25 +35,31 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-4 items-start">
-            <div class="md:col-span-2">
-                <x-ui.field label="نام مشتری" name="customer_name" />
-                <div class="grid grid-cols-2 gap-3">
-                    <x-ui.field label="موبایل" name="customer_mobile" />
-                    <x-ui.field label="تلفن" name="customer_phone" />
-                </div>
+        <div class="legacy-infogrid">
+            <div class="f"><label>نام مشتری</label><input type="text" name="customer_name" value="{{ old('customer_name') }}"></div>
+            <div class="f"><label>موبایل</label><input type="text" name="customer_mobile" value="{{ old('customer_mobile') }}"></div>
+            <div class="f"><label>تلفن</label><input type="text" name="customer_phone" value="{{ old('customer_phone') }}"></div>
+            <div class="f">
+                <label>گدام<span class="text-red-600">*</span></label>
+                <select name="warehouse_id" required data-searchable>
+                    <option value="">— انتخاب —</option>
+                    @foreach($warehouses as $warehouse)
+                        <option value="{{ $warehouse->id }}" @selected(old('warehouse_id') == $warehouse->id)>{{ $warehouse->name }}</option>
+                    @endforeach
+                </select>
             </div>
-            <x-ui.field label="گدام" name="warehouse_id" type="select" required :options="$warehouses->pluck('name', 'id')->all()" />
-            <div>
-                <div class="legacy-field" style="margin-bottom:8px">
-                    <label>ارز<span class="text-red-600">*</span></label>
-                    <select name="currency_id" required data-searchable>
-                        @foreach($currencies as $currency)
-                            <option value="{{ $currency->id }}">{{ $currency->code }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <x-ui.field label="نرخ ارز" name="fx_rate" type="number" step="0.0001" :value="old('fx_rate', 1)" required />
+            <div class="f span2"></div>
+            <div class="f">
+                <label>ارز<span class="text-red-600">*</span></label>
+                <select name="currency_id" required data-searchable>
+                    @foreach($currencies as $currency)
+                        <option value="{{ $currency->id }}">{{ $currency->code }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="f">
+                <label>نرخ ارز<span class="text-red-600">*</span></label>
+                <input type="number" step="0.0001" name="fx_rate" value="{{ old('fx_rate', 1) }}" required>
             </div>
         </div>
 

@@ -42,28 +42,16 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-4 items-start">
-            <div class="md:col-span-2">
-                <input type="hidden" name="person_id" :value="personId">
-                <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px">
-                    <x-ui.person-search-modal list="customers" selected="personId" :create-route="route('persons.store')" :create-extra="['is_customer' => 1]" />
-                    <div class="legacy-field" style="margin-bottom:0;flex:1">
-                        <label>نام</label>
-                        <input type="text" readonly :value="selectedCustomer?.name || ''" style="background:#f2f4f6;color:#586470">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="legacy-field" style="margin-bottom:0">
-                        <label>موبایل</label>
-                        <input type="text" readonly :value="selectedCustomer?.mobile || '—'" style="background:#f2f4f6;color:#586470">
-                    </div>
-                    <div class="legacy-field" style="margin-bottom:0">
-                        <label>تلفن</label>
-                        <input type="text" readonly :value="selectedCustomer?.phone || '—'" style="background:#f2f4f6;color:#586470">
-                    </div>
-                </div>
-            </div>
-            <div class="legacy-field">
+        <input type="hidden" name="person_id" :value="personId">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+            <x-ui.person-search-modal list="customers" selected="personId" :create-route="route('persons.store')" :create-extra="['is_customer' => 1]" />
+            <div class="f" style="flex:1"><label>نام</label><input type="text" readonly :value="selectedCustomer?.name || ''"></div>
+        </div>
+
+        <div class="legacy-infogrid">
+            <div class="f"><label>موبایل</label><input type="text" readonly :value="selectedCustomer?.mobile || '—'"></div>
+            <div class="f"><label>تلفن</label><input type="text" readonly :value="selectedCustomer?.phone || '—'"></div>
+            <div class="f">
                 <label>گدام<span class="text-red-600">*</span></label>
                 <select name="warehouse_id" required data-searchable>
                     <option value="">— انتخاب —</option>
@@ -72,19 +60,18 @@
                     @endforeach
                 </select>
             </div>
-            <div>
-                <div class="legacy-field" style="margin-bottom:8px">
-                    <label>ارز<span class="text-red-600">*</span></label>
-                    <select name="currency_id" required data-searchable>
-                        @foreach($currencies as $currency)
-                            <option value="{{ $currency->id }}" @selected(old('currency_id') == $currency->id)>{{ $currency->code }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="legacy-field" style="margin-bottom:0">
-                    <label>نرخ ارز<span class="text-red-600">*</span></label>
-                    <input type="number" step="0.0001" name="fx_rate" value="{{ old('fx_rate', 1) }}" required>
-                </div>
+            <div class="f">
+                <label>ارز<span class="text-red-600">*</span></label>
+                <select name="currency_id" required data-searchable>
+                    @foreach($currencies as $currency)
+                        <option value="{{ $currency->id }}" @selected(old('currency_id') == $currency->id)>{{ $currency->code }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="f span2"></div>
+            <div class="f">
+                <label>نرخ ارز<span class="text-red-600">*</span></label>
+                <input type="number" step="0.0001" name="fx_rate" value="{{ old('fx_rate', 1) }}" required>
             </div>
         </div>
 

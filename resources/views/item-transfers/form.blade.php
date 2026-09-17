@@ -30,9 +30,25 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
-            <x-ui.field label="از انبار" name="from_warehouse_id" type="select" required :options="$warehouses->pluck('name', 'id')->all()" />
-            <x-ui.field label="به انبار" name="to_warehouse_id" type="select" required :options="$warehouses->pluck('name', 'id')->all()" />
+        <div class="legacy-infogrid">
+            <div class="f">
+                <label>از انبار<span class="text-red-600">*</span></label>
+                <select name="from_warehouse_id" required data-searchable>
+                    <option value="">— انتخاب —</option>
+                    @foreach($warehouses as $warehouse)
+                        <option value="{{ $warehouse->id }}" @selected(old('from_warehouse_id') == $warehouse->id)>{{ $warehouse->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="f">
+                <label>به انبار<span class="text-red-600">*</span></label>
+                <select name="to_warehouse_id" required data-searchable>
+                    <option value="">— انتخاب —</option>
+                    @foreach($warehouses as $warehouse)
+                        <option value="{{ $warehouse->id }}" @selected(old('to_warehouse_id') == $warehouse->id)>{{ $warehouse->name }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
 
         <table class="legacy-grid" style="margin-bottom:8px">

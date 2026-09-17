@@ -243,6 +243,64 @@ table.grid-selectable tbody tr.is-selected {
     accent-color: #2f8fd0;
 }
 
+/* Dense old-app dialog info panel for the top of an OPENED transactional
+   window (فاکتور فروش/خرید, برگشت‌ها, انتقال اجناس...): label sits inline
+   before its input at a fixed compact height, matching the real desktop
+   app's tight field rows instead of the taller stacked-label look
+   .legacy-field uses on plain create/edit screens. */
+.legacy-infogrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px 14px;
+    padding: 8px 10px;
+    background: #f7f9fb;
+    border: 1px solid #d6dbe0;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+.legacy-infogrid .f {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legacy-infogrid .f label {
+    color: #3a4753;
+    white-space: nowrap;
+    min-width: 46px;
+    font-size: 12px;
+}
+
+.legacy-infogrid .f input,
+.legacy-infogrid .f select {
+    height: 24px;
+    box-sizing: border-box;
+    border: 1px solid #b9bfc6;
+    border-radius: 2px;
+    background: #fff;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 0 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.legacy-infogrid .f input[readonly] {
+    background: #eef3f7;
+    color: #586470;
+}
+
+.legacy-infogrid .f.span2 {
+    grid-column: span 2;
+}
+
+@media (max-width: 760px) {
+    .legacy-infogrid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 /* Old-app-style form window: centered title + thin rule (matches
    x-ui.legacy-list's header) wrapping a field grid, with the same 3D
    button toolbar at the bottom (انصراف/ذخیره/ذخیره و جدید). */
