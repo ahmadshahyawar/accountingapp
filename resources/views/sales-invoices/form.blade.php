@@ -138,22 +138,22 @@
         {{-- Item search + add-line controls — matches the old app's real interaction: fill item,
              quantity and price, then click افزودن (or press Enter) to commit the row. --}}
         <div class="legacy-searchrow" style="gap:8px;margin-bottom:16px">
-            <button type="button" @click="addLine()" class="btn3d">
-                <svg class="ic ic-blue" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M10 6v8M6 10h8"/></svg>
-                افزودن
-            </button>
-            <input type="number" step="0.01" x-model.number="pending.unit_price" @keydown.enter.prevent="addLine()" placeholder="قیمت" style="width:100px;border:1px solid #d1d5db;border-radius:4px;padding:5px 8px;font-size:13px">
-            <input type="number" step="0.01" x-model.number="pending.quantity" @keydown.enter.prevent="addLine()" placeholder="تعداد" style="width:100px;border:1px solid #d1d5db;border-radius:4px;padding:5px 8px;font-size:13px">
             <select @change="pending.item_id = $event.target.value; fillPriceFromItem()" data-searchable style="flex:1">
                 <option value="">— جستجوی اجناس —</option>
                 <template x-for="it in items" :key="it.id">
                     <option :value="it.id" x-text="it.name + ' (' + it.unit + ')'"></option>
                 </template>
             </select>
+            <input type="number" step="0.01" x-model.number="pending.quantity" @keydown.enter.prevent="addLine()" placeholder="تعداد" style="width:100px;border:1px solid #d1d5db;border-radius:4px;padding:5px 8px;font-size:13px">
+            <input type="number" step="0.01" x-model.number="pending.unit_price" @keydown.enter.prevent="addLine()" placeholder="قیمت" style="width:100px;border:1px solid #d1d5db;border-radius:4px;padding:5px 8px;font-size:13px">
+            <button type="button" @click="addLine()" class="btn3d">
+                <svg class="ic ic-blue" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M10 6v8M6 10h8"/></svg>
+                افزودن
+            </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div class="space-y-2 order-3 md:order-1">
+            <div class="space-y-2 order-3 md:order-3">
                 <div class="flex justify-between items-center text-sm">
                     <span class="text-gray-600">تخفیف:</span>
                     <input type="number" step="0.01" name="discount" x-model.number="discount" style="width:130px;border:1px solid #b9bfc6;border-radius:3px;padding:5px 8px;font-size:13px;text-align:left">
@@ -177,7 +177,7 @@
                     دریافت نقدی (تکمیل)
                 </button>
             </div>
-            <div class="order-1 md:order-3 legacy-field" style="margin-bottom:0">
+            <div class="order-1 md:order-1 legacy-field" style="margin-bottom:0">
                 <label>توضیحات فاکتور</label>
                 <textarea name="notes" x-ref="notes" rows="6">{{ old('notes') }}</textarea>
             </div>
